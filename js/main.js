@@ -127,6 +127,14 @@ const GAMES = [
     tags: ["音楽", "アクション"],
     desc: "上から降ってくるノーツを叩くリズムゲーム。譜面エディターで自作の譜面を作って書き出せる。",
     url: "https://kaikomziu.github.io/rhythmer/"
+  },
+  {
+    id: "chinchiro-deluxe",
+    title: "ちんちろDELUXE",
+    emoji: "🎲",
+    tags: ["カジノ", "対戦"],
+    desc: "丼にサイコロを振り込む3Dちんちろりん。CPUの親とチップを賭けて勝負する本格ルール対応。",
+    url: "https://kaikomziu.github.io/chinchiro-deluxe/"
   }
 ];
 
