@@ -111,6 +111,14 @@ const GAMES = [
     tags: ["放置", "シミュレーション"],
     desc: "クリック&放置で町を育てる街づくりゲーム。ゴールデンビルや花火など演出も派手。",
     url: "https://kaikomziu.github.io/town-deluxe/"
+  },
+  {
+    id: "marubatsu-deluxe",
+    title: "○×DELUXE",
+    emoji: "⭕",
+    tags: ["対戦", "パズル"],
+    desc: "3〜5並べ+ミゼール/重力/ワイルド等の特殊モードを備えた丸バツゲーム。CPU4段階と2人対戦に対応。",
+    url: "https://kaikomziu.github.io/marubatsu-deluxe/"
   }
 ];
 
