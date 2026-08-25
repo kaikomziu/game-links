@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY GAMES LINKS</title>
+<meta name="description" content="自作ウェブゲームのリンクまとめサイト">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <h1 class="logo"><span class="logo-emoji">🎮</span>MY GAMES LINKS</h1>
+    <div class="header-controls">
+      <button id="themeToggle" class="icon-btn" title="ダークモード切替" aria-label="ダークモード切替">🌙</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="toolbar">
+    <input type="search" id="searchInput" class="search-input" placeholder="ゲームを検索…">
+
+    <div class="tag-filter" id="tagFilter">
+      <button class="tag-chip active" data-tag="all">すべて</button>
+    </div>
+
+    <div class="toolbar-right">
+      <label class="favorite-only-toggle">
+        <input type="checkbox" id="favoriteOnlyCheck">
+        <span>★お気に入りのみ</span>
+      </label>
+      <select id="sortSelect" class="sort-select">
+        <option value="default">並び順: 標準</option>
+        <option value="favorite">並び順: お気に入り優先</option>
+        <option value="name">並び順: 名前順</option>
+      </select>
+    </div>
+  </section>
+
+  <p class="result-count" id="resultCount"></p>
+
+  <section class="game-grid" id="gameGrid"></section>
+
+  <p class="empty-msg" id="emptyMsg" hidden>該当するゲームが見つかりませんでした。</p>
+
+</main>
+
+<footer class="site-footer">
+  <p>作った自作ウェブゲームのまとめページです。お気に入り・ダークモード・並び順はこのブラウザにCookieで保存されます。</p>
+</footer>
+
+<script src="js/version.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
