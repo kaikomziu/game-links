@@ -119,6 +119,14 @@ const GAMES = [
     tags: ["対戦", "パズル"],
     desc: "3〜5並べ+ミゼール/重力/ワイルド等の特殊モードを備えた丸バツゲーム。CPU4段階と2人対戦に対応。",
     url: "https://kaikomziu.github.io/marubatsu-deluxe/"
+  },
+  {
+    id: "rhythmer",
+    title: "Rhythmer",
+    emoji: "🎵",
+    tags: ["音楽", "アクション"],
+    desc: "上から降ってくるノーツを叩くリズムゲーム。譜面エディターで自作の譜面を作って書き出せる。",
+    url: "https://kaikomziu.github.io/rhythmer/"
   }
 ];
 
