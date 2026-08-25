@@ -103,6 +103,14 @@ const GAMES = [
     tags: ["カジュアル"],
     desc: "スロットの目押し技術を鍛えるドット絵スロットゲーム。",
     url: "https://kaikomziu.github.io/Slot-Sites-AI-GENERETE-/"
+  },
+  {
+    id: "town-deluxe",
+    title: "タウン DELUXE",
+    emoji: "🏙️",
+    tags: ["放置", "シミュレーション"],
+    desc: "クリック&放置で町を育てる街づくりゲーム。ゴールデンビルや花火など演出も派手。",
+    url: "https://kaikomziu.github.io/town-deluxe/"
   }
 ];
 
