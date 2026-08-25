@@ -97,22 +97,6 @@ const GAMES = [
     url: "https://kaikomziu.github.io/piano-deluxe/"
   },
   {
-    id: "mecha-chameleon",
-    title: "めっちゃカメレオン",
-    emoji: "🦎",
-    tags: ["対戦", "3D"],
-    desc: "Three.js製の擬態かくれんぼ対戦ゲーム。CPU(ボット)対戦にも対応。",
-    url: "https://kaikomziu.github.io/mecha-chameleon/"
-  },
-  {
-    id: "3d-action-dash",
-    title: "3D ACTION DASH",
-    emoji: "🏃",
-    tags: ["アクション", "3D"],
-    desc: "Three.js製の3Dパルクールアクション。壁ジャンプや二段ジャンプを駆使。",
-    url: "https://kaikomziu.github.io/3d-action-dash/"
-  },
-  {
     id: "mejioshi-slot",
     title: "目押しマスター",
     emoji: "🎰",
