@@ -159,6 +159,14 @@ const GAMES = [
     tags: ["ツール"],
     desc: "式入力・関数電卓・履歴・メモリー機能を備えたおしゃれな高機能電卓。",
     url: "https://kaikomziu.github.io/phosphor-calc/"
+  },
+  {
+    id: "hansha-deluxe",
+    title: "反射神経DELUXE",
+    emoji: "⚡",
+    tags: ["カジュアル"],
+    desc: "緑になった瞬間にタップ!5回勝負の平均タイムで称号が決まる、反射神経を競うだけのサイト。",
+    url: "https://kaikomziu.github.io/hansha-deluxe/"
   }
 ];
 

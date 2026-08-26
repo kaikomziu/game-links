@@ -29,5 +29,12 @@ const CHANGELOG = [
     notes: [
       "Phosphor Calcを追加"
     ]
+  },
+  {
+    version: "1.4.0",
+    date: "2026-08-27",
+    notes: [
+      "反射神経DELUXEを追加"
+    ]
   }
 ];
