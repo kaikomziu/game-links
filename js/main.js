@@ -130,10 +130,10 @@ const GAMES = [
   },
   {
     id: "chinchiro-deluxe",
-    title: "ちんちろDELUXE",
+    title: "チンチロDELUXE",
     emoji: "🎲",
     tags: ["カジノ", "対戦"],
-    desc: "丼にサイコロを振り込む3Dちんちろりん。CPUの親とチップを賭けて勝負する本格ルール対応。",
+    desc: "丼にサイコロを振り込む3Dチンチロリン。CPUの親とチップを賭けて勝負する本格ルール対応。",
     url: "https://kaikomziu.github.io/chinchiro-deluxe/"
   }
 ];
