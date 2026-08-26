@@ -22,5 +22,12 @@ const CHANGELOG = [
     notes: [
       "Nandokuka Toolsを追加"
     ]
+  },
+  {
+    version: "1.3.0",
+    date: "2026-08-26",
+    notes: [
+      "Phosphor Calcを追加"
+    ]
   }
 ];

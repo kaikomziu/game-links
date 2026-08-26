@@ -151,6 +151,14 @@ const GAMES = [
     tags: ["カジュアル"],
     desc: "アップグレード要素なし。ただひたすら100万回クリックするだけ。達成すると超派手な花火とファンファーレ演出。",
     url: "https://kaikomziu.github.io/million-clicker/"
+  },
+  {
+    id: "phosphor-calc",
+    title: "Phosphor Calc",
+    emoji: "🧮",
+    tags: ["ツール"],
+    desc: "式入力・関数電卓・履歴・メモリー機能を備えたおしゃれな高機能電卓。",
+    url: "https://kaikomziu.github.io/phosphor-calc/"
   }
 ];
 
