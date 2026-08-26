@@ -36,5 +36,12 @@ const CHANGELOG = [
     notes: [
       "反射神経DELUXEを追加"
     ]
+  },
+  {
+    version: "1.5.0",
+    date: "2026-08-27",
+    notes: [
+      "Cookie Factoryを追加"
+    ]
   }
 ];

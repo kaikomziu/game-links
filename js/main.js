@@ -167,6 +167,14 @@ const GAMES = [
     tags: ["カジュアル"],
     desc: "緑になった瞬間にタップ!5回勝負の平均タイムで称号が決まる、反射神経を競うだけのサイト。",
     url: "https://kaikomziu.github.io/hansha-deluxe/"
+  },
+  {
+    id: "cookie-factory",
+    title: "Cookie Factory",
+    emoji: "🍪",
+    tags: ["音楽", "放置"],
+    desc: "レーンを流れるクッキーをリズムよくタップして稼ぐクッキークリッカー。工場で自動化、リボーンでツリー強化。",
+    url: "https://kaikomziu.github.io/cookie-factory/"
   }
 ];
 
