@@ -15,5 +15,12 @@ const CHANGELOG = [
     notes: [
       "めっちゃカメレオン・3D ACTION DASHを一覧から削除"
     ]
+  },
+  {
+    version: "1.2.0",
+    date: "2026-08-26",
+    notes: [
+      "Nandokuka Toolsを追加"
+    ]
   }
 ];

@@ -135,6 +135,14 @@ const GAMES = [
     tags: ["カジノ", "対戦"],
     desc: "丼にサイコロを振り込む3Dチンチロリン。CPUの親とチップを賭けて勝負する本格ルール対応。",
     url: "https://kaikomziu.github.io/chinchiro-deluxe/"
+  },
+  {
+    id: "nandokuka-tools",
+    title: "Nandokuka Tools",
+    emoji: "🔐",
+    tags: ["ツール"],
+    desc: "IDや文章をBase64・モールス信号・ハッシュ化など19方式で難読化・復号できるツール。",
+    url: "https://kaikomziu.github.io/nandokuka-tools/"
   }
 ];
 
