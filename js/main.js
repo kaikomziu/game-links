@@ -143,6 +143,14 @@ const GAMES = [
     tags: ["ツール"],
     desc: "IDや文章をBase64・モールス信号・ハッシュ化など19方式で難読化・復号できるツール。",
     url: "https://kaikomziu.github.io/nandokuka-tools/"
+  },
+  {
+    id: "million-clicker",
+    title: "MILLION CLICKER",
+    emoji: "👆",
+    tags: ["カジュアル"],
+    desc: "アップグレード要素なし。ただひたすら100万回クリックするだけ。達成すると超派手な花火とファンファーレ演出。",
+    url: "https://kaikomziu.github.io/million-clicker/"
   }
 ];
 
