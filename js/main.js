@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "neon-raider",
+    title: "NEON RAIDER",
+    emoji: "🛸",
+    tags: ["シューティング"],
+    desc: "ネオン調の縦スクロール弾幕STG。ウェーブ制で10ウェーブごとにボス、武器5種を拾って切り替え。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/neon-raider/"
+  },
+  {
     id: "modem-deluxe",
     title: "MODEM DELUXE",
     emoji: "📟",

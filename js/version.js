@@ -43,5 +43,12 @@ const CHANGELOG = [
     notes: [
       "Cookie Factoryを追加"
     ]
+  },
+  {
+    version: "1.6.0",
+    date: "2026-08-28",
+    notes: [
+      "NEON RAIDERを追加"
+    ]
   }
 ];
