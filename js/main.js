@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "modem-deluxe",
+    title: "MODEM DELUXE",
+    emoji: "📟",
+    tags: ["シミュレーション"],
+    desc: "90年代ダイヤルアップ接続を再現。3段階ハンドシェイクをこなして繋ぎ、300bpsから5Gまで回線を進化させる。",
+    url: "https://kaikomziu.github.io/modem-deluxe/"
+  },
+  {
     id: "2048-deluxe",
     title: "2048 DELUXE",
     emoji: "🔢",
