@@ -223,6 +223,14 @@ const GAMES = [
     tags: ["タイピング", "PCのみ"],
     desc: "複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。",
     url: "https://kaikomziu.github.io/typing-deluxe/"
+  },
+  {
+    id: "once-a-year",
+    title: "ONCE A YEAR",
+    emoji: "🗝️",
+    tags: ["カジュアル", "占い"],
+    desc: "一年に一度しか開かない扉。開けるとその年だけの封書が届き、次に読めるのは365日後。",
+    url: "https://kaikomziu.github.io/once-a-year/"
   }
 ];
 

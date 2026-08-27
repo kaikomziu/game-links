@@ -80,5 +80,12 @@ const CHANGELOG = [
       "TYPING DELUXEを追加",
       "新タグ「PCのみ」を追加(キーボード必須のゲーム向け)"
     ]
+  },
+  {
+    version: "1.11.0",
+    date: "2026-08-28",
+    notes: [
+      "ONCE A YEARを追加"
+    ]
   }
 ];
