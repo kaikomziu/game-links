@@ -215,7 +215,10 @@ try {
 } catch (e) { favorites = new Set(); }
 
 let currentTag = "all";
-let currentSort = getCookie("sortOrder") || "default";
+// 初期値は「名前順」。他チャットからゲームがGAMES配列のどこに追加されても
+// 表示は自動でABC/あいう順に揃うようにする。並び順の選択はCookieに保存され、
+// 一度でも明示的に選び直せばその選択が次回以降も優先される。
+let currentSort = getCookie("sortOrder") || "name";
 let favoriteOnly = false;
 
 // ===== 初期化: ダークモード =====
@@ -307,9 +310,11 @@ function render() {
     list = [...list].sort((a, b) => {
       const fa = favorites.has(a.id) ? 0 : 1;
       const fb = favorites.has(b.id) ? 0 : 1;
-      return fa - fb;
+      if (fa !== fb) return fa - fb;
+      return a.title.localeCompare(b.title, "ja"); // 同グループ内も名前順
     });
   }
+  // currentSort === "default" のときだけGAMES配列の追加順のまま表示する
 
   resultCount.textContent = `${list.length} 件のゲーム`;
   grid.innerHTML = "";
