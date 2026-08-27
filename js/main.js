@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "2d-sandbox",
+    title: "POWDER SANDBOX",
+    emoji: "🏖️",
+    tags: ["サンドボックス"],
+    desc: "火・水・砂・油・溶岩・氷・草・酸・火薬など19素材のフォーリングサンド型物理サンドボックス。燃焼の延焼、水⇄水蒸気、溶岩+水→石、酸の溶解、火薬の連鎖爆発などをセルオートマトンでシミュレート。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/2d-sandbox/"
+  },
+  {
     id: "teiji-dash",
     title: "定時ダッシュ！",
     emoji: "🏃",
