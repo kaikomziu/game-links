@@ -94,5 +94,12 @@ const CHANGELOG = [
     notes: [
       "ONCE A YEARの説明を更新(次に訪れる自分への手紙機能を追記)"
     ]
+  },
+  {
+    version: "1.13.0",
+    date: "2026-08-28",
+    notes: [
+      "TYPING DELUXE Phone edition(スマホ版)を追加"
+    ]
   }
 ];

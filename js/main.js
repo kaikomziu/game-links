@@ -225,6 +225,14 @@ const GAMES = [
     url: "https://kaikomziu.github.io/typing-deluxe/"
   },
   {
+    id: "typing-deluxe-phone",
+    title: "TYPING DELUXE Phone edition",
+    emoji: "📱",
+    tags: ["タイピング", "スマホ"],
+    desc: "TYPING DELUXEのスマホ版。画面内QWERTYキーボードをタップしてローマ字入力、次に押すキーが常に光る。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。マイリストはPC版とCookie共有。",
+    url: "https://kaikomziu.github.io/typing-deluxe-phone/"
+  },
+  {
     id: "once-a-year",
     title: "ONCE A YEAR",
     emoji: "🗝️",
