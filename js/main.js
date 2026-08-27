@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "browser-escape",
+    title: "ブラウザ脱出",
+    emoji: "🚪",
+    tags: ["パズル"],
+    desc: "タブ切替・ウィンドウのリサイズ・ダークモード・印刷プレビュー・URLバー・ズーム・オフライン・戻るボタン——ブラウザの機能そのものを使って全8部屋から脱出するネタ系脱出ゲーム。クリアタイムでランク判定。",
+    url: "https://kaikomziu.github.io/browser-escape/"
+  },
+  {
     id: "neon-raider",
     title: "NEON RAIDER",
     emoji: "🛸",
