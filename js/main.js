@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "teiji-dash",
+    title: "定時ダッシュ！",
+    emoji: "🏃",
+    tags: ["アクション"],
+    desc: "17:00、退勤ダッシュで居酒屋を目指す3レーンのエンドレスランナー。部長・電話・書類の山をよけ、ビールチケットと有給を拾って走り抜けろ。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/teiji-dash/"
+  },
+  {
     id: "browser-escape",
     title: "ブラウザ脱出",
     emoji: "🚪",
