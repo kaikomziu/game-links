@@ -99,7 +99,8 @@ const CHANGELOG = [
     version: "1.13.0",
     date: "2026-08-28",
     notes: [
-      "TYPING DELUXE Phone edition(スマホ版)を追加"
+      "TYPING DELUXE Phone edition(スマホ版)を追加",
+      "新タグ「スマホのみ」を追加(タッチ操作前提のゲーム向け)"
     ]
   }
 ];
