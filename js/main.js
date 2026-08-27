@@ -229,7 +229,7 @@ const GAMES = [
     title: "ONCE A YEAR",
     emoji: "🗝️",
     tags: ["カジュアル", "占い"],
-    desc: "一年に一度しか開かない扉。開けるとその年だけの封書が届き、次に読めるのは365日後。",
+    desc: "一年に一度しか開かない扉。その年だけの封書を読み、次に訪れる自分へ手紙を一通だけ残せる。次に読めるのは365日後。",
     url: "https://kaikomziu.github.io/once-a-year/"
   }
 ];

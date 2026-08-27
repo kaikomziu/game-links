@@ -87,5 +87,12 @@ const CHANGELOG = [
     notes: [
       "ONCE A YEARを追加"
     ]
+  },
+  {
+    version: "1.12.0",
+    date: "2026-08-28",
+    notes: [
+      "ONCE A YEARの説明を更新(次に訪れる自分への手紙機能を追記)"
+    ]
   }
 ];
