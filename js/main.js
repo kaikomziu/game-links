@@ -207,6 +207,14 @@ const GAMES = [
     tags: ["音楽", "放置"],
     desc: "レーンを流れるクッキーをリズムよくタップして稼ぐクッキークリッカー。工場で自動化、リボーンでツリー強化。",
     url: "https://kaikomziu.github.io/cookie-factory/"
+  },
+  {
+    id: "typing-deluxe",
+    title: "TYPING DELUXE",
+    emoji: "⌨️",
+    tags: ["タイピング", "PCのみ"],
+    desc: "複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。",
+    url: "https://kaikomziu.github.io/typing-deluxe/"
   }
 ];
 

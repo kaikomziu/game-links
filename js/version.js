@@ -72,5 +72,13 @@ const CHANGELOG = [
     notes: [
       "定時ダッシュ！を追加"
     ]
+  },
+  {
+    version: "1.10.0",
+    date: "2026-08-28",
+    notes: [
+      "TYPING DELUXEを追加",
+      "新タグ「PCのみ」を追加(キーボード必須のゲーム向け)"
+    ]
   }
 ];
