@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "shadow-match",
+    title: "影あわせDELUXE",
+    emoji: "🌓",
+    tags: ["パズル"],
+    desc: "ライトをドラッグして動かし、浮かぶ立体の影を壁のシルエットにぴったり重ねるパズル。位置・遠近・回転を操作して一致度を上げる。全16ステージ＋エンドレス、実績20種。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/shadow-match/"
+  },
+  {
     id: "2d-sandbox",
     title: "POWDER SANDBOX",
     emoji: "🏖️",
