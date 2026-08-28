@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "gacha-life",
+    title: "GACHA LIFE",
+    emoji: "🎰",
+    tags: ["RNG", "放置", "収集"],
+    desc: "アップグレードも戦闘もない。ただ一生ガチャを引くだけのRNGゲーム。放置でジェムが貯まり、単発/10連/無料枠を回す。SSR確定の天井100連、ソフト天井、図鑑71種、ガチャ道ランク20段階、実績40種、重複を星屑に替えて交換する星屑ショップ。セーブはブラウザ内、オフライン報酬あり。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/gacha-life/"
+  },
+  {
     id: "boss-raid",
     title: "BOSS RAID",
     emoji: "👹",
