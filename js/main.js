@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "boss-raid",
+    title: "BOSS RAID",
+    emoji: "👹",
+    tags: ["クリッカー", "オンライン"],
+    desc: "1億HPのボスを、世界中のプレイヤーとリアルタイム協力で連打して倒す。倒すたびに少し強い次のボスが無限に出現。同時接続人数・全体DPS表示、ダメージポップ、撃破ファンファーレ＋花火。完全匿名。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/boss-raid/"
+  },
+  {
     id: "shadow-match",
     title: "影あわせDELUXE",
     emoji: "🌓",
