@@ -125,5 +125,12 @@ const CHANGELOG = [
     notes: [
       "HOLD ON(長押しガマンゲーム)を追加"
     ]
+  },
+  {
+    version: "1.17.0",
+    date: "2026-08-29",
+    notes: [
+      "HOLD ON に世界ランキングを実装(説明文・タグを更新)"
+    ]
   }
 ];
