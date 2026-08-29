@@ -118,5 +118,12 @@ const CHANGELOG = [
       "SEO改善: 各ゲームのタイトル・説明・タグをindex.htmlに静的HTMLとして直接埋め込み(tools/build-seo.jsで自動生成、検索エンジンや非JS環境でも一覧が読めるように)",
       "OGP/Twitterカード用メタタグ(og:title, og:description, og:url, twitter:card等)とcanonicalタグを追加"
     ]
+  },
+  {
+    version: "1.16.0",
+    date: "2026-08-29",
+    notes: [
+      "HOLD ON(長押しガマンゲーム)を追加"
+    ]
   }
 ];
