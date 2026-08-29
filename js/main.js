@@ -372,6 +372,15 @@ const grid = document.getElementById("gameGrid");
 const emptyMsg = document.getElementById("emptyMsg");
 const resultCount = document.getElementById("resultCount");
 
+// ランダム並び順は検索・タグ切替のたびに再シャッフルされると使いづらいので、
+// 一度生成した乱数を保持して並び順を固定する(ページ再読み込みで再抽選)。
+let randomOrder = null;
+function ensureRandomOrder() {
+  if (randomOrder) return;
+  randomOrder = new Map();
+  GAMES.forEach((g) => randomOrder.set(g.id, Math.random()));
+}
+
 function toggleFavorite(id) {
   if (favorites.has(id)) favorites.delete(id);
   else favorites.add(id);
@@ -392,15 +401,44 @@ function render() {
     return matchesTag && matchesQuery && matchesFavorite;
   });
 
+  const byName = (a, b) => a.title.localeCompare(b.title, "ja");
+  const votesOf = (id) => (typeof GameVotes !== "undefined" ? GameVotes.getCounts(id) : { like: 0, dislike: 0 });
+
   if (currentSort === "name") {
-    list = [...list].sort((a, b) => a.title.localeCompare(b.title, "ja"));
+    list = [...list].sort(byName);
   } else if (currentSort === "favorite") {
     list = [...list].sort((a, b) => {
       const fa = favorites.has(a.id) ? 0 : 1;
       const fb = favorites.has(b.id) ? 0 : 1;
-      if (fa !== fb) return fa - fb;
-      return a.title.localeCompare(b.title, "ja"); // 同グループ内も名前順
+      return fa !== fb ? fa - fb : byName(a, b); // 同グループ内も名前順
     });
+  } else if (currentSort === "likes") {
+    list = [...list].sort((a, b) => {
+      const diff = votesOf(b.id).like - votesOf(a.id).like;
+      return diff !== 0 ? diff : byName(a, b);
+    });
+  } else if (currentSort === "dislikes") {
+    list = [...list].sort((a, b) => {
+      const diff = votesOf(b.id).dislike - votesOf(a.id).dislike;
+      return diff !== 0 ? diff : byName(a, b);
+    });
+  } else if (currentSort === "score") {
+    // 評価スコア = 高評価 - 低評価。高い順(みんなの評判が良い順)。
+    list = [...list].sort((a, b) => {
+      const va = votesOf(a.id), vb = votesOf(b.id);
+      const diff = (vb.like - vb.dislike) - (va.like - va.dislike);
+      return diff !== 0 ? diff : byName(a, b);
+    });
+  } else if (currentSort === "votes") {
+    // 投票数(高評価+低評価)が多い順 = とにかく反応が多い(注目されている)順
+    list = [...list].sort((a, b) => {
+      const va = votesOf(a.id), vb = votesOf(b.id);
+      const diff = (vb.like + vb.dislike) - (va.like + va.dislike);
+      return diff !== 0 ? diff : byName(a, b);
+    });
+  } else if (currentSort === "random") {
+    ensureRandomOrder();
+    list = [...list].sort((a, b) => randomOrder.get(a.id) - randomOrder.get(b.id));
   }
   // currentSort === "default" のときだけGAMES配列の追加順のまま表示する
 
