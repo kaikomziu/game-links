@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MY GAMES LINKS</title>
 <meta name="description" content="自作ウェブゲームのリンクまとめサイト">
+<link rel="canonical" href="https://kaikomziu.github.io/game-links/">
+
+<!-- OGP (SNSシェア用) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="MY GAMES LINKS">
+<meta property="og:description" content="自作ウェブゲームのリンクまとめサイト">
+<meta property="og:url" content="https://kaikomziu.github.io/game-links/">
+<!-- og:image: 1200x630推奨の画像をご用意いただけたら、下記のコメントを外して画像URLを設定してください
+<meta property="og:image" content="https://kaikomziu.github.io/game-links/ogp.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MY GAMES LINKS">
+<meta name="twitter:description" content="自作ウェブゲームのリンクまとめサイト">
+
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -43,7 +56,349 @@
 
   <p class="result-count" id="resultCount"></p>
 
-  <section class="game-grid" id="gameGrid"></section>
+  <section class="game-grid" id="gameGrid">
+    <!--
+      以下はSEO/OGP用の静的HTML(検索エンジンや非JS環境でもゲーム一覧の
+      テキストが読めるようにするための埋め込み)。JS有効時はjs/main.jsの
+      render()がこの中身を即座に上書きして通常の動的カードに差し替える
+      (お気に入り★・並び替え・検索は従来どおりJS側で動作する)。
+      このブロックはtools/build-seo.jsが js/main.js の GAMES 配列から
+      自動生成する。GAMESを編集したら手で直接ここを書き換えず、
+      `node tools/build-seo.js` を実行して再生成すること。
+    -->
+    <!-- SEO-GAMES:START -->
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">⭕</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">○×DELUXE</h2>
+        <p class="card-desc">3〜5並べ+ミゼール/重力/ワイルド等の特殊モードを備えた丸バツゲーム。CPU4段階と2人対戦に対応。</p>
+        <div class="card-tags"><span class="card-tag">対戦</span><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/marubatsu-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🧩</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">15パズル DELUXE</h2>
+        <p class="card-desc">スライドパズルの定番「15パズル」をデラックス化。</p>
+        <div class="card-tags"><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/15puzzle/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🔢</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">2048 DELUXE</h2>
+        <p class="card-desc">定番2048を拡張したデラックス版。新モードや実績を搭載。</p>
+        <div class="card-tags"><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/2048-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">👹</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">BOSS RAID</h2>
+        <p class="card-desc">1億HPのボスを、世界中のプレイヤーとリアルタイム協力で連打して倒す。倒すたびに少し強い次のボスが無限に出現。同時接続人数・全体DPS表示、ダメージポップ、撃破ファンファーレ＋花火。完全匿名。PC/スマホ対応。</p>
+        <div class="card-tags"><span class="card-tag">クリッカー</span><span class="card-tag">オンライン</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/boss-raid/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🍪</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Cookie Factory</h2>
+        <p class="card-desc">レーンを流れるクッキーをリズムよくタップして稼ぐクッキークリッカー。工場で自動化、リボーンでツリー強化。</p>
+        <div class="card-tags"><span class="card-tag">音楽</span><span class="card-tag">放置</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/cookie-factory/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🥚</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">EGG HUNT</h2>
+        <p class="card-desc">全50個のイースターエッグを探し出す隠し要素満載の収集ゲーム。</p>
+        <div class="card-tags"><span class="card-tag">収集</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/easter-egg-hunter/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🐤</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">FLAPPY DELUXE</h2>
+        <p class="card-desc">フラッピーバード風の連打アクションをデラックス強化。</p>
+        <div class="card-tags"><span class="card-tag">アクション</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/-FLAPPY_DELUXE-/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎰</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">GACHA LIFE</h2>
+        <p class="card-desc">アップグレードも戦闘もない。ただ一生ガチャを引くだけのRNGゲーム。放置でジェムが貯まり、単発/10連/無料枠を回す。SSR確定の天井100連、ソフト天井、図鑑71種、ガチャ道ランク20段階、実績40種、重複を星屑に替えて交換する星屑ショップ。セーブはブラウザ内、オフライン報酬あり。PC/スマホ対応。</p>
+        <div class="card-tags"><span class="card-tag">RNG</span><span class="card-tag">放置</span><span class="card-tag">収集</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/gacha-life/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">👆</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">MILLION CLICKER</h2>
+        <p class="card-desc">アップグレード要素なし。ただひたすら100万回クリックするだけ。達成すると超派手な花火とファンファーレ演出。</p>
+        <div class="card-tags"><span class="card-tag">カジュアル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/million-clicker/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">📟</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">MODEM DELUXE</h2>
+        <p class="card-desc">90年代ダイヤルアップ接続を再現。3段階ハンドシェイクをこなして繋ぎ、300bpsから5Gまで回線を進化させる。</p>
+        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/modem-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🔐</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Nandokuka Tools</h2>
+        <p class="card-desc">IDや文章をBase64・モールス信号・ハッシュ化など19方式で難読化・復号できるツール。</p>
+        <div class="card-tags"><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/nandokuka-tools/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🛸</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">NEON RAIDER</h2>
+        <p class="card-desc">ネオン調の縦スクロール弾幕STG。ウェーブ制で10ウェーブごとにボス、武器5種を拾って切り替え。ボス連戦のBOSS RUSHも搭載。PC/スマホ対応。</p>
+        <div class="card-tags"><span class="card-tag">シューティング</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/neon-raider/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🗝️</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">ONCE A YEAR</h2>
+        <p class="card-desc">一年に一度しか開かない扉。その年だけの封書を読み、次に訪れる自分へ手紙を一通だけ残せる。次に読めるのは365日後。</p>
+        <div class="card-tags"><span class="card-tag">カジュアル</span><span class="card-tag">占い</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/once-a-year/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🧮</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Phosphor Calc</h2>
+        <p class="card-desc">式入力・関数電卓・履歴・メモリー機能を備えたおしゃれな高機能電卓。</p>
+        <div class="card-tags"><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/phosphor-calc/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎹</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">PIANO DELUXE</h2>
+        <p class="card-desc">PCキーボード/タッチで弾けるピアノ。録音・MIDI/WAV/MP3書き出し対応。</p>
+        <div class="card-tags"><span class="card-tag">音楽</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/piano-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🏖️</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">POWDER SANDBOX</h2>
+        <p class="card-desc">火・水・砂・油・溶岩・氷・草・酸・火薬など19素材のフォーリングサンド型物理サンドボックス。燃焼の延焼、水⇄水蒸気、溶岩+水→石、酸の溶解、火薬の連鎖爆発などをセルオートマトンでシミュレート。PC/スマホ対応。</p>
+        <div class="card-tags"><span class="card-tag">サンドボックス</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/2d-sandbox/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎵</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Rhythmer</h2>
+        <p class="card-desc">上から降ってくるノーツを叩くリズムゲーム。譜面エディターで自作の譜面を作って書き出せる。</p>
+        <div class="card-tags"><span class="card-tag">音楽</span><span class="card-tag">アクション</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/rhythmer/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🍉</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">SUIKA DELUXE</h2>
+        <p class="card-desc">スイカゲーム風の物理演算パズル。合体させて高得点を狙え。</p>
+        <div class="card-tags"><span class="card-tag">カジュアル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/suika-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">⌨️</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">TYPING DELUXE</h2>
+        <p class="card-desc">複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。</p>
+        <div class="card-tags"><span class="card-tag">タイピング</span><span class="card-tag">PCのみ</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/typing-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">📱</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">TYPING DELUXE Phone edition</h2>
+        <p class="card-desc">TYPING DELUXEのスマホ版。画面内QWERTYキーボードをタップしてローマ字入力、次に押すキーが常に光る。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。マイリストはPC版とCookie共有。</p>
+        <div class="card-tags"><span class="card-tag">タイピング</span><span class="card-tag">スマホのみ</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/typing-deluxe-phone/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🏙️</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">タウン DELUXE</h2>
+        <p class="card-desc">クリック&amp;放置で町を育てる街づくりゲーム。ゴールデンビルや花火など演出も派手。</p>
+        <div class="card-tags"><span class="card-tag">放置</span><span class="card-tag">シミュレーション</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/town-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎲</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">チンチロDELUXE</h2>
+        <p class="card-desc">丼にサイコロを振り込む3Dチンチロリン。CPUの親とチップを賭けて勝負する本格ルール対応。</p>
+        <div class="card-tags"><span class="card-tag">カジノ</span><span class="card-tag">対戦</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/chinchiro-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🔐</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">パスワード地獄 DELUXE</h2>
+        <p class="card-desc">The Password Game風の脱出パズル。全60ルールを攻略せよ。</p>
+        <div class="card-tags"><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/password-hell-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🚪</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">ブラウザ脱出</h2>
+        <p class="card-desc">タブ切替・リサイズ・ダークモード・URLバー・戻るボタンなど、ブラウザの機能そのものを鍵にして全8部屋から脱出するネタ系脱出ゲーム。</p>
+        <div class="card-tags"><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/browser-escape/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🐹</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">モグラパニック DELUXE</h2>
+        <p class="card-desc">難易度30段階・実績289種を誇るモグラたたきゲーム。</p>
+        <div class="card-tags"><span class="card-tag">アクション</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/mogura-panic-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🌓</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">影あわせDELUXE</h2>
+        <p class="card-desc">ライトをドラッグして動かし、浮かぶ立体の影を壁のシルエットにぴったり重ねるパズル。位置・遠近・回転を操作して一致度を上げる。全16ステージ＋エンドレス、実績20種。PC/スマホ対応。</p>
+        <div class="card-tags"><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/shadow-match/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎣</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">絵文字フィッシング</h2>
+        <p class="card-desc">絵文字を釣り上げるカジュアルゲーム。ランキング機能付き。</p>
+        <div class="card-tags"><span class="card-tag">カジュアル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/emoji-fishing/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎲</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">人生ゲーム DELUXE</h2>
+        <p class="card-desc">BOT対戦(1vs1/複数BOT乱闘)に対応したすごろく人生ゲーム。実績155種類以上。</p>
+        <div class="card-tags"><span class="card-tag">対戦</span><span class="card-tag">ボード</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/jinsei-game-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🔮</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">占い DELUXE</h2>
+        <p class="card-desc">日替わりおみくじ・星座・血液型・干支占いに運試しゲームも搭載。</p>
+        <div class="card-tags"><span class="card-tag">占い</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/uranai-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🏃</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">定時ダッシュ！</h2>
+        <p class="card-desc">17:00、退勤ダッシュで居酒屋を目指す3レーンのエンドレスランナー。部長・電話・書類の山をよけ、ビールチケットと有給を拾って走り抜けろ。PC/スマホ対応。</p>
+        <div class="card-tags"><span class="card-tag">アクション</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/teiji-dash/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">⚡</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">反射神経DELUXE</h2>
+        <p class="card-desc">緑になった瞬間にタップ!5回勝負の平均タイムで称号が決まる、反射神経を競うだけのサイト。</p>
+        <div class="card-tags"><span class="card-tag">カジュアル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/hansha-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🌀</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">迷路 DELUXE</h2>
+        <p class="card-desc">自動生成される迷路を探索するデラックス版迷路ゲーム。</p>
+        <div class="card-tags"><span class="card-tag">パズル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/maze-DELUXE/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+      <article class="game-card">
+        <div class="card-top">
+          <div class="card-emoji">🎰</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">目押しマスター</h2>
+        <p class="card-desc">スロットの目押し技術を鍛えるドット絵スロットゲーム。</p>
+        <div class="card-tags"><span class="card-tag">カジュアル</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/Slot-Sites-AI-GENERETE-/" target="_blank" rel="noopener">遊びに行く →</a>
+      </article>
+    <!-- SEO-GAMES:END -->
+  </section>
 
   <p class="empty-msg" id="emptyMsg" hidden>該当するゲームが見つかりませんでした。</p>
 

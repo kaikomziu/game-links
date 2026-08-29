@@ -110,5 +110,13 @@ const CHANGELOG = [
       "BOSS RAIDを追加",
       "新タグ「オンライン」を追加(他プレイヤーとリアルタイム連携するゲーム向け)"
     ]
+  },
+  {
+    version: "1.15.0",
+    date: "2026-08-29",
+    notes: [
+      "SEO改善: 各ゲームのタイトル・説明・タグをindex.htmlに静的HTMLとして直接埋め込み(tools/build-seo.jsで自動生成、検索エンジンや非JS環境でも一覧が読めるように)",
+      "OGP/Twitterカード用メタタグ(og:title, og:description, og:url, twitter:card等)とcanonicalタグを追加"
+    ]
   }
 ];
