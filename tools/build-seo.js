@@ -131,6 +131,36 @@ function main() {
 
   fs.writeFileSync(INDEX_HTML_PATH, newHtml, "utf8");
   console.log(`✓ ${sorted.length}件のゲームをindex.htmlに静的HTMLとして埋め込みました`);
+
+  buildSitemap(sorted);
+}
+
+/**
+ * 全ゲームのURL + このハブページを列挙したサイトマップを
+ * game-links/sitemap.xml に出力する。
+ * ルートの https://kaikomziu.github.io/robots.txt がこのファイルを参照しているので、
+ * Search Console でルート(URLプレフィックス https://kaikomziu.github.io/)を
+ * 一度登録すれば、以降ここに追記された全ゲームが自動でクロール対象になる。
+ */
+function buildSitemap(games) {
+  const HUB = "https://kaikomziu.github.io/game-links/";
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = [HUB, ...games.map((g) => g.url)];
+  // 重複除去・順序維持
+  const seen = new Set();
+  const uniq = urls.filter((u) => (seen.has(u) ? false : (seen.add(u), true)));
+  const body = uniq
+    .map(
+      (u) =>
+        `  <url>\n    <loc>${escapeHtml(u)}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`
+    )
+    .join("\n");
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `${body}\n</urlset>\n`;
+  fs.writeFileSync(path.join(ROOT, "sitemap.xml"), xml, "utf8");
+  console.log(`✓ ${uniq.length}件のURLを sitemap.xml に出力しました`);
 }
 
 main();
