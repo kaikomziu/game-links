@@ -25,6 +25,14 @@ const GAMES = [
     url: "https://kaikomziu.github.io/hold-on/"
   },
   {
+    id: "battery-1percent",
+    title: "電源1%サバイバル",
+    emoji: "🔋",
+    tags: ["サバイバル", "時間管理", "ネタ"],
+    desc: "スマホのバッテリーは残り1%。明るさ・Wi-Fi・モバイル・位置情報・アプリなど8種のクイック設定を切り詰めて、待ち合わせの相手が来るまで電源を持たせるだけ。ただし相手からの電話やLINEに時間内に出ないと、はぐれて合流できなくなる。画面は5秒で自動オフ、機内モードは超節約だけど着信が届かない諸刃の剣。難易度3段階、残量に応じた称号7段階、実績20種。セーブは端末内。PC(数字キー/Space)/スマホ対応。",
+    url: "https://kaikomziu.github.io/battery-1percent/"
+  },
+  {
     id: "gacha-life",
     title: "GACHA LIFE",
     emoji: "🎰",
