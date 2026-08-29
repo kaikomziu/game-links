@@ -412,6 +412,12 @@ function render() {
     const card = document.createElement("article");
     card.className = "game-card";
     const isFav = favorites.has(g.id);
+
+    const hasVotes = typeof GameVotes !== "undefined";
+    const counts = hasVotes ? GameVotes.getCounts(g.id) : { like: 0, dislike: 0 };
+    const myVote = hasVotes ? GameVotes.getMyVote(g.id) : null;
+    const voted = !!myVote;
+
     card.innerHTML = `
       <div class="card-top">
         <div class="card-emoji">${g.emoji}</div>
@@ -420,11 +426,39 @@ function render() {
       <h2 class="card-title">${g.title}</h2>
       <p class="card-desc">${g.desc}</p>
       <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
+      <div class="vote-row">
+        <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
+          👍 <span class="vote-count">${counts.like}</span>
+        </button>
+        <button class="vote-btn dislike ${myVote === "dislike" ? "active" : ""}" data-vote="dislike" ${voted ? "disabled" : ""} aria-label="低評価">
+          👎 <span class="vote-count">${counts.dislike}</span>
+        </button>
+      </div>
       <a class="play-btn" href="${g.url}" target="_blank" rel="noopener">遊びに行く →</a>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
+
+    if (hasVotes) {
+      card.querySelectorAll(".vote-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (btn.disabled) return;
+          card.querySelectorAll(".vote-btn").forEach((b) => (b.disabled = true)); // 連打での二重送信を防止
+          const type = btn.dataset.vote;
+          const result = await GameVotes.vote(g.id, type);
+          render();
+          if (!result.ok && result.reason === "error") {
+            alert("投票に失敗しました。通信環境をご確認のうえ、もう一度お試しください。");
+          }
+        });
+      });
+    }
+
     grid.appendChild(card);
   });
+}
+
+if (typeof GameVotes !== "undefined") {
+  GameVotes.onUpdate(render);
 }
 
 render();

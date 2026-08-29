@@ -244,6 +244,51 @@ body {
   border-radius: 999px;
 }
 
+.vote-row {
+  display: flex;
+  gap: 8px;
+}
+
+.vote-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.vote-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.vote-btn:disabled { cursor: default; }
+.vote-btn .vote-count { font-weight: 700; }
+
+.vote-btn.like.active {
+  background: #eafbf0;
+  border-color: #34c759;
+  color: #1e9e4f;
+}
+.vote-btn.dislike.active {
+  background: #fdecec;
+  border-color: #ff4d4f;
+  color: #c0282a;
+}
+[data-theme="dark"] .vote-btn.like.active {
+  background: rgba(52, 199, 89, 0.16);
+  border-color: #34c759;
+  color: #4ade80;
+}
+[data-theme="dark"] .vote-btn.dislike.active {
+  background: rgba(255, 77, 79, 0.16);
+  border-color: #ff4d4f;
+  color: #f87171;
+}
+
 .play-btn {
   display: block;
   text-align: center;
