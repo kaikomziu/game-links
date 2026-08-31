@@ -17,6 +17,14 @@ const GAMES = [
     url: "https://kaikomziu.github.io/stonks/"
   },
   {
+    id: "pixel-place",
+    title: "PIXEL PLACE",
+    emoji: "🎨",
+    tags: ["オンライン", "お絵かき", "協力"],
+    desc: "世界中の人と共有する100×100のドット絵キャンバス。塗れるのは5秒に1マスだけ。消しゴムはなく、上から塗り直すしかない。みんなで少しずつ絵をつくり、ときどき奪い合う。16色パレット、ピンチ/ホイールでズーム、ドラッグで移動、スポイトで色拾い。接続人数と累計ドット数を表示。Supabaseで全員のキャンバスをリアルタイム同期。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/pixel-place/"
+  },
+  {
     id: "one-in-8192",
     title: "8192分の1",
     emoji: "🪙",
