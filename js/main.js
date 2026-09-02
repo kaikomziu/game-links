@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "captcha-hell",
+    title: "CAPTCHA地獄",
+    emoji: "🤖",
+    tags: ["ネタ", "パズル", "反射神経"],
+    desc: "「私はロボットではありません」から始まり、理不尽なCAPTCHAを全16問ノンストップで解かされるだけのネタ系ゲーム。ゆがみ文字、カーソルから逃げるチェックボックス、信号機グリッド、アナログ時計の時刻読み、音声CAPTCHA、間違い探し、人間であることの証明、CAPTCHAのためのCAPTCHA、拒否ボタンが極小のクッキーバナー、最後は3問連続の高速ラッシュ。ライフ3・各問に制限時間つきで、全問突破すると人間証明書が発行される。実績12種。クリアタイムを記録。セーブは端末内。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/captcha-hell/"
+  },
+  {
     id: "tetris-deluxe",
     title: "TETRIS DELUXE",
     emoji: "🟦",
