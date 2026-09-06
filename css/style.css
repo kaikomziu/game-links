@@ -81,6 +81,64 @@ body {
   padding: 24px 20px 60px;
 }
 
+.today-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  font-size: 0.85rem;
+}
+.today-date {
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+.today-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.today-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.today-chip.holiday {
+  background: rgba(245, 166, 35, 0.16);
+  color: var(--star);
+}
+.today-chip.intl {
+  background: rgba(52, 199, 89, 0.14);
+  color: #1e9e4f;
+}
+[data-theme="dark"] .today-chip.intl { color: #4ade80; }
+
+.today-chips-more:not([hidden]) {
+  display: contents;
+}
+.today-more-btn {
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.today-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
