@@ -197,5 +197,12 @@ const CHANGELOG = [
     notes: [
       "「3時44分」を追加"
     ]
+  },
+  {
+    version: "1.28.0",
+    date: "2026-09-07",
+    notes: [
+      "「イライラアクション -IRAIRA ACTION-」を追加"
+    ]
   }
 ];
