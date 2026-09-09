@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "money-clicker",
+    title: "MONEY CLICKER",
+    emoji: "💰",
+    tags: ["クリッカー", "放置", "シンプル"],
+    desc: "中央のコインをクリックしてお金を稼ぐ、シンプルなCookie Clicker風クリッカー。稼いだお金で「ビジネス」タブの自動収入(レモネードスタンド $0.1/秒 〜 テック企業 $1.6M/秒まで10種、前の段を買うと次が解禁)や、「クリック強化」タブの1クリック増強アイテム6種を購入していく。価格は買うたびに1.15倍に上昇し、数字はK/M/B/T…表記。離席中も自動収入が入る(最大8時間)。セーブはブラウザ内に自動保存、フッターのリセットで最初から。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/money-clicker/"
+  },
+  {
     id: "visual-code-deluxe",
     title: "VISUAL CODE DELUXE",
     emoji: "🧩",
