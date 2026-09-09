@@ -364,17 +364,9 @@ const GAMES = [
     id: "typing-deluxe",
     title: "TYPING DELUXE",
     emoji: "⌨️",
-    tags: ["タイピング", "PCのみ"],
-    desc: "複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。",
+    tags: ["タイピング"],
+    desc: "複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、14カテゴリ約600問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。スマホは画面内キーボードをタップして入力。",
     url: "https://kaikomziu.github.io/typing-deluxe/"
-  },
-  {
-    id: "typing-deluxe-phone",
-    title: "TYPING DELUXE Phone edition",
-    emoji: "📱",
-    tags: ["タイピング", "スマホのみ"],
-    desc: "TYPING DELUXEのスマホ版。画面内QWERTYキーボードをタップしてローマ字入力、次に押すキーが常に光る。タイムアタック・お題数・サドンデスの3モード、7カテゴリ約150問。マイリストはPC版とCookie共有。",
-    url: "https://kaikomziu.github.io/typing-deluxe-phone/"
   },
   {
     id: "once-a-year",

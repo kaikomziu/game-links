@@ -204,5 +204,13 @@ const CHANGELOG = [
     notes: [
       "「イライラアクション -IRAIRA ACTION-」を追加"
     ]
+  },
+  {
+    version: "1.29.0",
+    date: "2026-09-10",
+    notes: [
+      "TYPING DELUXE がスマホ対応(画面内キーボードをタップして入力)。別サイトだった Phone edition は本体に統合したため一覧から削除",
+      "TYPING DELUXE の説明を更新(14カテゴリ約600問・スマホ対応)、未使用になった「PCのみ」「スマホのみ」タグを整理"
+    ]
   }
 ];
