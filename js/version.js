@@ -212,5 +212,12 @@ const CHANGELOG = [
       "TYPING DELUXE がスマホ対応(画面内キーボードをタップして入力)。別サイトだった Phone edition は本体に統合したため一覧から削除",
       "TYPING DELUXE の説明を更新(14カテゴリ約600問・スマホ対応)、未使用になった「PCのみ」「スマホのみ」タグを整理"
     ]
+  },
+  {
+    version: "1.30.0",
+    date: "2026-09-10",
+    notes: [
+      "METRO TYCOON(駅を買い路線をつないで走る電車で稼ぐ Mini Metro 風の鉄道経営ゲーム)を追加"
+    ]
   }
 ];
