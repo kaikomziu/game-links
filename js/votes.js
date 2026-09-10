@@ -39,7 +39,7 @@ const GameVotes = (() => {
     // 他ゲームのSupabaseログインセッションを拾って authenticated ロールで
     // 送信してしまわないよう、認証状態を一切持たせない(hold-onと同じ対策)。
     client = window.supabase.createClient(SUPABASE_URL, KEY, {
-      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: "gl-votes-noauth" },
       global: { headers: { Authorization: "Bearer " + KEY } },
     });
     return client;

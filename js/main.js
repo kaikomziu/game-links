@@ -422,7 +422,10 @@ try {
   if (raw) favorites = new Set(JSON.parse(raw));
 } catch (e) { favorites = new Set(); }
 
-let currentTag = "all";
+// タグは複数選択できる。selectedTags が空なら「すべて」。
+// tagMode は "and"(全部含む) / "or"(どれか含む)。モードだけCookieに保存する。
+let selectedTags = new Set();
+let tagMode = getCookie("tagMode") === "and" ? "and" : "or";
 // 初期値は「名前順」。他チャットからゲームがGAMES配列のどこに追加されても
 // 表示は自動でABC/あいう順に揃うようにする。並び順の選択はCookieに保存され、
 // 一度でも明示的に選び直せばその選択が次回以降も優先される。
@@ -450,9 +453,26 @@ document.getElementById("themeToggle").addEventListener("click", () => {
   setCookie("theme", next, 365);
 });
 
-// ===== タグフィルターの構築 =====
+// ===== タグフィルターの構築(複数選択 + AND/OR) =====
 const tagFilterEl = document.getElementById("tagFilter");
-const allTags = [...new Set(GAMES.flatMap(g => g.tags))];
+const allTags = [...new Set(GAMES.flatMap(g => g.tags))].sort((a, b) => a.localeCompare(b, "ja"));
+
+const tagModeBtn = document.createElement("button");
+tagModeBtn.className = "tag-mode-btn";
+tagModeBtn.type = "button";
+tagModeBtn.hidden = true; // 2個以上選ばれたときだけ意味があるので、その時に出す
+
+function updateTagModeBtn() {
+  tagModeBtn.textContent = tagMode === "and" ? "AND（全部含む）" : "OR（どれか含む）";
+  tagModeBtn.hidden = selectedTags.size < 2;
+}
+tagModeBtn.addEventListener("click", () => {
+  tagMode = tagMode === "and" ? "or" : "and";
+  setCookie("tagMode", tagMode, 365);
+  updateTagModeBtn();
+  render();
+});
+
 allTags.forEach(tag => {
   const btn = document.createElement("button");
   btn.className = "tag-chip";
@@ -460,12 +480,31 @@ allTags.forEach(tag => {
   btn.textContent = tag;
   tagFilterEl.appendChild(btn);
 });
+tagFilterEl.appendChild(tagModeBtn);
+
+function syncTagChips() {
+  [...tagFilterEl.querySelectorAll(".tag-chip")].forEach((c) => {
+    if (c.dataset.tag === "all") {
+      c.classList.toggle("active", selectedTags.size === 0);
+    } else {
+      c.classList.toggle("active", selectedTags.has(c.dataset.tag));
+    }
+  });
+  updateTagModeBtn();
+}
 
 tagFilterEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".tag-chip");
   if (!btn) return;
-  currentTag = btn.dataset.tag;
-  [...tagFilterEl.children].forEach(c => c.classList.toggle("active", c === btn));
+  const tag = btn.dataset.tag;
+  if (tag === "all") {
+    selectedTags.clear();
+  } else if (selectedTags.has(tag)) {
+    selectedTags.delete(tag);
+  } else {
+    selectedTags.add(tag);
+  }
+  syncTagChips();
   render();
 });
 
@@ -512,7 +551,10 @@ function render() {
   const query = searchInput.value.trim().toLowerCase();
 
   let list = GAMES.filter(g => {
-    const matchesTag = currentTag === "all" || g.tags.includes(currentTag);
+    const matchesTag = selectedTags.size === 0 ||
+      (tagMode === "and"
+        ? [...selectedTags].every(t => g.tags.includes(t))
+        : g.tags.some(t => selectedTags.has(t)));
     const matchesQuery = !query ||
       g.title.toLowerCase().includes(query) ||
       g.desc.toLowerCase().includes(query) ||
@@ -523,8 +565,14 @@ function render() {
 
   const byName = (a, b) => a.title.localeCompare(b.title, "ja");
   const votesOf = (id) => (typeof GameVotes !== "undefined" ? GameVotes.getCounts(id) : { like: 0, dislike: 0 });
+  const playsOf = (id) => (typeof GameStats !== "undefined" ? GameStats.getPlays(id) : 0);
 
-  if (currentSort === "name") {
+  if (currentSort === "plays") {
+    list = [...list].sort((a, b) => {
+      const diff = playsOf(b.id) - playsOf(a.id);
+      return diff !== 0 ? diff : byName(a, b);
+    });
+  } else if (currentSort === "name") {
     list = [...list].sort(byName);
   } else if (currentSort === "favorite") {
     list = [...list].sort((a, b) => {
@@ -575,11 +623,15 @@ function render() {
     const counts = hasVotes ? GameVotes.getCounts(g.id) : { like: 0, dislike: 0 };
     const myVote = hasVotes ? GameVotes.getMyVote(g.id) : null;
     const voted = !!myVote;
+    const plays = typeof GameStats !== "undefined" ? GameStats.getPlays(g.id) : 0;
 
     card.innerHTML = `
       <div class="card-top">
         <div class="card-emoji">${g.emoji}</div>
-        <button class="fav-btn ${isFav ? "active" : ""}" aria-label="お気に入り切替">${isFav ? "★" : "☆"}</button>
+        <div class="card-top-btns">
+          <button class="share-btn" aria-label="このゲームを共有">🔗</button>
+          <button class="fav-btn ${isFav ? "active" : ""}" aria-label="お気に入り切替">${isFav ? "★" : "☆"}</button>
+        </div>
       </div>
       <h2 class="card-title">${g.title}</h2>
       <p class="card-desc">${g.desc}</p>
@@ -593,8 +645,15 @@ function render() {
         </button>
       </div>
       <a class="play-btn" href="${g.url}" target="_blank" rel="noopener">遊びに行く →</a>
+      <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
+    card.querySelector(".share-btn").addEventListener("click", () => {
+      if (typeof GameExtras !== "undefined") GameExtras.shareGame(g.title, g.url);
+    });
+    card.querySelector(".play-btn").addEventListener("click", () => {
+      if (typeof GameStats !== "undefined") GameStats.recordPlay(g.id);
+    });
 
     if (hasVotes) {
       card.querySelectorAll(".vote-btn").forEach((btn) => {
@@ -618,5 +677,9 @@ function render() {
 if (typeof GameVotes !== "undefined") {
   GameVotes.onUpdate(render);
 }
+if (typeof GameStats !== "undefined") {
+  GameStats.onUpdate(render);
+}
 
+syncTagChips();
 render();

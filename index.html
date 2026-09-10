@@ -19,6 +19,9 @@
 <meta name="twitter:description" content="自作ウェブゲームのリンクまとめサイト">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#6c5ce7">
+<link rel="apple-touch-icon" href="icon.svg">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -27,6 +30,8 @@
   <div class="header-inner">
     <h1 class="logo"><span class="logo-emoji">🎮</span>MY GAMES LINKS</h1>
     <div class="header-controls">
+      <button id="randomPickBtn" class="icon-btn" title="今日の1本(Rキー)" aria-label="ランダムでゲームを選ぶ">🎲</button>
+      <button id="shareBtn" class="icon-btn" title="このサイトを共有" aria-label="このサイトを共有">🔗</button>
       <button id="themeToggle" class="icon-btn" title="ダークモード切替" aria-label="ダークモード切替">🌙</button>
     </div>
   </div>
@@ -34,10 +39,12 @@
 
 <main class="container">
 
+  <section class="stat-dashboard" id="statDashboard" aria-label="サイトの統計"></section>
+
   <section class="today-banner" id="todayBanner" aria-live="polite"></section>
 
   <section class="toolbar">
-    <input type="search" id="searchInput" class="search-input" placeholder="ゲームを検索…">
+    <input type="search" id="searchInput" class="search-input" placeholder="ゲームを検索…（/キー）">
 
     <div class="tag-filter" id="tagFilter">
       <button class="tag-chip active" data-tag="all">すべて</button>
@@ -50,6 +57,7 @@
       </label>
       <select id="sortSelect" class="sort-select">
         <option value="name">並び順: 名前順(ABC/あいう順)</option>
+        <option value="plays">並び順: 人気順(遊ばれた回数)</option>
         <option value="likes">並び順: 高評価が多い順</option>
         <option value="dislikes">並び順: 低評価が多い順</option>
         <option value="score">並び順: 評価スコアが高い順(👍-👎)</option>
@@ -582,7 +590,9 @@
 </main>
 
 <footer class="site-footer">
-  <p>作った自作ウェブゲームのまとめページです。お気に入り・ダークモード・並び順はこのブラウザにCookieで保存されます。高評価/低評価は全員で共有される合計数で、1ゲームにつき1回だけ投票できます。</p>
+  <div class="visitor-counter" id="visitorCounter" hidden></div>
+  <p>作った自作ウェブゲームのまとめページです。お気に入り・ダークモード・並び順はこのブラウザにCookieで保存されます。高評価/低評価とプレイ数は全員で共有される合計数で、高評価/低評価は1ゲームにつき1回だけ投票できます。</p>
+  <p class="footer-hint">ショートカット: <kbd>/</kbd> 検索 ・ <kbd>R</kbd> 今日の1本 ・ <kbd>Esc</kbd> 閉じる</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -592,6 +602,16 @@
 <script src="js/today.js"></script>
 <script src="js/version.js"></script>
 <script src="js/votes.js"></script>
+<script src="js/stats.js"></script>
 <script src="js/main.js"></script>
+<script src="js/extras.js"></script>
+<script>
+  // PWA: Service Worker 登録(オフラインでも一覧を見られるようにする)
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
 </body>
 </html>
