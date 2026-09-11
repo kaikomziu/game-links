@@ -324,7 +324,7 @@ const GAMES = [
     id: "rhythmer",
     title: "Rhythmer",
     emoji: "🎵",
-    tags: ["音楽", "アクション"],
+    tags: ["リズム", "ツール"],
     desc: "上から降ってくるノーツを叩くリズムゲーム。譜面エディターで自作の譜面を作って書き出せる。",
     url: "https://kaikomziu.github.io/rhythmer/"
   },
@@ -372,7 +372,7 @@ const GAMES = [
     id: "cookie-factory",
     title: "Cookie Factory",
     emoji: "🍪",
-    tags: ["音楽", "放置"],
+    tags: ["リズム", "放置"],
     desc: "レーンを流れるクッキーをリズムよくタップして稼ぐクッキークリッカー。工場で自動化、リボーンでツリー強化。",
     url: "https://kaikomziu.github.io/cookie-factory/"
   },
