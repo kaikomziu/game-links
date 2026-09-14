@@ -656,6 +656,45 @@ body {
   50% { transform: scale(1.04); }
 }
 
+/* ===== 追加の隠しコマンド ===== */
+
+/* IDDQD: ゴッドモード(全カードに金色の縁) */
+.godmode .game-card {
+  box-shadow: 0 0 0 2px gold, 0 0 16px rgba(255, 215, 0, 0.45), var(--shadow);
+}
+
+/* rainbow: ヘッダーがゆっくり虹色に流れる */
+.rainbow .site-header {
+  background: linear-gradient(270deg, #ff004c, #ff9800, #ffee00, #4caf50, #2196f3, #9c27b0, #ff004c);
+  background-size: 1400% 1400%;
+  animation: rainbowShift 10s ease infinite;
+  border-bottom-color: transparent;
+}
+.rainbow .logo,
+.rainbow .icon-btn { color: #fff; }
+.rainbow .icon-btn { background: rgba(255, 255, 255, 0.25); border-color: transparent; }
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* テーマボタン高速切替: 一瞬だけ色相をぐるっと回す(常時点滅はさせない) */
+.disco-burst { animation: partyHue 1.3s linear 1; }
+
+/* ===== ヒントボタン ===== */
+.hint-btn {
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.hint-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 @media (max-width: 480px) {
   .toolbar-right { width: 100%; justify-content: space-between; margin-left: 0; }
 }

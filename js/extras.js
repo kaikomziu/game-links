@@ -64,8 +64,15 @@ const GameExtras = (() => {
     return GAMES;
   }
   let lastPickId = null;
-  function pickRandom() {
-    const pool = visibleGames();
+  function pickRandom(opts) {
+    opts = opts || {};
+    let pool = visibleGames();
+    if (opts.favorUnplayed && typeof GameStats !== "undefined") {
+      const withPlays = pool.map((g) => ({ g, p: GameStats.getPlays(g.id) }));
+      const minPlays = Math.min(...withPlays.map((x) => x.p));
+      const leastPlayed = withPlays.filter((x) => x.p === minPlays).map((x) => x.g);
+      if (leastPlayed.length) pool = leastPlayed;
+    }
     let g = pool[Math.floor(Math.random() * pool.length)];
     if (pool.length > 1 && g.id === lastPickId) {
       g = pool[(pool.indexOf(g) + 1) % pool.length];
@@ -241,29 +248,150 @@ const GameExtras = (() => {
     }
   }
 
-  // ---------- 隠しワード(EGG HUNTへのオマージュ) ----------
-  const SECRET_WORDS = ["egg", "tamago"];
-  let typedBuffer = "";
-  function checkSecretWord(ch) {
-    typedBuffer = (typedBuffer + ch).slice(-10);
-    for (const w of SECRET_WORDS) {
-      if (typedBuffer.endsWith(w)) {
-        typedBuffer = "";
-        onSecretEgg();
-        break;
-      }
-    }
-  }
-  function onSecretEgg() {
-    showToast("🥚 かくれエッグ発見！");
+  // ---------- カードのハイライト演出(隠しワード共通) ----------
+  function highlightGameCard(title, msg) {
+    showToast(msg);
     const card = [...document.querySelectorAll("#gameGrid .game-card")].find(
-      (c) => c.querySelector(".card-title") && c.querySelector(".card-title").textContent === "EGG HUNT"
+      (c) => c.querySelector(".card-title") && c.querySelector(".card-title").textContent === title
     );
     if (card) {
       card.scrollIntoView({ behavior: "smooth", block: "center" });
       card.classList.add("egg-pulse");
       setTimeout(() => card.classList.remove("egg-pulse"), 2000);
     }
+  }
+
+  // ---------- ゴッドモード(IDDQD) ----------
+  function applyGodMode(on) {
+    document.documentElement.classList.toggle("godmode", on);
+    try { localStorage.setItem("gl_godmode", on ? "1" : "0"); } catch (e) {}
+  }
+  function onGodMode() {
+    const now = !document.documentElement.classList.contains("godmode");
+    applyGodMode(now);
+    showToast(now ? "🔫 IDDQD… 全ゲームに黄金の光が宿った。" : "ゴッドモード解除。");
+  }
+
+  // ---------- レインボーモード ----------
+  function applyRainbow(on) {
+    document.documentElement.classList.toggle("rainbow", on);
+    try { localStorage.setItem("gl_rainbow", on ? "1" : "0"); } catch (e) {}
+  }
+  function onRainbow() {
+    const now = !document.documentElement.classList.contains("rainbow");
+    applyRainbow(now);
+    showToast(now ? "🌈 レインボーモード ON" : "レインボーモード OFF");
+  }
+
+  // ---------- 単発トースト/演出系の小ネタ ----------
+  function onDeepThought() {
+    showToast("🐋 生命、宇宙、そして万物についての究極の疑問の答えは42。");
+  }
+  function onYolo() {
+    confettiBurst();
+    showToast("🎉 YOLO！気になったゲーム、今すぐ開こう。");
+  }
+  function onSushi() {
+    emojiRain("🍣", 30);
+    showToast("🍣 なぜかお寿司が降ってきた。");
+  }
+
+  // ---------- 隠しワード一覧 ----------
+  // キーボードで打ち込むと発動する。入力欄にフォーカスがある時は反応しない。
+  const WORD_EGGS = {
+    "egg": () => highlightGameCard("EGG HUNT", "🥚 かくれエッグ発見！"),
+    "tamago": () => highlightGameCard("EGG HUNT", "🥚 かくれエッグ発見！"),
+    "tetris": () => highlightGameCard("TETRIS DELUXE", "🧱 テトリミノ、降臨。"),
+    "cookie": () => highlightGameCard("Cookie Factory", "🍪 クッキーの匂いがする…"),
+    "gacha": () => highlightGameCard("GACHA LIFE", "🎰 ガチャの神様が微笑んだ、かも。"),
+    "suika": () => highlightGameCard("SUIKA DELUXE", "🍉 スイカ、見つけた。"),
+    "sushi": onSushi,
+    "42": onDeepThought,
+    "yolo": onYolo,
+    "iddqd": onGodMode,
+    "rainbow": onRainbow,
+  };
+  const WORD_MAX_LEN = Math.max(...Object.keys(WORD_EGGS).map((w) => w.length));
+  let typedBuffer = "";
+  function checkSecretWord(ch) {
+    typedBuffer = (typedBuffer + ch).slice(-WORD_MAX_LEN);
+    for (const w of Object.keys(WORD_EGGS)) {
+      if (typedBuffer.endsWith(w)) {
+        typedBuffer = "";
+        WORD_EGGS[w]();
+        break;
+      }
+    }
+  }
+
+  // ---------- テーマ切替の高速連打 ----------
+  let themeClicks = 0;
+  let themeClickTimer = null;
+  function discoBurst() {
+    document.body.classList.add("disco-burst");
+    setTimeout(() => document.body.classList.remove("disco-burst"), 1300);
+  }
+  function onThemeToggleClick() {
+    themeClicks++;
+    clearTimeout(themeClickTimer);
+    themeClickTimer = setTimeout(() => { themeClicks = 0; }, 1200);
+    if (themeClicks >= 7) {
+      themeClicks = 0;
+      discoBurst();
+      showToast("🕺 高速切替チャレンジ達成！");
+    }
+  }
+
+  // ---------- サイコロの高速連打(運命の一本) ----------
+  let diceClicks = 0;
+  let diceClickTimer = null;
+  function onDiceClick() {
+    diceClicks++;
+    clearTimeout(diceClickTimer);
+    diceClickTimer = setTimeout(() => { diceClicks = 0; }, 1200);
+    if (diceClicks >= 5) {
+      diceClicks = 0;
+      pickRandom({ favorUnplayed: true });
+      showToast("🔮 運命の女神が微笑んだ…まだ遊んでいない一本を導きました。");
+      return;
+    }
+    pickRandom();
+  }
+
+  // ---------- 最後まで読んでくれた人へ ----------
+  function initScrollBottomEasterEgg() {
+    const footer = document.querySelector(".site-footer");
+    if (!footer || !("IntersectionObserver" in window)) return;
+    let done = false;
+    try { done = sessionStorage.getItem("gl_scrolled_bottom") === "1"; } catch (e) {}
+    if (done) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          showToast("🏁 一番下まで見てくれてありがとう！");
+          try { sessionStorage.setItem("gl_scrolled_bottom", "1"); } catch (e) {}
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    obs.observe(footer);
+  }
+
+  // ---------- ヒント ----------
+  const HINTS = [
+    "🎮 ロゴは見た目以上に反応がいいらしい。10回くらい？",
+    "🕹️ 上上下下左右左右…な、あの並びは今も健在。最後の2つはボタンで。",
+    "🥚 何かの名前を英語で打ち込んでみると、見つかるかもしれない(EGG HUNTとか)。",
+    "🍪🍉🎰🧱 好きなゲームの名前を英語でそのまま打ち込んでみて。",
+    "🌈 虹色を意味する英単語を打ち込むと、ヘッダーの色が変わる。",
+    "🔫 古典的なチートコード、なにか一つは効くはず(id〜)。",
+    "🎲 サイコロも連打すると、少し違う反応をする。",
+    "🌙 テーマ切り替えボタンも、実はただの切り替えじゃない。7回くらい？",
+    "📜 一番下まで読んでくれる人には、ちゃんと反応するようにできている。",
+    "🐋 究極の疑問の答えを、そのまま数字で打ち込んでみて。",
+  ];
+  function showRandomHint() {
+    showToast(HINTS[Math.floor(Math.random() * HINTS.length)]);
   }
 
   // ---------- キーボードショートカット ----------
@@ -303,20 +431,32 @@ const GameExtras = (() => {
   document.addEventListener("DOMContentLoaded", () => {
     try {
       if (localStorage.getItem("gl_party") === "1") document.documentElement.classList.add("party");
+      if (localStorage.getItem("gl_godmode") === "1") document.documentElement.classList.add("godmode");
+      if (localStorage.getItem("gl_rainbow") === "1") document.documentElement.classList.add("rainbow");
     } catch (e) {}
 
     const rpBtn = document.getElementById("randomPickBtn");
-    if (rpBtn) rpBtn.addEventListener("click", pickRandom);
+    if (rpBtn) rpBtn.addEventListener("click", onDiceClick);
     const shareBtn = document.getElementById("shareBtn");
     if (shareBtn) shareBtn.addEventListener("click", shareSite);
+    const themeBtn = document.getElementById("themeToggle");
+    if (themeBtn) themeBtn.addEventListener("click", onThemeToggleClick);
     const logoEl = document.querySelector(".logo");
     if (logoEl) {
       logoEl.style.cursor = "pointer";
       logoEl.addEventListener("click", onLogoClick);
     }
+    const hintBtn = document.getElementById("hintBtn");
+    if (hintBtn) hintBtn.addEventListener("click", showRandomHint);
 
+    initScrollBottomEasterEgg();
     renderDashboard();
     renderVisitorCounter();
+
+    try {
+      console.log("%c🎮 MY GAMES LINKS", "font-size:18px;font-weight:bold;color:#6c5ce7;");
+      console.log("%cこのサイトには隠しコマンドがいくつか眠っています。ロゴ、テーマ切替、サイコロ、キーボード…いろいろ試してみて。", "color:#888;font-size:12px;");
+    } catch (e) {}
   });
 
   if (typeof GameStats !== "undefined") {
@@ -326,5 +466,5 @@ const GameExtras = (() => {
     GameVotes.onUpdate(renderDashboard);
   }
 
-  return { pickRandom, shareSite, shareGame, showToast };
+  return { pickRandom, shareSite, shareGame, showToast, showRandomHint };
 })();
