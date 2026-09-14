@@ -627,6 +627,14 @@ function toggleFavorite(id) {
   render();
 }
 
+// 説明文の最初の1文だけを取り出す(一覧をすっきり見せるため)。
+// 句点が無い(元々1文しかない)場合は全文をそのまま返す。
+function firstSentence(desc) {
+  const idx = desc.indexOf("。");
+  if (idx === -1) return desc;
+  return desc.slice(0, idx + 1);
+}
+
 function render() {
   const query = searchInput.value.trim().toLowerCase();
 
@@ -705,6 +713,8 @@ function render() {
     const voted = !!myVote;
     const plays = typeof GameStats !== "undefined" ? GameStats.getPlays(g.id) : 0;
     const trivia = typeof TRIVIA !== "undefined" ? TRIVIA[g.id] : null;
+    const shortDesc = firstSentence(g.desc);
+    const hasMoreDesc = shortDesc.length < g.desc.length;
 
     card.innerHTML = `
       <div class="card-top">
@@ -716,7 +726,9 @@ function render() {
         </div>
       </div>
       <h2 class="card-title">${g.title}</h2>
-      <p class="card-desc">${g.desc}</p>
+      <p class="card-desc">${shortDesc}</p>
+      ${hasMoreDesc ? `<p class="card-desc card-desc-full" hidden>${g.desc}</p>` : ""}
+      ${hasMoreDesc ? `<button class="desc-more-btn" type="button">もっと見る ▾</button>` : ""}
       ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
       <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
       <div class="vote-row">
@@ -731,6 +743,17 @@ function render() {
       <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
+    if (hasMoreDesc) {
+      const shortP = card.querySelector(".card-desc:not(.card-desc-full)");
+      const fullP = card.querySelector(".card-desc-full");
+      const moreBtn = card.querySelector(".desc-more-btn");
+      moreBtn.addEventListener("click", () => {
+        const showingFull = !fullP.hidden;
+        fullP.hidden = showingFull;
+        shortP.hidden = !showingFull;
+        moreBtn.textContent = showingFull ? "もっと見る ▾" : "閉じる ▴";
+      });
+    }
     if (trivia) {
       const triviaBtn = card.querySelector(".trivia-btn");
       const triviaP = card.querySelector(".card-trivia");
