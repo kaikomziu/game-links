@@ -312,6 +312,30 @@ body {
 }
 .share-btn:hover { transform: scale(1.15); opacity: 1; }
 
+.trivia-btn {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  line-height: 1;
+  opacity: 0.6;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.trivia-btn:hover { transform: scale(1.15); opacity: 1; }
+.trivia-btn.active { opacity: 1; color: var(--accent); }
+
+.card-trivia {
+  margin: -4px 0 0;
+  padding: 8px 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
 .play-count {
   font-size: 0.72rem;
   color: var(--text-muted);
@@ -615,6 +639,21 @@ body {
 }
 @keyframes confettiFall {
   to { transform: translateY(110vh) rotate(720deg); opacity: 0.2; }
+}
+
+.emoji-rain-item {
+  position: absolute;
+  top: -40px;
+  animation: confettiFall 2.8s ease-in forwards;
+}
+
+.egg-pulse {
+  animation: eggPulse 0.5s ease-in-out 3;
+  box-shadow: 0 0 0 4px var(--star);
+}
+@keyframes eggPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
 }
 
 @media (max-width: 480px) {

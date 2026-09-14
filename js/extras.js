@@ -212,6 +212,60 @@ const GameExtras = (() => {
     }
   }
 
+  // ---------- ロゴ連打 ----------
+  let logoClicks = 0;
+  let logoClickTimer = null;
+  function emojiRain(emoji, count) {
+    const box = document.createElement("div");
+    box.className = "confetti-box";
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement("span");
+      p.className = "emoji-rain-item";
+      p.textContent = emoji;
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDelay = Math.random() * 0.4 + "s";
+      p.style.fontSize = 16 + Math.random() * 22 + "px";
+      box.appendChild(p);
+    }
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 3200);
+  }
+  function onLogoClick() {
+    logoClicks++;
+    clearTimeout(logoClickTimer);
+    logoClickTimer = setTimeout(() => { logoClicks = 0; }, 1500);
+    if (logoClicks >= 10) {
+      logoClicks = 0;
+      emojiRain("🎮", 40);
+      showToast("🎮 ロゴを10連打しましたね…！");
+    }
+  }
+
+  // ---------- 隠しワード(EGG HUNTへのオマージュ) ----------
+  const SECRET_WORDS = ["egg", "tamago"];
+  let typedBuffer = "";
+  function checkSecretWord(ch) {
+    typedBuffer = (typedBuffer + ch).slice(-10);
+    for (const w of SECRET_WORDS) {
+      if (typedBuffer.endsWith(w)) {
+        typedBuffer = "";
+        onSecretEgg();
+        break;
+      }
+    }
+  }
+  function onSecretEgg() {
+    showToast("🥚 かくれエッグ発見！");
+    const card = [...document.querySelectorAll("#gameGrid .game-card")].find(
+      (c) => c.querySelector(".card-title") && c.querySelector(".card-title").textContent === "EGG HUNT"
+    );
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      card.classList.add("egg-pulse");
+      setTimeout(() => card.classList.remove("egg-pulse"), 2000);
+    }
+  }
+
   // ---------- キーボードショートカット ----------
   function isTyping(e) {
     const t = e.target;
@@ -235,6 +289,7 @@ const GameExtras = (() => {
       return;
     }
     if (isTyping(e) || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key.length === 1) checkSecretWord(e.key.toLowerCase());
     if (e.key === "/") {
       e.preventDefault();
       const s = document.getElementById("searchInput");
@@ -254,6 +309,11 @@ const GameExtras = (() => {
     if (rpBtn) rpBtn.addEventListener("click", pickRandom);
     const shareBtn = document.getElementById("shareBtn");
     if (shareBtn) shareBtn.addEventListener("click", shareSite);
+    const logoEl = document.querySelector(".logo");
+    if (logoEl) {
+      logoEl.style.cursor = "pointer";
+      logoEl.addEventListener("click", onLogoClick);
+    }
 
     renderDashboard();
     renderVisitorCounter();

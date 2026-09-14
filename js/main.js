@@ -704,17 +704,20 @@ function render() {
     const myVote = hasVotes ? GameVotes.getMyVote(g.id) : null;
     const voted = !!myVote;
     const plays = typeof GameStats !== "undefined" ? GameStats.getPlays(g.id) : 0;
+    const trivia = typeof TRIVIA !== "undefined" ? TRIVIA[g.id] : null;
 
     card.innerHTML = `
       <div class="card-top">
         <div class="card-emoji">${g.emoji}</div>
         <div class="card-top-btns">
+          ${trivia ? `<button class="trivia-btn" aria-label="裏話・小ネタ">💭</button>` : ""}
           <button class="share-btn" aria-label="このゲームを共有">🔗</button>
           <button class="fav-btn ${isFav ? "active" : ""}" aria-label="お気に入り切替">${isFav ? "★" : "☆"}</button>
         </div>
       </div>
       <h2 class="card-title">${g.title}</h2>
       <p class="card-desc">${g.desc}</p>
+      ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
       <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
       <div class="vote-row">
         <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
@@ -728,6 +731,14 @@ function render() {
       <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
+    if (trivia) {
+      const triviaBtn = card.querySelector(".trivia-btn");
+      const triviaP = card.querySelector(".card-trivia");
+      triviaBtn.addEventListener("click", () => {
+        triviaP.hidden = !triviaP.hidden;
+        triviaBtn.classList.toggle("active", !triviaP.hidden);
+      });
+    }
     card.querySelector(".share-btn").addEventListener("click", () => {
       if (typeof GameExtras !== "undefined") GameExtras.shareGame(g.title, g.url);
     });
