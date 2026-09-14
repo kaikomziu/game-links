@@ -46,10 +46,10 @@ const GameExtras = (() => {
     }
   }
   function shareSite() {
-    share("MY GAMES LINKS", "https://kaikomziu.github.io/game-links/");
+    share("かるわか GAMES", "https://kaikomziu.github.io/game-links/");
   }
   function shareGame(title, url) {
-    share(`${title} ｜ MY GAMES LINKS`, url);
+    share(`${title} ｜ かるわか GAMES`, url);
   }
 
   // ---------- 今日の1本(ランダムピック) ----------
@@ -454,7 +454,7 @@ const GameExtras = (() => {
     renderVisitorCounter();
 
     try {
-      console.log("%c🎮 MY GAMES LINKS", "font-size:18px;font-weight:bold;color:#6c5ce7;");
+      console.log("%c🎮 かるわか GAMES", "font-size:18px;font-weight:bold;color:#6c5ce7;");
       console.log("%cこのサイトには隠しコマンドがいくつか眠っています。ロゴ、テーマ切替、サイコロ、キーボード…いろいろ試してみて。", "color:#888;font-size:12px;");
     } catch (e) {}
   });

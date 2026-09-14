@@ -1,4 +1,4 @@
--- MY GAMES LINKS: ゲームごとの高評価/低評価テーブル
+-- かるわか GAMES: ゲームごとの高評価/低評価テーブル
 -- 共有Supabaseプロジェクト(kifnzvktwbomxthzvvgy)に、このサイト専用の
 -- テーブルとして追加する。他サイトのテーブル(scores, mc_*, holdon_scores,
 -- hansha_scores, boss_raid_* 等)には一切触れない。

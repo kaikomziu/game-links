@@ -1,7 +1,7 @@
 {
-  "name": "MY GAMES LINKS",
-  "short_name": "GAMES LINKS",
-  "description": "自作ウェブゲームのリンクまとめサイト",
+  "name": "かるわか GAMES",
+  "short_name": "かるわかGAMES",
+  "description": "かるわかが作った自作ウェブゲームのリンクまとめサイト",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
