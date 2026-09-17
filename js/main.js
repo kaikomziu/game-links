@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "attack-attack-battle",
+    title: "ATTACK ATTACK BATTLE",
+    emoji: "🥊",
+    tags: ["対戦"],
+    desc: "オリジナルファイターで殴り合うリアルタイム格闘アクション。まずはCPU対戦から遊べる。WASDで移動、Eで通常攻撃、Rで必殺技。Shiftキー+方向キーで状況に応じた特殊アクションが出せるのが特徴で、前方向なら弱いが連発が効くラッシュパンチ、後ろ方向なら素早い後退、Sなら1秒だけ無敵になる代わりに3秒隙だらけになる回避、Wなら高く舞い上がる復帰ジャンプ(空中で1回だけ)。ダメージ%が貯まるほど吹っ飛びが大きくなり、画面外まで飛ばされるとストックを1失う3ストック制。PC対応(キーボード操作)。",
+    url: "https://kaikomziu.github.io/attack-attack-battle/"
+  },
+  {
     id: "hammer-climb-deluxe",
     title: "HAMMER CLIMB DELUXE",
     emoji: "⛰️",
