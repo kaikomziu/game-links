@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "signal-flow-deluxe",
+    title: "SIGNAL FLOW DELUXE",
+    emoji: "🚦",
+    tags: ["パズル"],
+    desc: "経営要素ゼロの純粋パズルシム。グリッド状の交差点に立つ信号をタップして切り替え、道路が車で埋まる前にさばき続ける。各交差点は放っておいても一定間隔でNS/EWの通行方向が自動で入れ替わるが、それだけでは詰まりが起きるタイミングを見て手動で介入するのが腕の見せどころ。時間経過とともに車の出現間隔がだんだん短くなり、道路の入口が車で埋まって新しい車が入れなくなった瞬間「渋滞発生!」で即ゲームオーバー。スコアは通過させた台数、生存時間も記録され、難易度はEASY(3×3)/NORMAL(4×4)/HARD(5×4)の3種、それぞれベストスコアをブラウザに自動保存。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/signal-flow-deluxe/"
+  },
+  {
     id: "attack-attack-battle",
     title: "ATTACK ATTACK BATTLE",
     emoji: "🥊",
