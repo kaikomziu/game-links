@@ -145,9 +145,45 @@ body {
   white-space: nowrap;
 }
 .april-banner button:hover { background: #fff; }
+.april-banner small { font-weight: 500; opacity: 0.85; }
 
+.april-marquee {
+  flex: 1 1 100%;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  padding: 4px 0;
+}
+.april-marquee-track {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  font-weight: 800;
+  font-size: 0.8rem;
+  background: linear-gradient(90deg, #ff004c, #ff9800, #ffee00, #4caf50, #2196f3, #9c27b0, #ff004c);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: aprilMarquee 14s linear infinite, rainbowShift 4s ease infinite;
+}
+@keyframes aprilMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* 常時ふわふわ揺れる(カードごとにタイミング・角度をずらして賑やかに)。
+   常時点滅のような激しいストロボ効果は使わず、ゆったりした揺れに留めている。 */
+.april-fools .game-card {
+  --april-tilt: 1.5deg;
+  animation: aprilFloat 2.6s ease-in-out infinite;
+}
 .april-fools .game-card:hover {
   animation: aprilWobble 0.4s ease;
+}
+@keyframes aprilFloat {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(var(--april-tilt)) translateY(-4px); }
 }
 @keyframes aprilWobble {
   0%, 100% { transform: rotate(0deg) translateY(-3px); }

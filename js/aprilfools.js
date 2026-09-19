@@ -32,13 +32,16 @@ const AprilFools = (() => {
 
   const JOKE_EMOJI = "🤡";
   const JOKE_CARD_ATTR = "data-april-joke-card";
+  const PARTY_EMOJIS = ["🎉", "🎊", "🤡", "🎪", "🥳", "✨", "🎈", "🌈"];
 
   function buildBanner() {
     const el = document.getElementById("aprilBanner");
     if (!el) return;
     el.innerHTML =
-      `<span>🎉 4月1日限定のジョーク表示中です(念のため: 実際に何かが変わったり壊れたりはしていません)</span>` +
-      `<button type="button" id="aprilDismissBtn">普通の表示に戻す</button>`;
+      `<span>🎉🎪🤡 4月1日限定のジョーク表示中です！！ 🤡🎪🎉<br>` +
+      `<small>(念のため: 実際に何かが変わったり壊れたりはしていません)</small></span>` +
+      `<button type="button" id="aprilDismissBtn">普通の表示に戻す</button>` +
+      `<div class="april-marquee"><div class="april-marquee-track">${buildMarqueeText()}</div></div>`;
     el.hidden = false;
     const btn = document.getElementById("aprilDismissBtn");
     if (btn) {
@@ -47,6 +50,51 @@ const AprilFools = (() => {
         location.reload();
       });
     }
+  }
+
+  function buildMarqueeText() {
+    const messages = [
+      "🎉 エイプリルフール開催中！！！",
+      "🤡 ぜんぶウソです！",
+      "🎪 かるわか GAMES 特別バージョン",
+      "🥳 何も壊れてません、ご安心を",
+      "✨ 明日には元に戻ります",
+      "🎊 ジョークゲーム(仮)、絶賛存在しません",
+    ];
+    // 2周分つなげて途切れなく流れるようにする
+    return (messages.join("　★　") + "　★　").repeat(2);
+  }
+
+  // 数秒おきに紙吹雪を降らせ続ける、いかにもお祭り騒ぎな演出。
+  function confettiBurst() {
+    const box = document.createElement("div");
+    box.className = "confetti-box";
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement("span");
+      p.className = "emoji-rain-item";
+      p.textContent = PARTY_EMOJIS[Math.floor(Math.random() * PARTY_EMOJIS.length)];
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDelay = Math.random() * 0.6 + "s";
+      p.style.fontSize = 14 + Math.random() * 22 + "px";
+      box.appendChild(p);
+    }
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 3200);
+  }
+  function startConfettiLoop() {
+    confettiBurst();
+    setInterval(confettiBurst, 4000);
+  }
+
+  // ブラウザのタブ名も交互に切り替えて、隅々まで気づいてもらう。
+  function startTitleFlicker() {
+    const original = document.title;
+    const alt = "🤡 エイプリルフール中！";
+    let showAlt = false;
+    setInterval(() => {
+      showAlt = !showAlt;
+      document.title = showAlt ? alt : original;
+    }, 2000);
   }
 
   function insertJokeCard() {
@@ -79,7 +127,10 @@ const AprilFools = (() => {
   function swapEmojis() {
     document
       .querySelectorAll(`#gameGrid .game-card:not([${JOKE_CARD_ATTR}]) .card-emoji`)
-      .forEach((el) => { el.textContent = JOKE_EMOJI; });
+      .forEach((el, i) => {
+        // 全部🤡だと単調なので、たまに違う絵文字も混ぜてお祭り感を出す
+        el.textContent = i % 5 === 0 ? PARTY_EMOJIS[i % PARTY_EMOJIS.length] : JOKE_EMOJI;
+      });
   }
 
   function swapPlayButtons() {
@@ -88,24 +139,37 @@ const AprilFools = (() => {
       .forEach((el) => { el.textContent = "たぶん遊べる →"; });
   }
 
+  // 全カードを常時ふわふわ揺らす。カードごとにズレた開始タイミング・
+  // 揺れ幅にして、統一感のない賑やかさを出す。
+  function floatCards() {
+    document.querySelectorAll("#gameGrid .game-card").forEach((el, i) => {
+      if (el.dataset.aprilFloatSet) return;
+      el.dataset.aprilFloatSet = "1";
+      el.style.animationDelay = (i % 12) * 0.17 + "s";
+      el.style.setProperty("--april-tilt", (i % 2 === 0 ? 1 : -1) * (1 + (i % 3)) + "deg");
+    });
+  }
+
   function applyToGrid() {
     insertJokeCard();
     swapEmojis();
     swapPlayButtons();
+    floatCards();
   }
 
-  // マウスカーソルの後を絵文字がふわっと追いかける、いかにも4/1な演出。
+  // マウスカーソルの後をカラフルな絵文字がわらわらと追いかける演出。
   function initCursorTrail() {
     let last = 0;
     document.addEventListener("mousemove", (e) => {
       const now = Date.now();
-      if (now - last < 100) return;
+      if (now - last < 60) return;
       last = now;
       const el = document.createElement("span");
       el.className = "april-cursor-emoji";
-      el.textContent = "🎉";
+      el.textContent = PARTY_EMOJIS[Math.floor(Math.random() * PARTY_EMOJIS.length)];
       el.style.left = e.clientX + "px";
       el.style.top = e.clientY + "px";
+      el.style.fontSize = 14 + Math.random() * 14 + "px";
       document.body.appendChild(el);
       setTimeout(() => el.remove(), 900);
     });
@@ -118,10 +182,14 @@ const AprilFools = (() => {
 
   function init() {
     if (!active()) return;
-    document.documentElement.classList.add("april-fools");
+    // 既存の隠しコマンド演出(パーティーモード/ゴッドモード/レインボー)も
+    // 全部乗せにして、とにかく派手にする。
+    document.documentElement.classList.add("april-fools", "party", "godmode", "rainbow");
     buildBanner();
     swapLogo();
     initCursorTrail();
+    startConfettiLoop();
+    startTitleFlicker();
 
     const grid = document.getElementById("gameGrid");
     if (grid) {
