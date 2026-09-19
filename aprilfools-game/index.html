@@ -165,13 +165,26 @@
     60%{ transform:translateX(-5px); }
     80%{ transform:translateX(4px); }
   }
+
+  .version-tag{
+    position:fixed; bottom:8px; right:12px;
+    font-size:10px; color:#6d5f96; opacity:.6;
+    pointer-events:none; z-index:10;
+  }
 </style>
 </head>
 <body>
 <div class="wrap" id="wrap"></div>
+<div class="version-tag" id="versionTag"></div>
 
+<script src="js/version.js"></script>
 <script>
 (function(){
+  const vEl = document.getElementById("versionTag");
+  if (vEl && typeof CHANGELOG !== "undefined" && CHANGELOG.length) {
+    vEl.textContent = "v" + CHANGELOG[CHANGELOG.length - 1].version;
+  }
+
   const unlocked = new URLSearchParams(location.search).has("0401") ||
     (new Date().getMonth() === 3 && new Date().getDate() === 1);
 
