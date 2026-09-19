@@ -105,23 +105,14 @@ const AprilFools = (() => {
     card.setAttribute(JOKE_CARD_ATTR, "1");
     card.innerHTML = `
       <div class="card-top">
-        <div class="card-emoji">🎪</div>
+        <div class="card-emoji">🔐</div>
       </div>
-      <h2 class="card-title">ジョークゲーム(仮)</h2>
-      <p class="card-desc">4月1日限定のジョークです。実はこのゲームは存在しません。</p>
+      <h2 class="card-title">本人確認センター</h2>
+      <p class="card-desc">あなたが人間であることを確認します。たぶん最後まではたどり着けません。</p>
       <div class="card-tags"><span class="card-tag">エイプリルフール</span></div>
-      <a class="play-btn" href="#" data-april-joke-link>信じて遊びに行く →</a>
+      <a class="play-btn" href="aprilfools-game/?0401" target="_blank" rel="noopener" data-april-joke-link>信じて遊びに行く →</a>
     `;
     grid.prepend(card);
-    const link = card.querySelector("[data-april-joke-link]");
-    if (link) {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (typeof GameExtras !== "undefined") {
-          GameExtras.showToast("🎉 ひっかかりましたね！エイプリルフールでした。");
-        }
-      });
-    }
   }
 
   function swapEmojis() {

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>🔐 本人確認センター - かるわか GAMES</title>
+<meta name="description" content="4月1日限定。あなたが人間であることを確認する、はずのシステム。">
+<style>
+  :root{
+    --bg1:#0f0a1e;
+    --bg2:#1c1033;
+    --accent:#ff3d9a;
+    --accent2:#4fd1ff;
+    --accent3:#ffd23f;
+    --card:#1a1330;
+    --card-border:#3a2a5c;
+    --text:#f2eeff;
+    --text-dim:#b6a9d6;
+    --ok:#4fd18f;
+    --ng:#ff5d6c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,61,154,.25), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(79,209,255,.22), transparent 45%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+    color:var(--text);
+    font-family:"Hiragino Sans","Yu Gothic UI","Segoe UI",system-ui,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    overflow-x:hidden;
+  }
+  .wrap{
+    width:100%;
+    max-width:520px;
+  }
+
+  /* ===== プレースホルダー(4/1以外) ===== */
+  .locked{
+    text-align:center;
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:20px;
+    padding:48px 28px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .locked .big{ font-size:64px; margin-bottom:12px; }
+  .locked h1{ font-size:20px; margin:0 0 10px; }
+  .locked p{ color:var(--text-dim); line-height:1.7; margin:0 0 6px; font-size:14px;}
+  .locked .hint{ margin-top:22px; font-size:12px; color:#6d5f96; }
+  .locked a.back{
+    display:inline-block; margin-top:24px; color:var(--accent2);
+    text-decoration:none; font-size:13px; border:1px solid var(--card-border);
+    padding:8px 16px; border-radius:999px;
+  }
+  .locked a.back:hover{ background:rgba(79,209,255,.1); }
+
+  /* ===== 本編 ===== */
+  .stage-card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:20px;
+    padding:32px 26px;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+    position:relative;
+    overflow:hidden;
+  }
+  .kicker{
+    font-size:12px; letter-spacing:.08em; color:var(--text-dim); margin:0 0 6px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .kicker .step{ color:var(--accent2); font-weight:700; }
+  h1.title{
+    font-size:19px; margin:0 0 18px; line-height:1.5;
+  }
+  .msg{
+    font-size:14px; color:var(--text-dim); line-height:1.7; min-height:1.7em; margin:0 0 18px;
+  }
+  .msg.ng{ color:var(--ng); }
+  .msg.ok{ color:var(--ok); }
+
+  .bar-track{
+    width:100%; height:14px; border-radius:999px; background:#241a42;
+    overflow:hidden; border:1px solid var(--card-border); margin-bottom:8px;
+  }
+  .bar-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius:999px;
+    transition:width .25s linear;
+  }
+  .bar-pct{ text-align:right; font-size:12px; color:var(--text-dim); font-variant-numeric:tabular-nums; }
+
+  .btn{
+    appearance:none; border:none; cursor:pointer;
+    background:linear-gradient(135deg, var(--accent), #b23bff);
+    color:#fff; font-weight:700; font-size:14px;
+    padding:13px 22px; border-radius:12px;
+    width:100%; margin-top:6px;
+    box-shadow:0 8px 20px rgba(255,61,154,.3);
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn.secondary{
+    background:#241a42; color:var(--text); box-shadow:none; border:1px solid var(--card-border);
+  }
+
+  .goat-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:6px 0 16px;
+  }
+  .goat-tile{
+    aspect-ratio:1; border-radius:12px; border:2px solid var(--card-border);
+    background:#241a42; display:flex; align-items:center; justify-content:center;
+    font-size:30px; cursor:pointer; user-select:none; transition:.15s;
+  }
+  .goat-tile.selected{ border-color:var(--accent2); background:rgba(79,209,255,.15); }
+
+  .agree-row{
+    display:flex; align-items:center; gap:10px; padding:14px; border-radius:12px;
+    background:#241a42; border:1px solid var(--card-border); margin-bottom:16px;
+    cursor:pointer; user-select:none; transition:transform .12s;
+  }
+  .agree-row .box{
+    width:22px; height:22px; border-radius:6px; border:2px solid var(--text-dim);
+    flex:none; display:flex; align-items:center; justify-content:center; font-size:14px;
+  }
+  .agree-row.checked .box{ background:var(--ok); border-color:var(--ok); color:#0f0a1e; }
+  .agree-row span.label{ font-size:13px; color:var(--text-dim); }
+
+  .tiny{ font-size:11px; color:#6d5f96; text-align:center; margin-top:14px; }
+
+  /* ===== 結果画面 ===== */
+  .result{ display:none; text-align:center; }
+  .result .emoji-big{ font-size:60px; margin-bottom:8px; animation:pop .5s; }
+  @keyframes pop{ 0%{transform:scale(.3) rotate(-15deg); opacity:0;} 70%{transform:scale(1.1) rotate(5deg);} 100%{transform:scale(1) rotate(0);} }
+  .result h1{ font-size:22px; margin:0 0 10px; }
+  .cert{
+    margin:18px 0; padding:18px; border-radius:14px;
+    background:repeating-linear-gradient(135deg, rgba(255,210,63,.08), rgba(255,210,63,.08) 10px, transparent 10px, transparent 20px), #241a42;
+    border:1px dashed var(--accent3);
+    text-align:left; font-size:13px; color:var(--text-dim); line-height:1.9;
+  }
+  .cert b{ color:var(--text); }
+  .share-row{ display:flex; gap:8px; margin-top:16px; }
+  .share-row .btn{ margin-top:0; }
+
+  .confetti-piece{
+    position:fixed; top:-24px; z-index:50; pointer-events:none; font-size:20px;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(400deg); opacity:.2; }
+  }
+
+  .shake{ animation:shake .35s; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-8px); }
+    40%{ transform:translateX(7px); }
+    60%{ transform:translateX(-5px); }
+    80%{ transform:translateX(4px); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap"></div>
+
+<script>
+(function(){
+  const unlocked = new URLSearchParams(location.search).has("0401") ||
+    (new Date().getMonth() === 3 && new Date().getDate() === 1);
+
+  const wrap = document.getElementById("wrap");
+
+  if (!unlocked) {
+    wrap.innerHTML = `
+      <div class="locked">
+        <div class="big">🎪</div>
+        <h1>このゲームは4月1日にしか開けません。</h1>
+        <p>また来年！</p>
+        <p class="hint">(ヒント: 特別な合言葉を知っていれば、今すぐ開くこともできるかもしれません…)</p>
+        <a class="back" href="../">← かるわか GAMES に戻る</a>
+      </div>
+    `;
+    return;
+  }
+
+  render();
+
+  function render(){
+    wrap.innerHTML = `
+      <div class="stage-card" id="card"></div>
+    `;
+    runStages();
+  }
+
+  function runStages(){
+    const card = document.getElementById("card");
+    const TOTAL_STEPS = 4;
+    let step = 0;
+
+    function setStep(html){
+      card.innerHTML = html;
+    }
+
+    function stepHeader(n, title){
+      return `
+        <div class="kicker"><span>🔐 本人確認センター</span><span class="step">STEP ${n} / ${TOTAL_STEPS}</span></div>
+        <h1 class="title">${title}</h1>
+      `;
+    }
+
+    // ---- STEP 1: 進捗バーが土壇場で裏切る ----
+    function stage1(){
+      step = 1;
+      setStep(`
+        ${stepHeader(1, "通信環境を確認しています…")}
+        <p class="msg" id="msg1">サーバーとの接続を確立しています。しばらくお待ちください。</p>
+        <div class="bar-track"><div class="bar-fill" id="bar1"></div></div>
+        <div class="bar-pct" id="pct1">0%</div>
+      `);
+      const bar = document.getElementById("bar1");
+      const pct = document.getElementById("pct1");
+      let p = 0;
+      const timer = setInterval(() => {
+        p += Math.random() * 9 + 3;
+        if (p >= 97) {
+          p = 97;
+          clearInterval(timer);
+          setTimeout(fail, 500);
+        }
+        bar.style.width = p + "%";
+        pct.textContent = Math.floor(p) + "%";
+      }, 140);
+
+      function fail(){
+        document.getElementById("msg1").innerHTML =
+          `<span style="color:var(--ng)">⚠️ サーバーが恥ずかしくなって接続を切りました。</span>`;
+        card.classList.add("shake");
+        setTimeout(() => card.classList.remove("shake"), 400);
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.textContent = "気を取り直してもう一度試す →";
+        btn.onclick = stage2;
+        card.appendChild(btn);
+      }
+    }
+
+    // ---- STEP 2: ヤギしかいない画像認証 ----
+    function stage2(){
+      step = 2;
+      const total = 9;
+      setStep(`
+        ${stepHeader(2, "画像認証: 「ヤギ」をすべて選択してください")}
+        <p class="msg" id="msg2">該当するマスをすべてタップしてから「確認」を押してください。</p>
+        <div class="goat-grid" id="grid"></div>
+        <button class="btn" id="check2">確認</button>
+      `);
+      const grid = document.getElementById("grid");
+      for (let i = 0; i < total; i++) {
+        const tile = document.createElement("div");
+        tile.className = "goat-tile";
+        tile.textContent = "🐐";
+        tile.onclick = () => tile.classList.toggle("selected");
+        grid.appendChild(tile);
+      }
+      const excuses = [
+        "不正解です。ヒント: 全部ヤギです。",
+        "まだ足りません。本当に、ぜんぶヤギです。",
+        "惜しい！…わけでもなく、全マスがヤギです。"
+      ];
+      let tries = 0;
+      document.getElementById("check2").onclick = () => {
+        const selected = grid.querySelectorAll(".selected").length;
+        const msg = document.getElementById("msg2");
+        if (selected === total) {
+          msg.className = "msg ok";
+          msg.textContent = "✅ 認証成功…にしては簡単すぎましたね。";
+          setTimeout(stage3, 700);
+        } else {
+          msg.className = "msg ng";
+          msg.textContent = excuses[Math.min(tries, excuses.length - 1)];
+          tries++;
+          card.classList.add("shake");
+          setTimeout(() => card.classList.remove("shake"), 400);
+        }
+      };
+    }
+
+    // ---- STEP 3: なかなか同意させてくれないチェックボックス ----
+    function stage3(){
+      step = 3;
+      setStep(`
+        ${stepHeader(3, "利用規約への同意")}
+        <p class="msg" id="msg3">内容を確認のうえ、チェックしてください。</p>
+        <div class="agree-row" id="agree">
+          <div class="box" id="agreeBox"></div>
+          <span class="label">上記の(存在しない)利用規約に同意します</span>
+        </div>
+      `);
+      const teases = [
+        "🤔 本当に読みましたか？もう一度。",
+        "🙈 気のせいです、もう一度お願いします。",
+        "😅 3回目の正直、いきます。"
+      ];
+      let clicks = 0;
+      const row = document.getElementById("agree");
+      const box = document.getElementById("agreeBox");
+      const msg = document.getElementById("msg3");
+      row.onclick = () => {
+        clicks++;
+        if (clicks < 3) {
+          box.textContent = "";
+          msg.className = "msg ng";
+          msg.textContent = teases[clicks - 1];
+          row.style.transform = `translateX(${clicks % 2 === 0 ? 10 : -10}px)`;
+          setTimeout(() => { row.style.transform = "translateX(0)"; }, 150);
+        } else {
+          box.textContent = "✓";
+          row.classList.add("checked");
+          msg.className = "msg ok";
+          msg.textContent = "✅ ようやく同意されました。";
+          setTimeout(stage4, 700);
+        }
+      };
+    }
+
+    // ---- STEP 4: 今度こそ完了する進捗バー ----
+    function stage4(){
+      step = 4;
+      setStep(`
+        ${stepHeader(4, "認証情報を送信しています…")}
+        <p class="msg" id="msg4">今度こそ、最後までいきます。たぶん。</p>
+        <div class="bar-track"><div class="bar-fill" id="bar4"></div></div>
+        <div class="bar-pct" id="pct4">0%</div>
+      `);
+      const bar = document.getElementById("bar4");
+      const pct = document.getElementById("pct4");
+      let p = 0;
+      const timer = setInterval(() => {
+        p += Math.random() * 10 + 6;
+        if (p >= 100) {
+          p = 100;
+          clearInterval(timer);
+          setTimeout(showResult, 500);
+        }
+        bar.style.width = p + "%";
+        pct.textContent = Math.floor(p) + "%";
+      }, 130);
+    }
+
+    function showResult(){
+      const titles = [
+        "だまされ上手", "永遠の一般利用者", "同意ボタン耐性ゼロ",
+        "ヤギ数え世界一", "信じる者は救われない", "エイプリルフール検定1級"
+      ];
+      const title = titles[Math.floor(Math.random() * titles.length)];
+      const certNo = "APRIL-" + Math.floor(1000 + Math.random() * 9000);
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}年4月1日`;
+
+      card.innerHTML = `
+        <div class="result" style="display:block">
+          <div class="emoji-big">🎉🤡🎊</div>
+          <h1>エイプリルフールでした！</h1>
+          <p class="msg">安心してください、あなたの本人確認は何も行われていません(そもそも何も送信していません)。</p>
+          <div class="cert">
+            認定番号: <b>${certNo}</b><br>
+            発行日: <b>${dateStr}</b><br>
+            称号: <b>「${title}」</b><br>
+            所要時間: <b>約1〜2分の無駄</b><br>
+            判定: <b style="color:var(--ok)">見事にだまされました</b>
+          </div>
+          <div class="share-row">
+            <button class="btn secondary" id="retryBtn">もう一度だまされる</button>
+            <a class="btn" href="../" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">← 一覧に戻る</a>
+          </div>
+        </div>
+      `;
+      document.getElementById("retryBtn").onclick = stage1;
+      confettiBurst();
+    }
+
+    function confettiBurst(){
+      const emojis = ["🎉","🎊","🤡","🎪","✨","🥳"];
+      for (let i = 0; i < 40; i++) {
+        const el = document.createElement("span");
+        el.className = "confetti-piece";
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.fontSize = (14 + Math.random() * 16) + "px";
+        el.style.animationDuration = (2.2 + Math.random() * 1.6) + "s";
+        el.style.animationDelay = (Math.random() * 0.5) + "s";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4500);
+      }
+    }
+
+    stage1();
+  }
+})();
+</script>
+</body>
+</html>
