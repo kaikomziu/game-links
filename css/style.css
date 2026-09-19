@@ -117,6 +117,68 @@ body {
   padding: 24px 20px 60px;
 }
 
+/* ===== 4月1日限定 エイプリルフールモード ===== */
+.april-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  background: repeating-linear-gradient(135deg, #ffd166, #ffd166 12px, #ff6b6b 12px, #ff6b6b 24px);
+  color: #2b2200;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  font-size: 0.85rem;
+}
+.april-banner button {
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  color: #2b2200;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.april-banner button:hover { background: #fff; }
+
+.april-fools .game-card:hover {
+  animation: aprilWobble 0.4s ease;
+}
+@keyframes aprilWobble {
+  0%, 100% { transform: rotate(0deg) translateY(-3px); }
+  25% { transform: rotate(-1.5deg) translateY(-3px); }
+  75% { transform: rotate(1.5deg) translateY(-3px); }
+}
+
+.april-joke-card {
+  border-color: #ff9800 !important;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--bg-elevated),
+    var(--bg-elevated) 10px,
+    var(--accent-soft) 10px,
+    var(--accent-soft) 20px
+  );
+}
+
+.april-cursor-emoji {
+  position: fixed;
+  z-index: 400;
+  pointer-events: none;
+  font-size: 1.2rem;
+  transform: translate(-50%, -50%);
+  animation: aprilCursorFade 0.9s ease-out forwards;
+}
+@keyframes aprilCursorFade {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -120%) scale(0.6); }
+}
+
 .today-banner {
   display: flex;
   flex-wrap: wrap;
