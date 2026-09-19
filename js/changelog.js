@@ -51,12 +51,21 @@
     if (modal && modal.classList.contains("open")) closeModal();
   });
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("changelogBtn");
-    if (btn) btn.addEventListener("click", openModal);
+  // ボタンがDOMContentLoaded時点で見つからないケースにも対応できるよう、
+  // documentへのイベント委譲でクリックを拾う
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("#changelogBtn")) openModal();
+  });
+
+  function setVersionTag() {
     const tag = document.getElementById("versionTag");
     if (tag && typeof CHANGELOG !== "undefined" && CHANGELOG.length) {
       tag.textContent = "(v" + CHANGELOG[CHANGELOG.length - 1].version + ")";
     }
-  });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setVersionTag);
+  } else {
+    setVersionTag();
+  }
 })();
