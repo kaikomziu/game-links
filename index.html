@@ -816,6 +816,7 @@
   <p>かるわかが作った自作ウェブゲームのまとめページです。お気に入り・ダークモード・並び順はこのブラウザにCookieで保存されます。高評価/低評価とプレイ数は全員で共有される合計数で、高評価/低評価は1ゲームにつき1回だけ投票できます。</p>
   <p class="footer-hint">ショートカット: <kbd>/</kbd> 検索 ・ <kbd>R</kbd> 今日の1本 ・ <kbd>Esc</kbd> 閉じる</p>
   <p class="footer-hint">🕹️ このサイトには隠しコマンドがいくつか眠っています。<button id="hintBtn" class="hint-btn" type="button">💡 ヒントを見る</button></p>
+  <p class="footer-hint" id="versionTag"></p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -837,6 +838,13 @@
       navigator.serviceWorker.register("sw.js").catch(() => {});
     });
   }
+  // 現在バージョンをフッターに表示
+  (function () {
+    var tag = document.getElementById("versionTag");
+    if (tag && typeof CHANGELOG !== "undefined" && CHANGELOG.length) {
+      tag.textContent = "v" + CHANGELOG[CHANGELOG.length - 1].version;
+    }
+  })();
 </script>
 </body>
 </html>
