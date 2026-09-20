@@ -101,6 +101,9 @@ function renderCard(game) {
     `        <h2 class="card-title">${escapeHtml(game.title)}</h2>`,
     `        <p class="card-desc">${escapeHtml(game.desc)}</p>`,
     `        <div class="card-tags">${tagsHtml}</div>`,
+    ...(game.author
+      ? [`        <p class="card-author">作者: ${escapeHtml(game.author)}</p>`]
+      : []),
     `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">遊びに行く →</a>`,
     `      </article>`,
   ].join("\n");

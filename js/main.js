@@ -615,6 +615,15 @@ const GAMES = [
     tags: ["ホラー・ノベル"],
     desc: "個人ブログ「境木町アーカイブ」を発見してしまった体で読み進める調査型ARGホラー。ハブ画面の記事一覧から調査地点を選び、写真・証言・資料の3タブに埋め込まれた『おかしいところ』をクリックして探し、8月31日の夜だけ町が一日分だけ長く続くという噂の正体に迫っていく。資料タブは写真・証言を読み終えるまでロックされ、読み解くと文字の断片を入手できることがある。画面上部の『検索』窓に記事中で見つけた言葉を打ち込むと反応が返り、集めた断片を組み合わせるとゲームの外へ続く隠しURLが明らかになることも。序章クリア後と最終章では位置情報の許可を求められ、許可すると実測の緯度経度から架空の『境木町』までの直線距離を計算して表示する演出がある(座標はどこにも送信されず、ブラウザ内だけで完結)。集めた証拠の割合と隠しページ到達の有無でエンディングが3種に分岐する。PC/スマホ対応(位置情報を使う演出はブラウザの許可が必要)。",
     url: "https://kaikomziu.github.io/anohi-no-machi/"
+  },
+  {
+    id: "singularity-run-01",
+    title: "SINGULARITY RUN / 01",
+    emoji: "🌌",
+    tags: ["アクション"],
+    desc: "特異点へダイブし、重力で外へ弾き出されながら火花の間を縫って完璧なチェインをつなぐアーケードアクション。重力の流れを読み、タイミングよく進路を切り替えて高スコアを目指す。PC/スマホ対応。",
+    author: "Manus AI",
+    url: "https://gravity-drift-arcade.netlify.app/"
   }
 ];
 
@@ -867,7 +876,7 @@ function render() {
       ${hasMoreDesc ? `<button class="desc-more-btn" type="button">もっと見る ▾</button>` : ""}
       ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
       <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
-      <p class="card-author">作者: Claude AI</p>
+      <p class="card-author">作者: ${g.author || "Claude AI"}</p>
       <div class="vote-row">
         <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
           👍 <span class="vote-count">${counts.like}</span>
