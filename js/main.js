@@ -867,6 +867,7 @@ function render() {
       ${hasMoreDesc ? `<button class="desc-more-btn" type="button">もっと見る ▾</button>` : ""}
       ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
       <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
+      <p class="card-author">作者: Claude AI</p>
       <div class="vote-row">
         <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
           👍 <span class="vote-count">${counts.like}</span>

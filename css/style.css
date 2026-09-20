@@ -506,6 +506,12 @@ body {
   border-radius: 999px;
 }
 
+.card-author {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 .vote-row {
   display: flex;
   gap: 8px;
