@@ -2,7 +2,7 @@
 // 方針: ネットワーク優先 + キャッシュフォールバック。
 // 更新の多いサイトなので、オンライン時は常に最新を取得し、
 // オフライン時のみ最後に取得したキャッシュ(特にトップページ)を返す。
-const CACHE = "game-links-v1";
+const CACHE = "game-links-v2";
 const CORE = [
   "./",
   "./index.html",
@@ -42,7 +42,7 @@ self.addEventListener("fetch", (e) => {
   if (url.origin !== self.location.origin) return;
 
   e.respondWith(
-    fetch(req)
+    fetch(req, { cache: "no-store" })
       .then((res) => {
         if (res && res.ok) {
           const copy = res.clone();
