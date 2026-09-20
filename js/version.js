@@ -760,5 +760,12 @@ const CHANGELOG = [
     notes: [
       "🔐本人確認センターのCHANGELOGを実装順に8バージョン(v1.0.0〜v1.7.0)に細分化"
     ]
+  },
+  {
+    version: "1.107.0",
+    date: "2026-09-20",
+    notes: [
+      "新作「プチプチDELUXE」を一覧に追加"
+    ]
   }
 ];
