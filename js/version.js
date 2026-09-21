@@ -802,5 +802,12 @@ const CHANGELOG = [
     notes: [
       "BASTION // NEON DEFENSE(ネオン防衛グリッドのタワーディフェンスゲーム)を追加"
     ]
+  },
+  {
+    version: "1.113.0",
+    date: "2026-09-21",
+    notes: [
+      "COURT DELUXE(役職タグを設定し裁判官BOTの進行でリアルタイムに議論する模擬裁判・会議アプリ)を追加"
+    ]
   }
 ];
