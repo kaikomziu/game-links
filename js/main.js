@@ -1,6 +1,14 @@
 // ===== ゲーム一覧データ =====
 const GAMES = [
   {
+    id: "kage-0413",
+    title: "KAGE: 04:13",
+    emoji: "🕯️",
+    tags: ["ホラー・ノベル"],
+    desc: "旧市立病院の地下棟を、音を立てずに進む短編ホラー。暗い廊下の奥で起きる異変を調べ、精神を保ちながら朝まで生き残る。Web Audio APIの動的な効果音、CSS 3Dの一人称廊下、人影の演出、精神値による2種類のエンディングを搭載。PCは矢印キー/WASD/Space、スマホは画面上のボタンで操作可能。ヘッドフォン推奨。",
+    url: "https://kaikomziu.github.io/kage-0413/"
+  },
+  {
     id: "puchipuchi-deluxe",
     title: "プチプチDELUXE",
     emoji: "🫧",
