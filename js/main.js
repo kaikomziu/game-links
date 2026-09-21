@@ -402,6 +402,14 @@ const GAMES = [
     url: "https://kaikomziu.github.io/Slot-Sites-AI-GENERETE-/"
   },
   {
+    id: "yomigana-sorter",
+    title: "読み仮名順テキスト並べ替え",
+    emoji: "🔤",
+    tags: ["ツール"],
+    desc: "複数行のテキストをkuromoji.jsで読み仮名順に並べ替えるツール。漢字・ひらがな・カタカナ・記号の混在に対応。",
+    url: "https://kaikomziu.github.io/yomigana-sorter/"
+  },
+  {
     id: "town-deluxe",
     title: "タウン DELUXE",
     emoji: "🏙️",
