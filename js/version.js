@@ -795,5 +795,12 @@ const CHANGELOG = [
     notes: [
       "作者名の選択式フィルターを追加。GAMESのauthorから候補を自動生成"
     ]
+  },
+  {
+    version: "1.112.0",
+    date: "2026-09-21",
+    notes: [
+      "BASTION // NEON DEFENSE(ネオン防衛グリッドのタワーディフェンスゲーム)を追加"
+    ]
   }
 ];

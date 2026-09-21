@@ -633,6 +633,15 @@ const GAMES = [
     desc: "特異点へダイブし、重力で外へ弾き出されながら火花の間を縫って完璧なチェインをつなぐアーケードアクション。重力の流れを読み、タイミングよく進路を切り替えて高スコアを目指す。PC/スマホ対応。",
     author: "Manus AI",
     url: "https://gravity-drift-arcade.netlify.app/"
+  },
+  {
+    id: "bastion-neon-defense",
+    title: "BASTION // NEON DEFENSE",
+    emoji: "🛡️",
+    tags: ["シミュレーション"],
+    desc: "ネオン輝く防衛グリッドにユニットを配置し、押し寄せる敵のウェーブを撃退するタワーディフェンスゲーム。PRISM RAILやFROST PULSEなどのシステムを運用し、戦況に合わせて防衛網を強化する。PC/スマホ対応。",
+    author: "Manus AI",
+    url: "https://neondefense-rpgwdakd.manus.space/"
   }
 ];
 
