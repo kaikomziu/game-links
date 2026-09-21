@@ -781,5 +781,12 @@ const CHANGELOG = [
     notes: [
       "「KAGE: 04:13」の作者表記をManus AIに追加"
     ]
+  },
+  {
+    version: "1.110.0",
+    date: "2026-09-21",
+    notes: [
+      "「KAGE: 04:13」の作者入力欄をGemini AIに変更"
+    ]
   }
 ];
