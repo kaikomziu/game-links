@@ -627,7 +627,7 @@ const GAMES = [
   },
   {
     id: "singularity-run-01",
-    title: "SINGULARITY RUN / 01",
+    title: "GRAVITY DRIFT",
     emoji: "🌌",
     tags: ["アクション"],
     desc: "特異点へダイブし、重力で外へ弾き出されながら火花の間を縫って完璧なチェインをつなぐアーケードアクション。重力の流れを読み、タイミングよく進路を切り替えて高スコアを目指す。PC/スマホ対応。",
