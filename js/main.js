@@ -665,6 +665,7 @@ let tagMode = getCookie("tagMode") === "and" ? "and" : "or";
 // 一度でも明示的に選び直せばその選択が次回以降も優先される。
 let currentSort = getCookie("sortOrder") || "name";
 let favoriteOnly = false;
+let selectedAuthor = "all";
 
 // ===== 初期化: ダークモード =====
 function applyTheme(theme) {
@@ -715,6 +716,21 @@ allTags.forEach(tag => {
   tagFilterEl.appendChild(btn);
 });
 tagFilterEl.appendChild(tagModeBtn);
+
+// 作者フィルターはGAMES配列から自動生成する。別のAIがauthorを指定して追加しても候補に反映される。
+const authorFilterEl = document.getElementById("authorFilter");
+const allAuthors = [...new Set(GAMES.map(g => g.author || "Claude AI"))]
+  .sort((a, b) => a.localeCompare(b, "ja"));
+allAuthors.forEach(author => {
+  const option = document.createElement("option");
+  option.value = author;
+  option.textContent = `作者: ${author}`;
+  authorFilterEl.appendChild(option);
+});
+authorFilterEl.addEventListener("change", () => {
+  selectedAuthor = authorFilterEl.value;
+  render();
+});
 
 function syncTagChips() {
   [...tagFilterEl.querySelectorAll(".tag-chip")].forEach((c) => {
@@ -800,9 +816,11 @@ function render() {
     const matchesQuery = !query ||
       g.title.toLowerCase().includes(query) ||
       g.desc.toLowerCase().includes(query) ||
-      g.tags.some(t => t.toLowerCase().includes(query));
+      g.tags.some(t => t.toLowerCase().includes(query)) ||
+      (g.author || "Claude AI").toLowerCase().includes(query);
+    const matchesAuthor = selectedAuthor === "all" || (g.author || "Claude AI") === selectedAuthor;
     const matchesFavorite = !favoriteOnly || favorites.has(g.id);
-    return matchesTag && matchesQuery && matchesFavorite;
+    return matchesTag && matchesQuery && matchesAuthor && matchesFavorite;
   });
 
   const byName = (a, b) => a.title.localeCompare(b.title, "ja");

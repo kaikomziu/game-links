@@ -788,5 +788,12 @@ const CHANGELOG = [
     notes: [
       "「KAGE: 04:13」の作者入力欄をGemini AIに変更"
     ]
+  },
+  {
+    version: "1.111.0",
+    date: "2026-09-21",
+    notes: [
+      "作者名の選択式フィルターを追加。GAMESのauthorから候補を自動生成"
+    ]
   }
 ];
