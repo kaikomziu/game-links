@@ -674,6 +674,15 @@ const GAMES = [
     desc: "ネオン輝く防衛グリッドにユニットを配置し、押し寄せる敵のウェーブを撃退するタワーディフェンスゲーム。PRISM RAILやFROST PULSEなどのシステムを運用し、戦況に合わせて防衛網を強化する。PC/スマホ対応。",
     author: "Manus AI",
     url: "https://neondefense-rpgwdakd.manus.space/"
+  },
+  {
+    id: "dreamcore-no-exit",
+    title: "DREAMCORE // NO EXIT",
+    emoji: "◈",
+    tags: ["ホラー・ノベル"],
+    desc: "家のふりをした何かが待つ、リミナルスペースを探索する一人称ホラーシミュレーション。プレイルームを探しながら、夢の記録と異常な空間の奥へ進んでいく。WASD/矢印キーで移動、マウスで視点操作、Shiftで走る。PC対応。",
+    author: "Manus AI",
+    url: "https://dreamcore-6jfcky5e.manus.space/"
   }
 ];
 
