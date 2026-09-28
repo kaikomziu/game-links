@@ -58,6 +58,14 @@ const GAMES = [
     url: "https://kaikomziu.github.io/ai-town-deluxe/"
   },
   {
+    id: "cipher-deluxe",
+    title: "暗号解読DELUXE",
+    emoji: "🔐",
+    tags: ["パズル"],
+    desc: "謎の送信者「ELEVEN」から傍受した通信を解読していく暗号解読パズル。Base64を開けたら中身はシーザー暗号、ずらし幅はチャンネル番号や署名、受信時刻の数字の合計に隠されている…といった多重暗号を全10ステージで解く。モールス信号・2進数・16進数・ROT13・アトバシュ・A1Z26・ヴィジュネル暗号なども登場し、ページ内に「見えない文字」で鍵が隠されたステージも。画面右の解読ワークベンチでツールを選んで結果を次の段に流していくだけで、何重にも包まれた暗号を一段ずつ剥がせる。各ステージに段階ヒントと暗号図鑑付き、答えはハッシュ照合なのでソースを見てもネタバレしない。進行状況はブラウザに自動保存。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/cipher-deluxe/"
+  },
+  {
     id: "signal-flow-deluxe",
     title: "SIGNAL FLOW DELUXE",
     emoji: "🚦",

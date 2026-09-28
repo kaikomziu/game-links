@@ -823,5 +823,12 @@ const CHANGELOG = [
     notes: [
       "DREAMCORE // NO EXIT(リミナルスペースを探索する一人称ホラーシミュレーション)を追加"
     ]
+  },
+  {
+    version: "1.116.0",
+    date: "2026-09-28",
+    notes: [
+      "暗号解読DELUXE(Base64やシーザー暗号など多重暗号を解いていく暗号解読パズル)を追加"
+    ]
   }
 ];
