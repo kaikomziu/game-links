@@ -830,5 +830,12 @@ const CHANGELOG = [
     notes: [
       "暗号解読DELUXE(Base64やシーザー暗号など多重暗号を解いていく暗号解読パズル)を追加"
     ]
+  },
+  {
+    version: "1.117.0",
+    date: "2026-10-01",
+    notes: [
+      "GLITCH RUN DELUXE(隠されたバグを使って最速タイムを狙う2Dスピードランアクション)を追加"
+    ]
   }
 ];

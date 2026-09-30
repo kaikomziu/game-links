@@ -82,6 +82,14 @@ const GAMES = [
     url: "https://kaikomziu.github.io/attack-attack-battle/"
   },
   {
+    id: "glitch-run",
+    title: "GLITCH RUN DELUXE",
+    emoji: "🐞",
+    tags: ["アクション"],
+    desc: "「このゲームには、いくつかのバグがあります。」ダッシュ(8方向)・壁ジャンプ・しゃがみを駆使して全5ステージを駆け抜ける2Dスピードランアクション。ステージは正攻法でもクリアできるが、ゲーム内にはあからさまではない6種類のバグが隠されており、見つけて使いこなすとタイムが大きく縮む。発見したバグは「バグ図鑑」に記録され、一度全クリするとヒントが開放される。全ステージ通しのRTAタイムは共有の世界ランキングで競える(バグ使用なんでもあり)。ステージ単位の練習モード・スプリット表示・自己ベスト比較付き。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/glitch-run/"
+  },
+  {
     id: "hammer-climb-deluxe",
     title: "HAMMER CLIMB DELUXE",
     emoji: "⛰️",
