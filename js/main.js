@@ -1,15 +1,18 @@
 // ===== ゲーム一覧データ =====
+// 新規ゲームは必ず added: "YYYY-MM-DD"(公開日)を付けること。公開から7日間だけ「NEW」バッジが出る。
 const GAMES = [
   {
     id: "smash-room",
+    added: "2026-10-07",
     title: "ぶっ壊しルーム",
     emoji: "🔨",
     tags: ["アクション"],
-    desc: "いろんな物をいろんな武器で壊しまくる、ストレス解消の破壊ゲーム。木箱・ブラウン管テレビ・花瓶・窓ガラス・スイカ・皿の山・上司のマグカップ・プリンターなど13種類の物を、ハンマー・マシンガン・ショットガン・爆弾・火炎放射・落雷・レーザー・ブラックホール・チェーンソー・隕石・誘導ミサイル・冷凍ビームの12種類の武器で粉砕できる。壊した物は見た目のまま破片になって飛び散り、「パリーン」「グシャァ」などの擬音と素材ごとの効果音が鳴る。赤いドラム缶は爆発して周りを巻き込み、火は隣の物に燃え移り、落雷は次々に連鎖し、冷凍ビームで凍らせた物は一撃で粉々に砕ける。連続で壊すとコンボが伸び、溜まったブチギレゲージを解放すると画面中の物を一斉に爆破。「ストレス投入」に好きな言葉を書くと、その文字の看板が落ちてきて壊せる。PC/スマホ対応。",
+    desc: "いろんな物をいろんな武器で壊しまくる、ストレス解消の破壊ゲーム。木箱・ブラウン管テレビ・花瓶・窓ガラス・スイカ・皿の山・上司のマグカップ・プリンターなど13種類の物を、ハンマー・マシンガン・ショットガン・爆弾・火炎放射・落雷・レーザー・ブラックホール・チェーンソー・隕石・誘導ミサイル・冷凍ビームの12種類の武器で粉砕できる。壊した物は見た目のまま破片になって飛び散り、「パリーン」「グシャァ」などの擬音と素材ごとの効果音が鳴る。赤いドラム缶は爆発して周りを巻き込み、火は隣の物に燃え移り、落雷は次々に連鎖し、冷凍ビームで凍らせた物は一撃で粉々に砕ける。連続で壊すとコンボが伸び、溜まったブチギレゲージを解放すると画面中の物を一斉に爆破。「ストレス投入」に好きな言葉を書くと、その文字の看板が落ちてきて壊せる。設定で表示クオリティ(弱め/普通/強め/最高)や音量、画面の揺れ・フラッシュのON/OFFを切り替えられる。PC/スマホ対応。",
     url: "https://kaikomziu.github.io/smash-room/"
   },
   {
     id: "divine-timer",
+    added: "2026-10-07",
     title: "Divine出現タイマー",
     emoji: "🥚",
     tags: ["ツール"],
@@ -18,6 +21,7 @@ const GAMES = [
   },
   {
     id: "hero-quest",
+    added: "2026-09-22",
     title: "ゆうしゃ、はじめました。",
     emoji: "⚔️",
     tags: ["その他"],
@@ -26,6 +30,7 @@ const GAMES = [
   },
   {
     id: "compose-deluxe",
+    added: "2026-09-22",
     title: "COMPOSE DELUXE",
     emoji: "🎼",
     tags: ["ツール"],
@@ -34,6 +39,7 @@ const GAMES = [
   },
   {
     id: "court-deluxe",
+    added: "2026-09-21",
     title: "COURT DELUXE",
     emoji: "⚖️",
     tags: ["ツール"],
@@ -42,6 +48,7 @@ const GAMES = [
   },
   {
     id: "kage-0413",
+    added: "2026-09-21",
     title: "KAGE: 04:13",
     emoji: "🕯️",
     tags: ["ホラー・ノベル"],
@@ -51,6 +58,7 @@ const GAMES = [
   },
   {
     id: "puchipuchi-deluxe",
+    added: "2026-09-20",
     title: "プチプチDELUXE",
     emoji: "🫧",
     tags: ["その他"],
@@ -59,6 +67,7 @@ const GAMES = [
   },
   {
     id: "game-idea-maker",
+    added: "2026-09-19",
     title: "ゲームアイデアメーカー",
     emoji: "🎰",
     tags: ["ツール"],
@@ -67,6 +76,7 @@ const GAMES = [
   },
   {
     id: "ai-town-deluxe",
+    added: "2026-09-19",
     title: "AI TOWN DELUXE",
     emoji: "🏘️",
     tags: ["シミュレーション"],
@@ -75,6 +85,7 @@ const GAMES = [
   },
   {
     id: "cipher-deluxe",
+    added: "2026-09-28",
     title: "暗号解読DELUXE",
     emoji: "🔐",
     tags: ["パズル"],
@@ -83,6 +94,7 @@ const GAMES = [
   },
   {
     id: "signal-flow-deluxe",
+    added: "2026-09-18",
     title: "SIGNAL FLOW DELUXE",
     emoji: "🚦",
     tags: ["パズル"],
@@ -91,6 +103,7 @@ const GAMES = [
   },
   {
     id: "attack-attack-battle",
+    added: "2026-09-17",
     title: "ATTACK ATTACK BATTLE",
     emoji: "🥊",
     tags: ["対戦"],
@@ -99,6 +112,7 @@ const GAMES = [
   },
   {
     id: "glitch-run",
+    added: "2026-10-01",
     title: "GLITCH RUN DELUXE",
     emoji: "🐞",
     tags: ["アクション"],
@@ -107,6 +121,7 @@ const GAMES = [
   },
   {
     id: "hammer-climb-deluxe",
+    added: "2026-09-16",
     title: "HAMMER CLIMB DELUXE",
     emoji: "⛰️",
     tags: ["アクション"],
@@ -115,6 +130,7 @@ const GAMES = [
   },
   {
     id: "inspector-deluxe",
+    added: "2026-09-16",
     title: "INSPECTOR DELUXE",
     emoji: "🔖",
     tags: ["シミュレーション"],
@@ -123,6 +139,7 @@ const GAMES = [
   },
   {
     id: "physics-lab-deluxe",
+    added: "2026-09-16",
     title: "PHYSICS LAB DELUXE",
     emoji: "🪐",
     tags: ["ツール"],
@@ -131,6 +148,7 @@ const GAMES = [
   },
   {
     id: "dotbattle",
+    added: "2026-09-14",
     title: "ドットバトル",
     emoji: "🔴",
     tags: ["対戦"],
@@ -139,6 +157,7 @@ const GAMES = [
   },
   {
     id: "brawl-deluxe",
+    added: "2026-09-13",
     title: "BRAWL DELUXE",
     emoji: "⚔️",
     tags: ["対戦"],
@@ -147,6 +166,7 @@ const GAMES = [
   },
   {
     id: "smash-deluxe",
+    added: "2026-09-12",
     title: "SMASH DELUXE",
     emoji: "🥊",
     tags: ["対戦"],
@@ -155,6 +175,7 @@ const GAMES = [
   },
   {
     id: "metro-tycoon",
+    added: "2026-09-10",
     title: "METRO TYCOON",
     emoji: "🚇",
     tags: ["シミュレーション"],
@@ -163,6 +184,7 @@ const GAMES = [
   },
   {
     id: "money-clicker",
+    added: "2026-09-09",
     title: "MONEY CLICKER",
     emoji: "💰",
     tags: ["クリッカー・放置"],
@@ -171,6 +193,7 @@ const GAMES = [
   },
   {
     id: "visual-code-deluxe",
+    added: "2026-09-09",
     title: "VISUAL CODE DELUXE",
     emoji: "🧩",
     tags: ["ツール"],
@@ -179,6 +202,7 @@ const GAMES = [
   },
   {
     id: "bomb-defusal-game",
+    added: "2026-09-09",
     title: "爆弾解除ゲーム",
     emoji: "💣",
     tags: ["パズル"],
@@ -187,6 +211,7 @@ const GAMES = [
   },
   {
     id: "iraira-action",
+    added: "2026-09-07",
     title: "イライラアクション -IRAIRA ACTION-",
     emoji: "😤",
     tags: ["アクション"],
@@ -195,6 +220,7 @@ const GAMES = [
   },
   {
     id: "sanji44",
+    added: "2026-09-07",
     title: "3時44分",
     emoji: "🕓",
     tags: ["ホラー・ノベル"],
@@ -203,6 +229,7 @@ const GAMES = [
   },
   {
     id: "amt-corp",
+    added: "2026-09-06",
     title: "AMT -Abnormality monitoring tasks-",
     emoji: "🗂️",
     tags: ["ホラー・ノベル"],
@@ -211,6 +238,7 @@ const GAMES = [
   },
   {
     id: "book-shelf-party",
+    added: "2026-09-04",
     title: "本を棚に戻すゲーム",
     emoji: "📚",
     tags: ["オンライン協力"],
@@ -219,6 +247,7 @@ const GAMES = [
   },
   {
     id: "backrooms",
+    added: "2026-09-04",
     title: "BACKROOMS ─ レベル移動",
     emoji: "🟨",
     tags: ["RNG・運試し"],
@@ -227,6 +256,7 @@ const GAMES = [
   },
   {
     id: "captcha-hell",
+    added: "2026-09-03",
     title: "CAPTCHA地獄",
     emoji: "🤖",
     tags: ["パズル"],
@@ -235,6 +265,7 @@ const GAMES = [
   },
   {
     id: "tetris-deluxe",
+    added: "2026-08-30",
     title: "TETRIS DELUXE",
     emoji: "🟦",
     tags: ["パズル"],
@@ -243,6 +274,7 @@ const GAMES = [
   },
   {
     id: "stonks",
+    added: "2026-08-30",
     title: "STONKS",
     emoji: "📈",
     tags: ["シミュレーション"],
@@ -251,6 +283,7 @@ const GAMES = [
   },
   {
     id: "pixel-place",
+    added: "2026-09-01",
     title: "PIXEL PLACE",
     emoji: "🎨",
     tags: ["オンライン協力"],
@@ -259,6 +292,7 @@ const GAMES = [
   },
   {
     id: "nibutaku",
+    added: "2026-09-10",
     title: "一生二択",
     emoji: "🤔",
     tags: ["その他"],
@@ -267,6 +301,7 @@ const GAMES = [
   },
   {
     id: "one-in-8192",
+    added: "2026-08-30",
     title: "8192分の1",
     emoji: "🪙",
     tags: ["RNG・運試し"],
@@ -275,6 +310,7 @@ const GAMES = [
   },
   {
     id: "hold-on",
+    added: "2026-08-29",
     title: "HOLD ON",
     emoji: "⏱️",
     tags: ["アクション"],
@@ -283,6 +319,7 @@ const GAMES = [
   },
   {
     id: "battery-1percent",
+    added: "2026-08-30",
     title: "電源1%サバイバル",
     emoji: "🔋",
     tags: ["シミュレーション"],
@@ -291,6 +328,7 @@ const GAMES = [
   },
   {
     id: "gacha-life",
+    added: "2026-08-28",
     title: "GACHA LIFE",
     emoji: "🎰",
     tags: ["RNG・運試し"],
@@ -299,6 +337,7 @@ const GAMES = [
   },
   {
     id: "boss-raid",
+    added: "2026-08-28",
     title: "BOSS RAID",
     emoji: "👹",
     tags: ["クリッカー・放置"],
@@ -307,6 +346,7 @@ const GAMES = [
   },
   {
     id: "shadow-match",
+    added: "2026-08-28",
     title: "影あわせDELUXE",
     emoji: "🌓",
     tags: ["パズル"],
@@ -315,6 +355,7 @@ const GAMES = [
   },
   {
     id: "2d-sandbox",
+    added: "2026-08-28",
     title: "POWDER SANDBOX",
     emoji: "🏖️",
     tags: ["シミュレーション"],
@@ -323,6 +364,7 @@ const GAMES = [
   },
   {
     id: "teiji-dash",
+    added: "2026-08-28",
     title: "定時ダッシュ！",
     emoji: "🏃",
     tags: ["アクション"],
@@ -331,6 +373,7 @@ const GAMES = [
   },
   {
     id: "browser-escape",
+    added: "2026-08-28",
     title: "ブラウザ脱出",
     emoji: "🚪",
     tags: ["パズル"],
@@ -339,6 +382,7 @@ const GAMES = [
   },
   {
     id: "neon-raider",
+    added: "2026-08-28",
     title: "NEON RAIDER",
     emoji: "🛸",
     tags: ["アクション"],
@@ -347,6 +391,7 @@ const GAMES = [
   },
   {
     id: "modem-deluxe",
+    added: "2026-08-28",
     title: "MODEM DELUXE",
     emoji: "📟",
     tags: ["シミュレーション"],
@@ -355,6 +400,7 @@ const GAMES = [
   },
   {
     id: "2048-deluxe",
+    added: "2026-08-26",
     title: "2048 DELUXE",
     emoji: "🔢",
     tags: ["パズル"],
@@ -363,6 +409,7 @@ const GAMES = [
   },
   {
     id: "15puzzle-deluxe",
+    added: "2026-08-26",
     title: "15パズル DELUXE",
     emoji: "🧩",
     tags: ["パズル"],
@@ -371,6 +418,7 @@ const GAMES = [
   },
   {
     id: "maze-deluxe",
+    added: "2026-08-26",
     title: "迷路 DELUXE",
     emoji: "🌀",
     tags: ["パズル"],
@@ -379,6 +427,7 @@ const GAMES = [
   },
   {
     id: "flappy-deluxe",
+    added: "2026-08-26",
     title: "FLAPPY DELUXE",
     emoji: "🐤",
     tags: ["アクション"],
@@ -387,6 +436,7 @@ const GAMES = [
   },
   {
     id: "easter-egg-hunter",
+    added: "2026-08-26",
     title: "EGG HUNT",
     emoji: "🥚",
     tags: ["その他"],
@@ -395,6 +445,7 @@ const GAMES = [
   },
   {
     id: "mogura-panic-deluxe",
+    added: "2026-08-26",
     title: "モグラパニック DELUXE",
     emoji: "🐹",
     tags: ["アクション"],
@@ -403,6 +454,7 @@ const GAMES = [
   },
   {
     id: "emoji-fishing",
+    added: "2026-08-26",
     title: "絵文字フィッシング",
     emoji: "🎣",
     tags: ["アクション"],
@@ -411,6 +463,7 @@ const GAMES = [
   },
   {
     id: "jinsei-game-deluxe",
+    added: "2026-08-26",
     title: "人生ゲーム DELUXE",
     emoji: "🎲",
     tags: ["対戦"],
@@ -419,6 +472,7 @@ const GAMES = [
   },
   {
     id: "password-hell-deluxe",
+    added: "2026-08-26",
     title: "パスワード地獄 DELUXE",
     emoji: "🔐",
     tags: ["パズル"],
@@ -427,6 +481,7 @@ const GAMES = [
   },
   {
     id: "suika-deluxe",
+    added: "2026-08-26",
     title: "SUIKA DELUXE",
     emoji: "🍉",
     tags: ["パズル"],
@@ -435,6 +490,7 @@ const GAMES = [
   },
   {
     id: "uranai-deluxe",
+    added: "2026-08-26",
     title: "占い DELUXE",
     emoji: "🔮",
     tags: ["その他"],
@@ -443,6 +499,7 @@ const GAMES = [
   },
   {
     id: "piano-deluxe",
+    added: "2026-08-26",
     title: "PIANO DELUXE",
     emoji: "🎹",
     tags: ["音楽・リズム"],
@@ -451,6 +508,7 @@ const GAMES = [
   },
   {
     id: "mejioshi-slot",
+    added: "2026-08-26",
     title: "目押しマスター",
     emoji: "🎰",
     tags: ["RNG・運試し"],
@@ -459,6 +517,7 @@ const GAMES = [
   },
   {
     id: "yomigana-sorter",
+    added: "2026-09-21",
     title: "読み仮名順テキスト並べ替え",
     emoji: "🔤",
     tags: ["ツール"],
@@ -467,6 +526,7 @@ const GAMES = [
   },
   {
     id: "town-deluxe",
+    added: "2026-08-26",
     title: "タウン DELUXE",
     emoji: "🏙️",
     tags: ["クリッカー・放置"],
@@ -475,6 +535,7 @@ const GAMES = [
   },
   {
     id: "marubatsu-deluxe",
+    added: "2026-08-26",
     title: "○×DELUXE",
     emoji: "⭕",
     tags: ["対戦"],
@@ -483,6 +544,7 @@ const GAMES = [
   },
   {
     id: "rhythmer",
+    added: "2026-08-26",
     title: "Rhythmer",
     emoji: "🎵",
     tags: ["音楽・リズム"],
@@ -491,6 +553,7 @@ const GAMES = [
   },
   {
     id: "chinchiro-deluxe",
+    added: "2026-08-26",
     title: "チンチロDELUXE",
     emoji: "🎲",
     tags: ["RNG・運試し"],
@@ -499,6 +562,7 @@ const GAMES = [
   },
   {
     id: "nandokuka-tools",
+    added: "2026-08-26",
     title: "Nandokuka Tools",
     emoji: "🔐",
     tags: ["ツール"],
@@ -507,6 +571,7 @@ const GAMES = [
   },
   {
     id: "million-clicker",
+    added: "2026-08-26",
     title: "MILLION CLICKER",
     emoji: "👆",
     tags: ["クリッカー・放置"],
@@ -515,6 +580,7 @@ const GAMES = [
   },
   {
     id: "phosphor-calc",
+    added: "2026-08-26",
     title: "Phosphor Calc",
     emoji: "🧮",
     tags: ["ツール"],
@@ -523,6 +589,7 @@ const GAMES = [
   },
   {
     id: "hansha-deluxe",
+    added: "2026-08-27",
     title: "反射神経DELUXE",
     emoji: "⚡",
     tags: ["アクション"],
@@ -531,6 +598,7 @@ const GAMES = [
   },
   {
     id: "cookie-factory",
+    added: "2026-08-27",
     title: "Cookie Factory",
     emoji: "🍪",
     tags: ["クリッカー・放置"],
@@ -539,6 +607,7 @@ const GAMES = [
   },
   {
     id: "typing-deluxe",
+    added: "2026-08-28",
     title: "TYPING DELUXE",
     emoji: "⌨️",
     tags: ["アクション"],
@@ -547,6 +616,7 @@ const GAMES = [
   },
   {
     id: "once-a-year",
+    added: "2026-08-28",
     title: "ONCE A YEAR",
     emoji: "🗝️",
     tags: ["その他"],
@@ -555,6 +625,7 @@ const GAMES = [
   },
   {
     id: "hit-and-blow",
+    added: "2026-09-01",
     title: "HIT & BLOW 対戦",
     emoji: "🔢",
     tags: ["対戦"],
@@ -563,6 +634,7 @@ const GAMES = [
   },
   {
     id: "lobotomy-deluxe",
+    added: "2026-09-12",
     title: "LOBOTOMY DELUXE",
     emoji: "🧠",
     tags: ["シミュレーション"],
@@ -571,6 +643,7 @@ const GAMES = [
   },
   {
     id: "taiko-sim",
+    added: "2026-09-12",
     title: "TAIKO SIM",
     emoji: "🥁",
     tags: ["音楽・リズム"],
@@ -579,6 +652,7 @@ const GAMES = [
   },
   {
     id: "tower-clash",
+    added: "2026-09-12",
     title: "TOWER CLASH",
     emoji: "🏰",
     tags: ["対戦"],
@@ -587,6 +661,7 @@ const GAMES = [
   },
   {
     id: "ring-jump-deluxe",
+    added: "2026-09-13",
     title: "RING JUMP DELUXE",
     emoji: "🔴",
     tags: ["アクション"],
@@ -595,6 +670,7 @@ const GAMES = [
   },
   {
     id: "skill-tree-game",
+    added: "2026-09-13",
     title: "無限スキルツリー ～折れた世界樹～",
     emoji: "🌳",
     tags: ["クリッカー・放置"],
@@ -603,6 +679,7 @@ const GAMES = [
   },
   {
     id: "right-knock",
+    added: "2026-09-13",
     title: "正しいノック -THE RIGHT KNOCK-",
     emoji: "🚪",
     tags: ["ホラー・ノベル"],
@@ -611,6 +688,7 @@ const GAMES = [
   },
   {
     id: "kidoku",
+    added: "2026-09-14",
     title: "既読、しないで。",
     emoji: "💬",
     tags: ["ホラー・ノベル"],
@@ -619,6 +697,7 @@ const GAMES = [
   },
   {
     id: "paradox-loop",
+    added: "2026-09-15",
     title: "PARADOX LOOP",
     emoji: "🌀",
     tags: ["パズル"],
@@ -627,6 +706,7 @@ const GAMES = [
   },
   {
     id: "conveni-deluxe",
+    added: "2026-09-15",
     title: "CONVENI DELUXE",
     emoji: "🏪",
     tags: ["シミュレーション"],
@@ -635,6 +715,7 @@ const GAMES = [
   },
   {
     id: "message-deluxe",
+    added: "2026-09-15",
     title: "MESSAGE DELUXE",
     emoji: "💬",
     tags: ["ツール"],
@@ -643,6 +724,7 @@ const GAMES = [
   },
   {
     id: "stack-deluxe",
+    added: "2026-09-15",
     title: "STACK DELUXE",
     emoji: "🧱",
     tags: ["アクション"],
@@ -651,6 +733,7 @@ const GAMES = [
   },
   {
     id: "undertale-battle-emulator",
+    added: "2026-09-17",
     title: "UNDERTALE BATTLE EMULATOR",
     emoji: "💗",
     tags: ["アクション"],
@@ -659,6 +742,7 @@ const GAMES = [
   },
   {
     id: "scratch-deluxe",
+    added: "2026-09-17",
     title: "SCRATCH DELUXE",
     emoji: "🪙",
     tags: ["RNG・運試し"],
@@ -667,6 +751,7 @@ const GAMES = [
   },
   {
     id: "joo-j",
+    added: "2026-09-18",
     title: "異常観測機構 日本支部 (JOO-J)",
     emoji: "📁",
     tags: ["ホラー・ノベル"],
@@ -675,6 +760,7 @@ const GAMES = [
   },
   {
     id: "human-or-censored",
+    added: "2026-09-19",
     title: "human or [CENSORED]",
     emoji: "🚪",
     tags: ["ホラー・ノベル"],
@@ -683,6 +769,7 @@ const GAMES = [
   },
   {
     id: "anohi-no-machi",
+    added: "2026-09-19",
     title: "あの日の町",
     emoji: "📍",
     tags: ["ホラー・ノベル"],
@@ -691,6 +778,7 @@ const GAMES = [
   },
   {
     id: "singularity-run-01",
+    added: "2026-09-20",
     title: "GRAVITY DRIFT",
     emoji: "🌌",
     tags: ["アクション"],
@@ -700,6 +788,7 @@ const GAMES = [
   },
   {
     id: "bastion-neon-defense",
+    added: "2026-09-21",
     title: "BASTION // NEON DEFENSE",
     emoji: "🛡️",
     tags: ["シミュレーション"],
@@ -709,6 +798,7 @@ const GAMES = [
   },
   {
     id: "dreamcore-no-exit",
+    added: "2026-09-28",
     title: "DREAMCORE // NO EXIT",
     emoji: "◈",
     tags: ["ホラー・ノベル"],
@@ -717,6 +807,16 @@ const GAMES = [
     url: "https://dreamcore-6jfcky5e.manus.space/"
   }
 ];
+
+// ===== NEWバッジ(公開から7日間) =====
+const NEW_DAYS = 7;
+function isNewGame(g) {
+  if (!g.added) return false;
+  const [y, m, d] = g.added.split("-").map(Number);
+  const now = new Date();
+  const days = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(y, m - 1, d)) / 86400000);
+  return days >= 0 && days < NEW_DAYS;
+}
 
 // ===== Cookie ヘルパー =====
 function setCookie(name, value, days) {
@@ -958,7 +1058,8 @@ function render() {
 
   list.forEach(g => {
     const card = document.createElement("article");
-    card.className = "game-card";
+    const isNew = isNewGame(g);
+    card.className = isNew ? "game-card is-new" : "game-card";
     const isFav = favorites.has(g.id);
 
     const hasVotes = typeof GameVotes !== "undefined";
@@ -971,6 +1072,7 @@ function render() {
     const hasMoreDesc = shortDesc.length < g.desc.length;
 
     card.innerHTML = `
+      ${isNew ? `<span class="new-badge" aria-label="新作">NEW</span>` : ""}
       <div class="card-top">
         <div class="card-emoji">${g.emoji}</div>
         <div class="card-top-btns">
