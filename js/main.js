@@ -859,8 +859,7 @@ function applyTheme(theme) {
     document.getElementById("themeToggle").textContent = "🌙";
   }
 }
-const savedTheme = getCookie("theme") ||
-  (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+const savedTheme = getCookie("theme") || "dark";
 applyTheme(savedTheme);
 
 document.getElementById("themeToggle").addEventListener("click", () => {

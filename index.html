@@ -22,13 +22,17 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#6c5ce7">
 <link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/arcade.css?v=1">
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
-    <h1 class="logo" title="見た目より反応がいいかも？"><span class="logo-emoji">🎮</span>かるわか GAMES</h1>
+    <h1 class="logo" title="見た目より反応がいいかも？"><span class="logo-emoji">🎮</span>かるわか GAMES<span class="logo-sub">GAME CENTER</span></h1>
     <div class="header-controls">
       <button id="randomPickBtn" class="icon-btn" title="今日の1本(Rキー)。連打すると運命が変わるかも" aria-label="ランダムでゲームを選ぶ">🎲</button>
       <button id="shareBtn" class="icon-btn" title="このサイトを共有" aria-label="このサイトを共有">🔗</button>
@@ -40,6 +44,11 @@
 <main class="container">
 
   <section class="april-banner" id="aprilBanner" hidden></section>
+
+  <section class="arcade-hero" aria-label="営業中">
+    <button class="hero-insert" id="heroInsert" type="button">🪙 INSERT COIN</button>
+    <p class="hero-sub" id="heroSub"></p>
+  </section>
 
   <section class="stat-dashboard" id="statDashboard" aria-label="サイトの統計"></section>
 
@@ -1009,6 +1018,7 @@
 <script src="js/main.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/aprilfools.js"></script>
+<script src="js/arcade.js"></script>
 <script src="js/changelog.js?v=2"></script>
 <script>
   // PWA: Service Worker 登録(オフラインでも一覧を見られるようにする)
