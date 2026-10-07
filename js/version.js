@@ -844,5 +844,12 @@ const CHANGELOG = [
     notes: [
       "GLITCH RUN DELUXEの紹介文を更新(全10ステージ・キー設定対応)"
     ]
+  },
+  {
+    version: "1.119.0",
+    date: "2026-10-07",
+    notes: [
+      "Divine出現タイマー(卵を盗むでDivineが出やすい時間帯をみんなの記録から計算するツール)を追加"
+    ]
   }
 ];
