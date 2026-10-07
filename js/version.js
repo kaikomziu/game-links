@@ -837,5 +837,12 @@ const CHANGELOG = [
     notes: [
       "GLITCH RUN DELUXE(隠されたバグを使って最速タイムを狙う2Dスピードランアクション)を追加"
     ]
+  },
+  {
+    version: "1.118.0",
+    date: "2026-10-07",
+    notes: [
+      "GLITCH RUN DELUXEの紹介文を更新(全10ステージ・キー設定対応)"
+    ]
   }
 ];
