@@ -208,7 +208,7 @@ body {
 
 /* ===== ゲーム筐体カード ===== */
 .game-grid {
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr));
   gap: 30px 20px;
   padding-top: 8px;
 }
@@ -326,6 +326,56 @@ body {
 .rp-dialog { border: 3px solid var(--cab-edge); }
 .rp-caption { font-family: var(--font-pixel); letter-spacing: 0.08em; }
 .site-footer { font-size: 0.78rem; }
+
+/* ===== 自己紹介カード ===== */
+.profile-card {
+  position: relative;
+  margin: 0 0 18px;
+  padding: 16px 18px 14px;
+  background: var(--bg-elevated);
+  border: 3px solid var(--cab-edge);
+  border-left: 8px solid var(--neon-pink);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+.profile-label {
+  margin: 0 0 2px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.profile-name {
+  margin: 0 0 8px;
+  font-family: var(--font-pixel);
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+.profile-role {
+  margin-left: 8px;
+  padding: 1px 8px;
+  vertical-align: middle;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--neon-cyan);
+  background: var(--screen);
+  border: 1px solid var(--cab-edge);
+  border-radius: 4px;
+}
+.profile-list { margin: 0 0 8px; padding-left: 1.2em; }
+.profile-list li + li { margin-top: 3px; }
+.profile-count {
+  margin: 0 0 6px;
+  font-family: var(--font-pixel);
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.profile-count:empty { display: none; }
+.profile-foot { margin: 0; color: var(--text-muted); }
+.profile-foot a { color: var(--accent); font-weight: 700; }
 
 @media (max-width: 700px) {
   .toolbar-right { flex-wrap: wrap; width: 100%; margin-left: 0; gap: 10px; }
