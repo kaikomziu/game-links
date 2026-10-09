@@ -904,5 +904,12 @@ const CHANGELOG = [
     notes: [
       "自己紹介の好きなRobloxゲームに「Backrooms [REDACTED]」を追加"
     ]
+  },
+  {
+    version: "1.127.0",
+    date: "2026-10-09",
+    notes: [
+      "「Minecraft MOD Wiki」を追加(だれでも編集できるマイクラMOD解説Wiki)"
+    ]
   }
 ];
