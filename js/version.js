@@ -911,5 +911,12 @@ const CHANGELOG = [
     notes: [
       "「Minecraft MOD Wiki」を追加(だれでも編集できるマイクラMOD解説Wiki)"
     ]
+  },
+  {
+    version: "1.128.0",
+    date: "2026-10-10",
+    notes: [
+      "Minecraft MOD Wiki のURLを新しい場所(GitHub Pages)に変更"
+    ]
   }
 ];

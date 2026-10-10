@@ -8,7 +8,7 @@ const GAMES = [
     emoji: "🧱",
     tags: ["ツール"],
     desc: "マイクラ(Minecraft)のMOD・リソースパック・MODパックを日本語で解説する、だれでも編集できるWiki。ログイン不要でブラウザからページを作ったり直したりでき、編集はユーザー名つきで履歴に残るので、差分を見て元の版に戻すこともできる。対応バージョン・MODローダー(Forge/NeoForge/Fabric/Quilt)・ジャンルはタグから選ぶだけで、一覧はバージョン別・ローダー別・ジャンル別に絞り込める。CurseForge/ModrinthのURLを入れると、MOD名・対応バージョン・作者・ダウンロード数などを自動で読み込む。**太字**などの簡単な書き方で本文を書け、画像・GIFの貼り付け、作業台・かまどのレシピ表示、本文まで探せる検索、おすすめMODのまとめ記事にも対応。荒らし対策に通報ボタンと管理者機能つき。PC/スマホ対応。",
-    url: "https://mc-mod-wiki-ja.netlify.app/"
+    url: "https://kaikomziu.github.io/mc-mod-wiki/"
   },
   {
     id: "smash-room",
