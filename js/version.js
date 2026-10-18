@@ -918,5 +918,12 @@ const CHANGELOG = [
     notes: [
       "Minecraft MOD Wiki のURLを新しい場所(GitHub Pages)に変更"
     ]
+  },
+  {
+    version: "1.129.0",
+    date: "2026-10-18",
+    notes: [
+      "「MUSIC LiDAR」を追加(ブラウザで遊べる4キー音ゲー。ランキング・ガチャ・譜面メーカー付き)"
+    ]
   }
 ];
