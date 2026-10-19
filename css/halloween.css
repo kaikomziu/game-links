@@ -1,5 +1,6 @@
 /* ハロウィンイベント(10/24〜11/2 または ?halloween)。arcade.cssの後に読み込み、html.halloween の時だけ効く */
-html.halloween {
+html.halloween,
+html.hw-palette {
   --bg: #0d0613;
   --bg-elevated: #1a0d26;
   --text: #fff1e0;
@@ -18,7 +19,8 @@ html.halloween {
   --marquee: linear-gradient(90deg, #ff7a1a, #8a2be2, #7dff3a, #ff7a1a);
   --shadow: 0 6px 22px rgba(255, 122, 26, 0.18);
 }
-html.halloween body {
+html.halloween body,
+html.hw-palette body {
   background:
     radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 18px 18px,
     radial-gradient(900px 480px at 50% -8%, rgba(255, 122, 26, 0.24), transparent 62%),
@@ -26,13 +28,17 @@ html.halloween body {
     var(--bg);
   background-attachment: fixed;
 }
-html.halloween .site-header {
+html.halloween .site-header,
+html.hw-palette .site-header {
   background: linear-gradient(180deg, #2a1040, #12061c);
   box-shadow: 0 4px 26px rgba(255, 122, 26, 0.4);
 }
-html.halloween .icon-btn { background: #24102f; }
-html.halloween .logo-sub { color: var(--neon-cyan); }
-html.halloween .game-card::after {
+html.halloween .icon-btn,
+html.hw-palette .icon-btn { background: #24102f; }
+html.halloween .logo-sub,
+html.hw-palette .logo-sub { color: var(--neon-cyan); }
+html.halloween .game-card::after,
+html.hw-webs .game-card::after {
   content: "🕸️";
   position: absolute;
   right: 8px;
@@ -185,3 +191,70 @@ html.halloween .game-card::after {
   .hw-trick-overlay { animation: hwFade 1.4s ease forwards; }
   @keyframes hwFade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
 }
+
+/* ===== お菓子ショップ ===== */
+.cs-dialog { width: min(520px, 100%); max-height: min(82vh, 640px); display: flex; flex-direction: column; }
+.cs-balance { margin: 0 0 8px; font-family: var(--font-pixel); color: var(--accent); }
+.cs-balance b { font-size: 1.25rem; }
+.cs-list { list-style: none; margin: 0; padding: 0 4px 0 0; overflow-y: auto; }
+.cs-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.cs-emoji {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 8px;
+}
+.cs-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cs-info b { font-family: var(--font-pixel); font-weight: 400; letter-spacing: 0.03em; }
+.cs-info small { color: var(--text-muted); font-size: 0.74rem; line-height: 1.4; }
+.cs-btn {
+  flex: 0 0 auto;
+  min-width: 84px;
+  padding: 7px 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.82rem;
+  color: #fff;
+  background: var(--neon-pink);
+  border: 2px solid var(--cab-edge);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.cs-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.cs-btn.on { background: var(--neon-green); color: #112; }
+.cs-btn.off { background: var(--screen); color: var(--text-muted); }
+.cs-note { margin: 10px 0 0; color: var(--text-muted); font-size: 0.74rem; line-height: 1.5; }
+
+/* ===== お菓子ショップで買えるもの ===== */
+.hw-buddy {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  font-size: 1.6rem;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(255, 122, 26, 0.7));
+}
+@media (prefers-reduced-motion: reduce) {
+  .hw-buddy { left: auto; right: 16px; top: auto; bottom: 16px; }
+}
+.hw-bat {
+  position: fixed;
+  top: var(--y, 30vh);
+  z-index: 90;
+  font-size: 1.5rem;
+  pointer-events: none;
+  animation: hwFly var(--dur, 6s) linear forwards, hwBob 0.6s ease-in-out infinite;
+}
+.hw-bat.rtl { animation-name: hwFlyBack, hwBob; }

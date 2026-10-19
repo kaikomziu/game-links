@@ -6,7 +6,6 @@
 // 内容: 夜のハロウィン配色、時々画面を横切るおばけ(クリックでお菓子 or イタズラ)、お菓子カウンター。
 // main.js / extras.js の後に読み込まれる前提。
 const Halloween = (() => {
-  const CANDY_KEY = "gl_halloween_candy";
 
   function forcedByUrl() {
     try { return new URLSearchParams(location.search).has("halloween"); } catch (e) { return false; }
@@ -46,13 +45,9 @@ const Halloween = (() => {
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
   const toast = (msg) => { if (typeof GameExtras !== "undefined") GameExtras.showToast(msg); };
 
-  function getCandy() {
-    try { return parseInt(localStorage.getItem(CANDY_KEY), 10) || 0; } catch (e) { return 0; }
-  }
-  function setCandy(n) {
-    try { localStorage.setItem(CANDY_KEY, String(n)); } catch (e) {}
+  function updateCandyLabel() {
     const el = document.getElementById("hwCandy");
-    if (el) el.textContent = `🍬 ${n}`;
+    if (el) el.textContent = `🍬 ${Candy.get()}`;
   }
 
   function buildBanner() {
@@ -64,9 +59,13 @@ const Halloween = (() => {
     el.innerHTML =
       `<span class="hw-title">🎃 HALLOWEEN NIGHT 🦇</span>` +
       `<span class="hw-msg">${MESSAGES[phase()]}</span>` +
-      `<span class="hw-candy" id="hwCandy">🍬 ${getCandy()}</span>` +
+      `<span class="hw-candy" id="hwCandy">🍬 ${Candy.get()}</span>` +
+      `<button type="button" id="hwShop">お菓子ショップ</button>` +
       `<button type="button" id="hwDismiss">通常表示に戻す</button>`;
     host.insertBefore(el, host.firstChild);
+    document.getElementById("hwShop").addEventListener("click", () => {
+      if (typeof CandyShop !== "undefined") CandyShop.open();
+    });
     document.getElementById("hwDismiss").addEventListener("click", () => {
       try { sessionStorage.setItem("gl_no_halloween", "1"); } catch (e) {}
       location.reload();
@@ -91,8 +90,7 @@ const Halloween = (() => {
   }
 
   function treat(x, y) {
-    const n = getCandy() + 1;
-    setCandy(n);
+    const n = Candy.add(1);
     const pop = document.createElement("span");
     pop.className = "hw-pop";
     pop.textContent = "+1 🍬";
@@ -167,11 +165,12 @@ const Halloween = (() => {
     fog.className = "hw-fog";
     document.body.appendChild(fog);
     buildBanner();
+    Candy.onChange(updateCandyLabel);
     if (phase() === "day") pumpkinRain();
     scheduleGhosts();
   }
 
   document.addEventListener("DOMContentLoaded", init);
 
-  return { isActive: active, spawnGhost, treat, trick };
+  return { isActive: active, spawnGhost, treat, trick, pumpkinRain };
 })();

@@ -383,7 +383,10 @@ body {
 }
 
 @media (max-width: 560px) {
-  .logo { font-size: 1.2rem; }
+  .header-inner { padding: 14px 12px; }
+  .header-controls { gap: 6px; }
+  .icon-btn { width: 34px; height: 34px; font-size: 1rem; }
+  .logo { font-size: 1.1rem; gap: 4px; letter-spacing: 0.04em; }
   .logo-sub { display: none; }
   .hero-insert { font-size: 1.15rem; letter-spacing: 0.14em; }
 }
