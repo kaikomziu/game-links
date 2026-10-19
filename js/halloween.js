@@ -17,13 +17,8 @@ const Halloween = (() => {
   function dismissedThisSession() {
     try { return sessionStorage.getItem("gl_no_halloween") === "1"; } catch (e) { return false; }
   }
-  // 隠しコマンド「halloween」と打つと、この端末だけ常にハロウィン状態にできる(もう一度打つと解除)
-  const PREVIEW_KEY = "gl_halloween_preview";
-  function previewOn() {
-    try { return localStorage.getItem(PREVIEW_KEY) === "1"; } catch (e) { return false; }
-  }
   function active() {
-    if (forcedByUrl() || previewOn()) return true;
+    if (forcedByUrl()) return true;
     if (dismissedThisSession()) return false;
     return inWindow(new Date());
   }
@@ -175,23 +170,7 @@ const Halloween = (() => {
     scheduleGhosts();
   }
 
-  function initSecretWord() {
-    let buf = "";
-    document.addEventListener("keydown", (e) => {
-      const t = e.target;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
-      if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return;
-      buf = (buf + e.key.toLowerCase()).slice(-9);
-      if (buf !== "halloween") return;
-      buf = "";
-      const next = !previewOn();
-      try { localStorage.setItem(PREVIEW_KEY, next ? "1" : "0"); } catch (err) {}
-      toast(next ? "🎃 ハロウィンモード ON(もう一度「halloween」でOFF)" : "ハロウィンモード OFF");
-      setTimeout(() => location.reload(), 700);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => { init(); initSecretWord(); });
+  document.addEventListener("DOMContentLoaded", init);
 
   return { isActive: active, spawnGhost, treat, trick, pumpkinRain };
 })();
