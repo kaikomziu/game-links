@@ -1,0 +1,187 @@
+/* ハロウィンイベント(10/24〜11/2 または ?halloween)。arcade.cssの後に読み込み、html.halloween の時だけ効く */
+html.halloween {
+  --bg: #0d0613;
+  --bg-elevated: #1a0d26;
+  --text: #fff1e0;
+  --text-muted: #c9a9d8;
+  --border: #4a2a63;
+  --accent: #ff7a1a;
+  --accent-soft: #3a1d12;
+  --star: #ffb347;
+  --ink: #6b3a8f;
+  --cab-edge: #6b3a8f;
+  --screen: #0a0410;
+  --neon-pink: #ff7a1a;
+  --neon-cyan: #7dff3a;
+  --neon-yellow: #ffd24a;
+  --neon-green: #b6ff5a;
+  --marquee: linear-gradient(90deg, #ff7a1a, #8a2be2, #7dff3a, #ff7a1a);
+  --shadow: 0 6px 22px rgba(255, 122, 26, 0.18);
+}
+html.halloween body {
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 18px 18px,
+    radial-gradient(900px 480px at 50% -8%, rgba(255, 122, 26, 0.24), transparent 62%),
+    radial-gradient(800px 460px at 100% 28%, rgba(138, 43, 226, 0.2), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+html.halloween .site-header {
+  background: linear-gradient(180deg, #2a1040, #12061c);
+  box-shadow: 0 4px 26px rgba(255, 122, 26, 0.4);
+}
+html.halloween .icon-btn { background: #24102f; }
+html.halloween .logo-sub { color: var(--neon-cyan); }
+html.halloween .game-card::after {
+  content: "🕸️";
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  font-size: 1.1rem;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ===== バナー ===== */
+.halloween-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, #2a1040, #3a1d12);
+  border: 3px solid #6b3a8f;
+  border-left: 8px solid #ff7a1a;
+  border-radius: 12px;
+  box-shadow: 0 0 22px rgba(255, 122, 26, 0.3);
+  color: #fff1e0;
+  font-size: 0.86rem;
+}
+.hw-title {
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: #ffb347;
+  text-shadow: 0 0 8px #ff7a1a, 0 0 18px #ff7a1a;
+}
+.hw-msg { flex: 1 1 220px; }
+.hw-candy {
+  font-family: var(--font-pixel);
+  color: #b6ff5a;
+  text-shadow: 0 0 6px rgba(182, 255, 90, 0.7);
+  white-space: nowrap;
+}
+.halloween-banner button {
+  border: 2px solid #6b3a8f;
+  background: #1a0d26;
+  color: #ffb347;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.halloween-banner button:hover { border-color: #ff7a1a; }
+
+/* ===== ただよう霧 ===== */
+.hw-fog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 140px;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(138, 43, 226, 0.28), transparent);
+  animation: hwFog 9s ease-in-out infinite alternate;
+}
+@keyframes hwFog {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+/* ===== 横切るおばけ ===== */
+.hw-ghost {
+  position: fixed;
+  top: var(--y, 40vh);
+  z-index: 120;
+  padding: 4px;
+  font-size: 2.4rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  filter: drop-shadow(0 0 10px rgba(255, 122, 26, 0.8));
+  animation: hwFly var(--dur, 9s) linear forwards, hwBob 1.2s ease-in-out infinite;
+}
+.hw-ghost.rtl { animation-name: hwFlyBack, hwBob; }
+@keyframes hwFly {
+  from { left: -70px; }
+  to { left: calc(100vw + 20px); }
+}
+@keyframes hwFlyBack {
+  from { left: calc(100vw + 20px); }
+  to { left: -70px; }
+}
+@keyframes hwBob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-14px) rotate(6deg); }
+}
+.hw-pop {
+  position: fixed;
+  z-index: 121;
+  pointer-events: none;
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  color: #b6ff5a;
+  text-shadow: 0 0 8px #7dff3a;
+  animation: hwPop 1s ease-out forwards;
+}
+@keyframes hwPop {
+  to { transform: translateY(-50px); opacity: 0; }
+}
+
+/* ===== イタズラ(TRICK) ===== */
+.hw-trick-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+  background: rgba(5, 0, 10, 0.88);
+  animation: hwFlash 1.4s steps(1) forwards;
+}
+.hw-trick-emoji { font-size: 6rem; }
+.hw-trick-text {
+  font-family: var(--font-pixel);
+  font-size: 1.6rem;
+  letter-spacing: 0.2em;
+  color: #ff7a1a;
+  text-shadow: 0 0 10px #ff7a1a;
+}
+@keyframes hwFlash {
+  0% { opacity: 1; }
+  15% { opacity: 0.2; }
+  30% { opacity: 1; }
+  45% { opacity: 0.4; }
+  60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.hw-shake .game-card { animation: hwShake 0.4s linear 3; }
+@keyframes hwShake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  25% { transform: translateX(-4px) rotate(-1deg); }
+  75% { transform: translateX(4px) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hw-fog,
+  .hw-shake .game-card { animation: none; }
+  .hw-ghost { animation: none; left: var(--x, 40vw); }
+  .hw-trick-overlay { animation: hwFade 1.4s ease forwards; }
+  @keyframes hwFade { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+}
