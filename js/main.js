@@ -2,6 +2,15 @@
 // 新規ゲームは必ず added: "YYYY-MM-DD"(公開日)を付けること。公開から7日間だけ「NEW」バッジが出る。
 const GAMES = [
   {
+    id: "mixall-plus",
+    added: "2026-10-20",
+    title: "MixAll+",
+    emoji: "🌐",
+    tags: ["オンライン協力", "ツール"],
+    desc: "掲示板「Uch」、個人・グループチャット「ぽけっと」、動画も投稿できるSNS「Ghost」、疑似メール、3Dワールドを作って遊べる「カスタム」、お絵かき・動画編集のスタジオ、便利ツール集までひとつにまとめたコミュニティサイト。チャットの本文はサーバーに残さず自分の端末に保存され、Googleドライブにも任意でバックアップできる。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/mixall/"
+  },
+  {
     id: "music-lidar",
     added: "2026-10-18",
     title: "MUSIC LiDAR",

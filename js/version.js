@@ -962,5 +962,12 @@ const CHANGELOG = [
     notes: [
       "隠しコマンド「halloween」(文字入力での切り替え)を廃止。期間外にハロウィン状態を確認したいときは、URLに ?halloween を付ける"
     ]
+  },
+  {
+    version: "1.135.0",
+    date: "2026-10-20",
+    notes: [
+      "MixAll+を追加"
+    ]
   }
 ];
