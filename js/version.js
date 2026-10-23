@@ -969,5 +969,12 @@ const CHANGELOG = [
     notes: [
       "MixAll+を追加"
     ]
+  },
+  {
+    version: "1.136.0",
+    date: "2026-10-23",
+    notes: [
+      "日本駅(Three.jsの3D電車運転ゲーム。脱線するまでの走行距離がコインになる)を追加"
+    ]
   }
 ];
