@@ -5,7 +5,6 @@ const GAMES = [
   {
     id: "abno-facility",
     added: "2026-10-27",
-    maintenance: "音声処理に非数値が渡りJS例外が発生",
     title: "異常収容施設 管理記録",
     emoji: "👁️",
     tags: ["シミュレーション", "ホラー・ノベル"],
