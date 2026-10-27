@@ -529,7 +529,6 @@ const GAMES = [
   {
     id: "suika-deluxe",
     added: "2026-08-26",
-    maintenance: "オンライン対戦用のSupabaseプロジェクトが消滅(通信不可)",
     title: "SUIKA DELUXE",
     emoji: "🍉",
     tags: ["パズル"],
