@@ -323,7 +323,6 @@ const GAMES = [
   {
     id: "stonks",
     added: "2026-08-30",
-    maintenance: "取引・日送りの操作でJS例外が発生",
     title: "STONKS",
     emoji: "📈",
     tags: ["シミュレーション"],
