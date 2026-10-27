@@ -3,7 +3,8 @@
   const sub = document.getElementById("heroSub");
   if (sub && typeof GAMES !== "undefined") {
     const fresh = typeof isNewGame === "function" ? GAMES.filter(isNewGame).length : 0;
-    sub.textContent = `NOW OPEN ─ 稼働中の筐体 ${GAMES.length}台` + (fresh ? ` / NEW ${fresh}台` : "");
+    const maint = GAMES.filter((g) => g.maintenance).length;
+    sub.textContent = `NOW OPEN ─ 稼働中の筐体 ${GAMES.length - maint}台` + (fresh ? ` / NEW ${fresh}台` : "") + (maint ? ` / メンテナンス中 ${maint}台` : "");
   }
   const count = document.getElementById("profileCount");
   if (count && typeof GAMES !== "undefined") {

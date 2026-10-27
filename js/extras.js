@@ -55,13 +55,15 @@ const GameExtras = (() => {
   // ---------- 今日の1本(ランダムピック) ----------
   function visibleGames() {
     // 検索・タグの絞り込みが効いていれば、その中から選ぶ
+    // メンテナンス中のゲームは選ばない
+    const playable = GAMES.filter((g) => !g.maintenance);
     const cards = [...document.querySelectorAll("#gameGrid .game-card .card-title")].map((h) => h.textContent);
     if (cards.length && cards.length < GAMES.length) {
       const set = new Set(cards);
-      const filtered = GAMES.filter((g) => set.has(g.title));
+      const filtered = playable.filter((g) => set.has(g.title));
       if (filtered.length) return filtered;
     }
-    return GAMES;
+    return playable;
   }
   let lastPickId = null;
   function pickRandom(opts) {

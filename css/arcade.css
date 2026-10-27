@@ -398,3 +398,42 @@ body {
   .game-card:hover::before,
   .game-card.is-new::before { animation: none; }
 }
+
+/* ===== メンテナンス中のゲーム(遊べない) ===== */
+.game-card.is-maintenance {
+  border-color: #6b6b6b;
+  box-shadow: none;
+  filter: grayscale(0.85) brightness(0.8);
+}
+.game-card.is-maintenance:hover { transform: none; border-color: #6b6b6b; }
+.game-card.is-maintenance::before {
+  background: repeating-linear-gradient(135deg, #ffd23f 0 12px, #1d1240 12px 24px);
+  animation: none;
+}
+.maint-badge {
+  position: absolute;
+  top: -14px;
+  right: -8px;
+  z-index: 2;
+  padding: 3px 9px;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: #1d1240;
+  background: #ffd23f;
+  border: 2px solid #1d1240;
+  border-radius: 6px;
+  transform: rotate(4deg);
+  pointer-events: none;
+}
+.play-btn.maintenance-btn,
+.play-btn.maintenance-btn:hover {
+  cursor: not-allowed;
+  background: #4a4a4a;
+  color: #bbb;
+  border-color: #333;
+  box-shadow: none;
+  text-shadow: none;
+  filter: none;
+  transform: none;
+}

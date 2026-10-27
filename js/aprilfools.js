@@ -126,7 +126,7 @@ const AprilFools = (() => {
 
   function swapPlayButtons() {
     document
-      .querySelectorAll(`#gameGrid .game-card:not([${JOKE_CARD_ATTR}]) .play-btn`)
+      .querySelectorAll(`#gameGrid .game-card:not([${JOKE_CARD_ATTR}]) .play-btn:not(.maintenance-btn)`)
       .forEach((el) => { el.textContent = "たぶん遊べる →"; });
   }
 

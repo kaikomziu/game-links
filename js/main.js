@@ -1,9 +1,11 @@
 // ===== ゲーム一覧データ =====
 // 新規ゲームは必ず added: "YYYY-MM-DD"(公開日)を付けること。公開から7日間だけ「NEW」バッジが出る。
+// 不具合のあるゲームは maintenance: "理由メモ" を付けると「メンテナンス中」表示になり、一覧からプレイできなくなる(直ったら削除する)。
 const GAMES = [
   {
     id: "abno-facility",
     added: "2026-10-27",
+    maintenance: "音声処理に非数値が渡りJS例外が発生",
     title: "異常収容施設 管理記録",
     emoji: "👁️",
     tags: ["シミュレーション", "ホラー・ノベル"],
@@ -194,6 +196,7 @@ const GAMES = [
   {
     id: "dotbattle",
     added: "2026-09-14",
+    maintenance: "Renderのサーバーが存在せず404(ホスティング停止)",
     title: "ドットバトル",
     emoji: "🔴",
     tags: ["対戦"],
@@ -320,6 +323,7 @@ const GAMES = [
   {
     id: "stonks",
     added: "2026-08-30",
+    maintenance: "取引・日送りの操作でJS例外が発生",
     title: "STONKS",
     emoji: "📈",
     tags: ["シミュレーション"],
@@ -527,6 +531,7 @@ const GAMES = [
   {
     id: "suika-deluxe",
     added: "2026-08-26",
+    maintenance: "オンライン対戦用のSupabaseプロジェクトが消滅(通信不可)",
     title: "SUIKA DELUXE",
     emoji: "🍉",
     tags: ["パズル"],
@@ -563,6 +568,7 @@ const GAMES = [
   {
     id: "yomigana-sorter",
     added: "2026-09-21",
+    maintenance: "辞書ファイルの読み込み先URLが誤りで、実行すると固まる",
     title: "読み仮名順テキスト並べ替え",
     emoji: "🔤",
     tags: ["ツール"],
@@ -1102,8 +1108,9 @@ function render() {
 
   list.forEach(g => {
     const card = document.createElement("article");
-    const isNew = isNewGame(g);
-    card.className = isNew ? "game-card is-new" : "game-card";
+    const maint = !!g.maintenance;
+    const isNew = isNewGame(g) && !maint;
+    card.className = "game-card" + (isNew ? " is-new" : "") + (maint ? " is-maintenance" : "");
     const isFav = favorites.has(g.id);
 
     const hasVotes = typeof GameVotes !== "undefined";
@@ -1117,6 +1124,7 @@ function render() {
 
     card.innerHTML = `
       ${isNew ? `<span class="new-badge" aria-label="新作">NEW</span>` : ""}
+      ${maint ? `<span class="maint-badge">🔧 メンテナンス中</span>` : ""}
       <div class="card-top">
         <div class="card-emoji">${g.emoji}</div>
         <div class="card-top-btns">
@@ -1140,7 +1148,9 @@ function render() {
           👎 <span class="vote-count">${counts.dislike}</span>
         </button>
       </div>
-      <a class="play-btn" href="${g.url}" target="_blank" rel="noopener">遊びに行く →</a>
+      ${maint
+        ? `<span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
+        : `<a class="play-btn" href="${g.url}" target="_blank" rel="noopener">遊びに行く →</a>`}
       <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
@@ -1166,9 +1176,12 @@ function render() {
     card.querySelector(".share-btn").addEventListener("click", () => {
       if (typeof GameExtras !== "undefined") GameExtras.shareGame(g.title, g.url);
     });
-    card.querySelector(".play-btn").addEventListener("click", () => {
-      if (typeof GameStats !== "undefined") GameStats.recordPlay(g.id);
-    });
+    const playLink = card.querySelector("a.play-btn");
+    if (playLink) {
+      playLink.addEventListener("click", () => {
+        if (typeof GameStats !== "undefined") GameStats.recordPlay(g.id);
+      });
+    }
 
     if (hasVotes) {
       card.querySelectorAll(".vote-btn").forEach((btn) => {

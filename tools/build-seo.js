@@ -104,7 +104,9 @@ function renderCard(game) {
     ...(game.author
       ? [`        <p class="card-author">作者: ${escapeHtml(game.author)}</p>`]
       : []),
-    `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">遊びに行く →</a>`,
+    game.maintenance
+      ? `        <span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
+      : `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">遊びに行く →</a>`,
     `      </article>`,
   ].join("\n");
 }
@@ -148,7 +150,7 @@ function main() {
 function buildSitemap(games) {
   const HUB = "https://kaikomziu.github.io/game-links/";
   const today = new Date().toISOString().slice(0, 10);
-  const urls = [HUB, ...games.map((g) => g.url)];
+  const urls = [HUB, ...games.filter((g) => !g.maintenance).map((g) => g.url)];
   // 重複除去・順序維持
   const seen = new Set();
   const uniq = urls.filter((u) => (seen.has(u) ? false : (seen.add(u), true)));
