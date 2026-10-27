@@ -568,7 +568,6 @@ const GAMES = [
   {
     id: "yomigana-sorter",
     added: "2026-09-21",
-    maintenance: "辞書ファイルの読み込み先URLが誤りで、実行すると固まる",
     title: "読み仮名順テキスト並べ替え",
     emoji: "🔤",
     tags: ["ツール"],
