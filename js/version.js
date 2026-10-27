@@ -1004,5 +1004,12 @@ const CHANGELOG = [
     notes: [
       "MixAll+の名前を「MixAll +（二世代）」に変更"
     ]
+  },
+  {
+    version: "1.141.0",
+    date: "2026-10-27",
+    notes: [
+      "異常収容施設 管理記録(怪物管理シミュレーション。MODローダー「Essen」付き)を追加"
+    ]
   }
 ];

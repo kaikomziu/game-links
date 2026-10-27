@@ -2,6 +2,15 @@
 // 新規ゲームは必ず added: "YYYY-MM-DD"(公開日)を付けること。公開から7日間だけ「NEW」バッジが出る。
 const GAMES = [
   {
+    id: "abno-facility",
+    added: "2026-10-27",
+    title: "異常収容施設 管理記録",
+    emoji: "👁️",
+    tags: ["シミュレーション", "ホラー・ノベル"],
+    desc: "Lobotomy Corporation風の怪物管理シミュレーション(非公式ファンゲーム)。職員に観察・対話・世話・制圧の作業を指示して怪物の機嫌を保ち、機嫌が0になると脱走した怪物をリアルタイムで鎮圧する。研究ptで情報解禁・装備作成・職員育成をしながら、施設を崩壊させずに20日間生き延びればクリア。MODローダー「Essen」で怪物を自作して.essenファイルで共有もできる。PC/スマホ対応。",
+    url: "https://kaikomziu.github.io/abno-facility/"
+  },
+  {
     id: "nihon-eki",
     added: "2026-10-23",
     title: "日本駅",
