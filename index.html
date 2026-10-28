@@ -26,7 +26,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/arcade.css?v=7">
+<link rel="stylesheet" href="css/arcade.css?v=8">
+<link rel="stylesheet" href="css/layout.css?v=4">
 <link rel="stylesheet" href="css/halloween.css?v=2">
 </head>
 <body>
@@ -34,6 +35,9 @@
 <header class="site-header">
   <div class="header-inner">
     <h1 class="logo" title="見た目より反応がいいかも？"><span class="logo-emoji">🎮</span>かるわか GAMES<span class="logo-sub">GAME CENTER</span></h1>
+    <div class="header-search">
+      <input type="search" id="searchInput" class="search-input" placeholder="🔍 作品を検索…（/キー）" aria-label="作品を検索">
+    </div>
     <div class="header-controls">
       <button id="randomPickBtn" class="icon-btn" title="今日の1本(Rキー)。連打すると運命が変わるかも" aria-label="ランダムでゲームを選ぶ">🎲</button>
       <button id="shareBtn" class="icon-btn" title="このサイトを共有" aria-label="このサイトを共有">🔗</button>
@@ -46,6 +50,14 @@
 
   <section class="april-banner" id="aprilBanner" hidden></section>
 
+  <!-- 情報バー: INSERT COIN・稼働台数・自己紹介/統計の開閉ボタンを1行に -->
+  <section class="info-bar" id="infoBar" aria-label="営業中">
+    <button class="hero-insert" id="heroInsert" type="button">🪙 INSERT COIN</button>
+    <p class="hero-sub" id="heroSub"></p>
+    <button class="info-toggle" id="infoToggle" type="button" aria-expanded="false" aria-controls="infoPanel">ℹ️ 自己紹介・統計 ▾</button>
+  </section>
+
+  <div class="info-panel" id="infoPanel" hidden>
   <section class="profile-card" aria-label="自己紹介">
     <p class="profile-label">PLAYER 1</p>
     <h2 class="profile-name">かるわか <span class="profile-role">学生</span></h2>
@@ -57,49 +69,44 @@
     <p class="profile-count" id="profileCount"></p>
     <p class="profile-foot">ゆっくり遊んでいってください。 <a href="https://www.roblox.com/ja/users/3638857187/profile" target="_blank" rel="noopener">Robloxのプロフィール(@Shoumashou)</a></p>
   </section>
+    <div class="info-side">
+      <section class="stat-dashboard" id="statDashboard" aria-label="サイトの統計"></section>
+      <section class="today-banner" id="todayBanner" aria-live="polite"></section>
+    </div>
+  </div>
 
-  <section class="arcade-hero" aria-label="営業中">
-    <button class="hero-insert" id="heroInsert" type="button">🪙 INSERT COIN</button>
-    <p class="hero-sub" id="heroSub"></p>
-  </section>
-
-  <section class="stat-dashboard" id="statDashboard" aria-label="サイトの統計"></section>
-
-  <section class="today-banner" id="todayBanner" aria-live="polite"></section>
-
-  <section class="toolbar">
-    <input type="search" id="searchInput" class="search-input" placeholder="ゲームを検索…（/キー）">
-
+  <!-- 閲覧バー: 画面上部に固定。タブでゲーム/ソフト・MODを切り替え、ジャンル・並び順もここ -->
+  <div class="browse-bar" id="browseBar">
+    <div class="browse-row">
+      <div class="view-tabs" id="viewTabs" role="tablist" aria-label="表示する区画">
+        <button class="view-tab active" type="button" role="tab" data-view="games" aria-selected="true">🎮 ゲーム <b id="tabGamesCount"></b></button>
+        <button class="view-tab" type="button" role="tab" data-view="soft" aria-selected="false">🧰 ソフト・MOD <b id="tabSoftCount"></b></button>
+      </div>
+      <div class="toolbar-right">
+        <label class="favorite-only-toggle">
+          <input type="checkbox" id="favoriteOnlyCheck">
+          <span>★お気に入りのみ</span>
+        </label>
+        <select id="authorFilter" class="sort-select" aria-label="作者で絞り込み">
+          <option value="all">作者: すべて</option>
+        </select>
+        <select id="sortSelect" class="sort-select" aria-label="並び順">
+          <option value="name">並び順: 名前順</option>
+          <option value="plays">並び順: 人気順(プレイ数)</option>
+          <option value="likes">並び順: 高評価が多い順</option>
+          <option value="dislikes">並び順: 低評価が多い順</option>
+          <option value="score">並び順: 評価スコア順(👍-👎)</option>
+          <option value="votes">並び順: 投票数が多い順</option>
+          <option value="favorite">並び順: お気に入り優先</option>
+          <option value="default">並び順: 追加順</option>
+          <option value="random">並び順: ランダム</option>
+        </select>
+      </div>
+    </div>
     <div class="tag-filter" id="tagFilter">
       <button class="tag-chip active" data-tag="all">すべて</button>
     </div>
-
-    <div class="toolbar-right">
-      <label class="favorite-only-toggle">
-        <input type="checkbox" id="favoriteOnlyCheck">
-        <span>★お気に入りのみ</span>
-      </label>
-      <select id="authorFilter" class="sort-select" aria-label="作者で絞り込み">
-        <option value="all">作者: すべて</option>
-      </select>
-      <select id="sortSelect" class="sort-select">
-        <option value="name">並び順: 名前順(ABC/あいう順)</option>
-        <option value="plays">並び順: 人気順(遊ばれた回数)</option>
-        <option value="likes">並び順: 高評価が多い順</option>
-        <option value="dislikes">並び順: 低評価が多い順</option>
-        <option value="score">並び順: 評価スコアが高い順(👍-👎)</option>
-        <option value="votes">並び順: 投票数が多い順</option>
-        <option value="favorite">並び順: お気に入り優先</option>
-        <option value="default">並び順: 追加順</option>
-        <option value="random">並び順: ランダム</option>
-      </select>
-    </div>
-  </section>
-
-  <p class="result-count section-nav" id="resultCount"></p>
-
-  <div class="section-head" id="gamesHead">
-    <h2 class="section-title">🎮 ゲーム <span class="section-count" id="gamesCountLabel"></span></h2>
+    <p class="view-note" id="viewNote" hidden>ゲームではない、自作のアプリ・ツール・MODです。</p>
   </div>
 
   <section class="game-grid" id="gameGrid">
@@ -113,1039 +120,1133 @@
       `node tools/build-seo.js` を実行して再生成すること。
     -->
     <!-- SEO-GAMES:START -->
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⭕</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">○×DELUXE</h2>
-        <p class="card-desc">3〜5並べ+ミゼール/重力/ワイルド等の特殊モードを備えた丸バツゲーム。CPU4段階と2人対戦に対応。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/marubatsu-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🧩</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">15パズル DELUXE</h2>
-        <p class="card-desc">スライドパズルの定番「15パズル」をデラックス化。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/15puzzle/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔢</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">2048 DELUXE</h2>
-        <p class="card-desc">定番2048を拡張したデラックス版。新モードや実績を搭載。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/2048-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🕓</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">3時44分</h2>
-        <p class="card-desc">いなくなった弟の家を、一人称で歩きまわる一晩だけのホラー。矢印キーや画面端で見まわし、ドアや通路をクリックして弟の部屋・廊下・居間・お母さんの部屋・玄関を行き来する。日記、窓の外の人影、顔を塗りつぶされた家族写真、止まったまま3時44分をさす時計、仏壇の遺影、姿見に映る自分でない誰か——調べて動くほど家の時計が進み、真夜中が近づくほど画面が侵食され心音が近づく。3時44分、玄関の扉がノックされたら『音のする方へ行く／動かない』、たどり着いた扉で『開ける／のぞく／うずくまる』。集めた手がかりの数と選択でエンド3種に分岐。canvas描画・セーブは端末内。テスト用 ?3:40 等で開始時刻指定。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/sanji44/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🪙</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">8192分の1</h2>
-        <p class="card-desc">左右どちらかを選び続けるだけ。当たり(1/2)を引けば1段前進、はずれた瞬間スタートに逆戻り。13連続的中でたどり着く 1/8192 が目標で、その先の 1/16384・1/32768… にも挑める。派手な効果音・画面演出、確率のはしご表示、統計、各段の到達回数表、実績54種、1/8192達成で解禁されるオートモード、歴代最高連勝を競う世界ランキング。セーブは端末内。PC(←→キー)/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">RNG・運試し</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/one-in-8192/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🏘️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">AI TOWN DELUXE</h2>
-        <p class="card-desc">8人の住人が暮らす架空の町を上から眺めるだけの放置系シミュレーション。パン屋・花屋・画家・司書・元漁師・小学生・市場の店主・大工という異なる仕事とスケジュール、性格(元気/皮肉屋/のんびり/心配性など)を持った住人たちが、時間経過とともに自宅・職場・公園・カフェ・図書館・広場などをそれぞれの生活リズムで歩き回る。同じ場所に居合わせると天気やその日のイベント、二人の関係性に応じた会話が自動生成され、右側の「町のできごとログ」にリアルタイムで流れていく。住人アイコンをクリックすると現在の様子・心の声・元気/社交/楽しさのステータスが見られる。天気は日替わりで変化し、まれにお祭りなどの特別イベントも発生。時間の流れは一時停止や1x/2x/4x速度に切り替え可能。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/ai-town-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🗂️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">AMT -Abnormality monitoring tasks-</h2>
-        <p class="card-desc">高時給のバイト求人に応募したら、AMT社の『観測補助(夜勤)』だった。アブノーマリティ(異常)の観察レポートを読み、点線付きの記述の中から『おかしいところ』——本文内の矛盾、前の資料との食い違い、あとから書き換えられた一文と崩れた日本語——を見つけてクリックしていく調査ゲーム。1日1体を3択から選び、資料3枚を読み解いて小推理3問に答えるとキーワードを入手。最終日はコルクボードでキーワードを線で結び、A〜Iの穴埋めで会社が何をしていたかを推理する。誤クリックのペナルティなし。エンドはバッド/通常/トゥルー(全ケース観測+2周目以降)の3種。緑文字CRT端末風。セーブは端末内。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/amt-corp/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🥊</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ATTACK ATTACK BATTLE</h2>
-        <p class="card-desc">オリジナルファイターで殴り合うリアルタイム格闘アクション。まずはCPU対戦から遊べる。WASDで移動、Eで通常攻撃、Rで必殺技。Shiftキー+方向キーで状況に応じた特殊アクションが出せるのが特徴で、前方向なら弱いが連発が効くラッシュパンチ、後ろ方向なら素早い後退、Sなら1秒だけ無敵になる代わりに3秒隙だらけになる回避、Wなら高く舞い上がる復帰ジャンプ(空中で1回だけ)。ダメージ%が貯まるほど吹っ飛びが大きくなり、画面外まで飛ばされるとストックを1失う3ストック制。PC対応(キーボード操作)。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/attack-attack-battle/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🟨</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">BACKROOMS ─ レベル移動</h2>
-        <p class="card-desc">Level 0 から、行き先のレベル番号だけが書かれたボタンを選んで潜っていくBackrooms移動ゲーム。Backrooms Wiki(日本語版)の実レベルを収録し、無印通常階層とη(エータ)層あわせて63階層。ルートは各レベルの「出口」「入口」から採取。景色も音も危険度表示もなく、たよれるのは番号と自分の記憶だけ。危険なレベルほどSANITYが大きく減り、0になると振り出し。どの番号が危ないかはSANITYの増減から自分で覚えるしかない。到達記録には行ったレベルの番号と名前・回数だけが残り、死んでも消えない。Level 0→0ηがη層への入口、Level 3999から「現実」へ帰還できればクリア。レベルとルートはlevelコマンドで自由に組み替え可能。セーブは端末内。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">RNG・運試し</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/backrooms/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🛡️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">BASTION // NEON DEFENSE</h2>
-        <p class="card-desc">ネオン輝く防衛グリッドにユニットを配置し、押し寄せる敵のウェーブを撃退するタワーディフェンスゲーム。PRISM RAILやFROST PULSEなどのシステムを運用し、戦況に合わせて防衛網を強化する。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <p class="card-author">作者: Manus AI</p>
-        <a class="play-btn" href="https://neondefense-rpgwdakd.manus.space/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">👹</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">BOSS RAID</h2>
-        <p class="card-desc">1億HPのボスを、世界中のプレイヤーとリアルタイム協力で連打して倒す。倒すたびに少し強い次のボスが無限に出現。同時接続人数・全体DPS表示、ダメージポップ、撃破ファンファーレ＋花火。完全匿名。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">クリッカー・放置</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/boss-raid/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⚔️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">BRAWL DELUXE</h2>
-        <p class="card-desc">オリジナルファイター10体で戦う見下ろし型対戦アクション。アサルトライフルのレックス、一撃必殺のノヴァ、壁越し爆弾のボム太、回復サポートのヒール、高HPショットガンのタンカー、俊足ブーメランのウィンド、連射ツインピストルのショウタ、減速アイスのフロスト、毒ダーツのヴェノム、茂み奇襲のゴーストから選択。モードは中央ジェム鉱山を奪い合うジェムグラブ、安全地帯が縮む10人バトルロイヤルのショーダウン、ボールを相手ゴールへ運ぶ3vs3のブロールボールの全3種、マップ全5種。CPUは4段階の強さ、トロフィーを稼ぐと新ファイターが解放される進行要素あり。茂みに隠れて奇襲したり必殺技ゲージを溜めて逆転を狙おう。PCはWASD+マウス照準、スマホはデュアルバーチャルスティックに対応。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/brawl-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🤖</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">CAPTCHA地獄</h2>
-        <p class="card-desc">「私はロボットではありません」から始まり、理不尽なCAPTCHAを全16問ノンストップで解かされるだけのネタ系ゲーム。ゆがみ文字、カーソルから逃げるチェックボックス、信号機グリッド、アナログ時計の時刻読み、音声CAPTCHA、間違い探し、人間であることの証明、CAPTCHAのためのCAPTCHA、拒否ボタンが極小のクッキーバナー、最後は3問連続の高速ラッシュ。ライフ3・各問に制限時間つきで、全問突破すると人間証明書が発行される。実績12種。クリアタイムを記録。セーブは端末内。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/captcha-hell/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎼</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">COMPOSE DELUXE</h2>
-        <p class="card-desc">クリックだけで曲が作れるブラウザ作曲ツール。メロディ/ベース/ドラムのトラックにポチポチ打ち込むステップシーケンサー形式で、BPM・小節数・波形(サイン/トライアングル/矩形/ノコギリ)・音量/ミュート/ソロを調整可能。キーとスケール(メジャー/マイナー)を選ぶとダイアトニックコードが自動表示され、王道進行やカノン進行などの定番コード進行プリセットをワンクリックでトラックに反映できる。音源はWeb Audio APIによる内部合成で外部音声ファイル不使用。作った曲はブラウザに自動保存され、JSONでの書き出し/読み込みにも対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/compose-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🏪</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">CONVENI DELUXE</h2>
-        <p class="card-desc">おにぎり1個だけの小さなコンビニから始まる経営シミュレーション。レジに来たお客さんの商品を長押ししてスキャンすると会計完了、離すと進捗が戻ってしまうので最後まで押し続ける必要がある。列に並んだお客さんには忍耐ゲージがあり、待たせすぎると怒って帰ってしまう(評判ダウン)。一定確率でVIP客が来店し、通常より高額な商品を割増価格で購入してくれる。「PC」画面ではパン・飲み物・お弁当・スイーツ・アイス・揚げ物・コーヒー・雑誌・くじ引きまで全10種の商品を仕入れて品揃えを拡大でき、スキャン速度・客の忍耐時間・集客力・販売価格・VIP出現率・VIP単価アップの各種設備投資、レジ増設(最大3台)も可能。バイトを雇えばそのレジは長押し不要で自動スキャン・自動会計してくれるようになり、離席していた時間もバイトが分の売上を計算して迎えてくれる(最大3時間分)。セーブは自動(localStorage)。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/conveni-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🍪</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Cookie Factory</h2>
-        <p class="card-desc">レーンを流れるクッキーをリズムよくタップして稼ぐクッキークリッカー。工場で自動化、リボーンでツリー強化。</p>
-        <div class="card-tags"><span class="card-tag">クリッカー・放置</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/cookie-factory/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⚖️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">COURT DELUXE</h2>
-        <p class="card-desc">部屋を作って役職(タグ)を決め、裁判官BOTの進行でリアルタイムに議論できる模擬裁判・会議アプリ。部屋作成者はお題(議題)とパスワードを決め、原告・検察官/被告人/弁護人/証人/傍聴人などの役職と人数を事前に設定できる(独自の役職名も追加可能、不要な役職は0人にしてOK)。参加者は部屋コード+パスワードで入室してニックネームと役職を選び、ホストが開廷すると裁判官BOTが開廷宣言・出席確認・進行説明を行って最初の発言者を指名する。以降は誰でも次の発言者を指名でき、重要な発言には⭐マークを付けられる。議論が出尽くしたら誰でも「まとめを求める」ボタンで裁判官BOTに論点整理を依頼できるが、判決や勝敗は一切出さない設計。複数人でのリアルタイム同時接続に対応。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/court-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🥚</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Divine出現タイマー</h2>
-        <p class="card-desc">Robloxの「卵を盗む」で最高レアのDivineが出やすい時間帯を、みんなの記録から計算するツール。Divineが出た日時を記録すると、出やすい時間帯ランキング・24時間グラフ・「今は狙い目か」と次の狙い目の時間を表示する。「◯分ごとに出る」ような周期パターンの検出、曜日別の回数、日ごとのカレンダー表示、前回のDivineからの経過時間にも対応。張り込んで出なかった時間も記録でき、「出た記録だけ」と「出なかったも含む」の2部門で分析を切り替えられる。記録は全員でリアルタイム共有され、追加・修正・削除はパスワード制。CSVでの保存/読み込み、ホーム画面への追加にも対応。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://divine-timer-egg.netlify.app/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">◈</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">DREAMCORE // NO EXIT</h2>
-        <p class="card-desc">家のふりをした何かが待つ、リミナルスペースを探索する一人称ホラーシミュレーション。プレイルームを探しながら、夢の記録と異常な空間の奥へ進んでいく。WASD/矢印キーで移動、マウスで視点操作、Shiftで走る。PC対応。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <p class="card-author">作者: Manus AI</p>
-        <a class="play-btn" href="https://dreamcore-6jfcky5e.manus.space/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🥚</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">EGG HUNT</h2>
-        <p class="card-desc">全50個のイースターエッグを探し出す隠し要素満載の収集ゲーム。</p>
-        <div class="card-tags"><span class="card-tag">その他</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/easter-egg-hunter/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🐤</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">FLAPPY DELUXE</h2>
-        <p class="card-desc">フラッピーバード風の連打アクションをデラックス強化。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/-FLAPPY_DELUXE-/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎰</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">GACHA LIFE</h2>
-        <p class="card-desc">アップグレードも戦闘もない。ただ一生ガチャを引くだけのRNGゲーム。放置でジェムが貯まり、単発/10連/無料枠を回す。SSR確定の天井100連、ソフト天井、図鑑71種、ガチャ道ランク20段階、実績40種、重複を星屑に替えて交換する星屑ショップ。セーブはブラウザ内、オフライン報酬あり。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">RNG・運試し</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/gacha-life/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🐞</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">GLITCH RUN DELUXE</h2>
-        <p class="card-desc">「このゲームには、いくつかのバグがあります。」ダッシュ(8方向)・壁ジャンプ・しゃがみを駆使して全10ステージを駆け抜ける2Dスピードランアクション。ステージは正攻法でもクリアできるが、ゲーム内にはあからさまではない6種類のバグが隠されており、見つけて使いこなすとタイムが大きく縮む。発見したバグは「バグ図鑑」に記録され、一度全クリするとヒントが開放される。全ステージ通しのRTAタイムは共有の世界ランキングで競える(バグ使用なんでもあり)。ステージ単位の練習モード・スプリット表示・自己ベスト比較付き。キー設定で全操作を自由に割り当て可能(ゲームパッド対応)。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/glitch-run/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🌌</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">GRAVITY DRIFT</h2>
-        <p class="card-desc">特異点へダイブし、重力で外へ弾き出されながら火花の間を縫って完璧なチェインをつなぐアーケードアクション。重力の流れを読み、タイミングよく進路を切り替えて高スコアを目指す。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <p class="card-author">作者: Manus AI</p>
-        <a class="play-btn" href="https://gravity-drift-arcade.netlify.app/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⛰️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">HAMMER CLIMB DELUXE</h2>
-        <p class="card-desc">Getting Over It風の物理登りゲーム。壺に入ったキャラクターがハンマー1本だけを頼りに、理不尽な地形が続く山をひたすら登る。画面をドラッグ(スマホは指で)してハンマーを振り回し、岩の出っ張りに引っかけたり叩きつけたりして体を持ち上げていく。ハンマーの当たり判定は地形の折れ線に対する物理演算で、油断すると足場を失って下まで滑り落ちることも。序盤の斜面から、オーバーハング、滑りやすい長い坂、狭いチムニーのジグザグ、V字の谷など、テンポよく難所が変化していき、山頂の旗を目指す。進んだ高さは自動でセーブされ、次に開いたときは「つづきから」で再開できる(タイトルで「さいしょから」を選ぶとリセットも可能)。高度に応じて空の色が朝焼けから満点の星空まで変化する。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/hammer-climb-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔢</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">HIT &amp; BLOW 対戦</h2>
-        <p class="card-desc">秘密の数字をおたがいに当て合う1vs1。各ラウンド同時提出で、予想した数字が1桁ずつ色で返る（ワードル式）＝緑はその場所で正解、橙は数字はあるが場所ちがい、灰はハズレ。先に全部緑にした人の勝ち。CPUフリー戦は よわい〜じごくの5段階＋桁数3〜5・重複あり選択。レート戦は世界中の人とレート帯マッチングしてElo変動（相手不在時はレート帯CPU）、野良戦は未ランク、合言葉ルームは友達と1対1、デイリーは全員共通の問題を最少手数で競う。定型スタンプ・候補数ヒント・リプレイ共有リンク・実績27種・統計・効果音。相手切断時は勝ち確定かCPU戦に切替。世界ランキングあり。PC(数字キー/Enter)・スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/hit-and-blow/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⏱️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">HOLD ON</h2>
-        <p class="card-desc">表示された秒数だけボタンを長押しして離すだけ。押している間は時間が表示されず、たよれるのは体内時計のみ。全5ラウンドのズレ(ミリ秒)の合計で7段階の称号を判定し、世界ランキングに登録できる。ベストは端末に保存。PC(スペースキー)/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/hold-on/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🚪</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">human or [CENSORED]</h2>
-        <p class="card-desc">世紀末、正体不明の擬態生物『アリス』が現れ、家を失った人々が扉という扉に押し寄せるようになった夜を描く選択型サバイバルノベル。テレビのニュースで異変を知った後、チャイムが鳴るたびインターホンモニター越しの映像と会話だけを頼りに、扉の向こうにいるのが人間か[CENSORED]かを見極めて開閉を選ぶ。話しかけて言葉や仕草の違和感を探ることもできるが、判断を誤って招き入れてしまうと、その夜は何事もなく過ぎても翌朝には手遅れになっている。家に迎えた人とは夜に言葉を交わして信頼を積み重ねられ、その積み重ねが最終日の分かれ道――BAD END・GOOD END?・TRUE ENDの3つの結末を左右する。全7日のストーリーモード。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/human-or-censored/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔖</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">INSPECTOR DELUXE</h2>
-        <p class="card-desc">架空の「中央書類管理局」の審査官として、次々届く「申請書」と「身分証明書」を見比べ、本日の規則に沿って承認・却下のスタンプを押していくだけの書類審査シミュレーター(クリッカー要素なし)。DAY1は「有効期限切れは却下」だけのシンプルな規則からスタートし、DAY2で氏名の一致確認、DAY3で写真(アイコン)の一致確認、DAY4で日替わりの公式印影との照合、DAY5で番号の書式チェック、DAY6で生年月日から算出した年齢制限と、日を追うごとに確認すべき規則が1つずつ積み重なっていく。前日までの規則はすべて継続して有効なので、後半は複数の規則を同時に頭に入れながら短時間で判断する必要がある。DAY7以降は全規則が出揃った状態のまま制限時間がさらに短縮され、難度が上がり続ける。制限時間内の処理件数と正答率でスコアが決まり、ミスをした際は違反箇所が赤枠で示されるので次に活かせる。ベストスコアと到達DAYはブラウザに自動保存。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/inspector-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🕯️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">KAGE: 04:13</h2>
-        <p class="card-desc">Gemini AI制作。旧市立病院の地下棟を、音を立てずに進む短編ホラー。暗い廊下の奥で起きる異変を調べ、精神を保ちながら朝まで生き残る。Web Audio APIの動的な効果音、CSS 3Dの一人称廊下、人影の演出、精神値による2種類のエンディングを搭載。PCは矢印キー/WASD/Space、スマホは画面上のボタンで操作可能。ヘッドフォン推奨。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <p class="card-author">作者: Gemini AI</p>
-        <a class="play-btn" href="https://kaikomziu.github.io/kage-0413/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🧠</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">LOBOTOMY DELUXE</h2>
-        <p class="card-desc">謎の「収容体」を職員に管理させ、作業エネルギーを取り出しながら施設を運営するオリジナルの管理シミュレーター。職員を選んで収容体のセルに割り当てると、本能・洞察・愛着・抑圧の4種の作業エネルギーを供給。1日3フェーズ制で、フェーズ終了ごとに作業を解決し、日次決算で4種すべてのノルマ達成を目指す。作業に失敗し続けると封印カウンターが減少し、0になると収容体が「収容違反」を起こして脱走、放置すると待機中の職員を襲撃する。脱走中は職員を割り当てて鎮圧しないと被害が拡大。ノルマ未達成が続くと信頼度が低下し0で運営終了、職員が全滅しても終了。コインで新規職員の雇用や負傷した職員の休養処置が可能。収容体は全15種(ZAYIN〜ALEPH全5等級)、実績41種。セーブはlocalStorage自動保存。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/lobotomy-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">💬</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">MESSAGE DELUXE</h2>
-        <p class="card-desc">友達コードでつながるシンプルなメッセージアプリ。ゲストとして始めるとその端末のCookieにログイン情報が保存され(削除すると復元不可)、設定画面からユーザー名+パスワードやパスキー(生体認証/Googleパスワードマネージャー)を追加登録すれば別の端末からもログイン可能。自分専用のフレンドコード(例 D5E2-O32P-I90W)を相手に伝えて申請→相手が承認すると1対1のリアルタイムチャットが始まる。テキストに加えて画像(5MBまで)・動画(20MBまで)の送信、既読表示にも対応。表示名はログインIDとは別にいつでも変更できる。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/message-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🚇</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">METRO TYCOON</h2>
-        <p class="card-desc">初期資金¥100で駅を買い、駅と駅を線路でつないで、走る電車で稼ぐ Mini Metro 風の鉄道経営ゲーム。駅をタップして選択→別の駅をタップで線路を敷設。同じ駅からさらに別方向へつなげば枝分かれ自由(1駅→2駅、3駅→1駅と2駅…)、線路をタップすれば撤去。線路がつながると列車が自動で走り出し、分岐点では乗せている客の目的地や待ち客のいる方向へ自動で進む。乗客(行き先を示す図形マークつき)を運ぶたびに運賃が入り、区間が長いほど割り増し、運行するだけでも少額の営業収入。線路を増やすと列車も自動で増発。マップ上の点線の丸は購入できる駅で、買うほど価格が上がり乗客の発生も増える。乗客が溢れた駅を放置すると赤いリングが一周してダイヤ崩壊(ゲームオーバー)。アップグレードは6種——運賃改定(運賃+50%)、車両大型化(定員+3)、加速性能(速度+22%)、増発(全路線の列車+1)、沿線開発(乗客+35%)、新規開業(路線スロット+1)。最大5路線・色分けされた別ネットワークを運営でき、路線網を広げるほど乗客と収入が伸びる。進行はブラウザに自動保存。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/metro-tycoon/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">👆</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">MILLION CLICKER</h2>
-        <p class="card-desc">アップグレード要素なし。ただひたすら100万回クリックするだけ。達成すると超派手な花火とファンファーレ演出。</p>
-        <div class="card-tags"><span class="card-tag">クリッカー・放置</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/million-clicker/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🧱</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Minecraft MOD Wiki</h2>
-        <p class="card-desc">マイクラ(Minecraft)のMOD・リソースパック・MODパックを日本語で解説する、だれでも編集できるWiki。ログイン不要でブラウザからページを作ったり直したりでき、編集はユーザー名つきで履歴に残るので、差分を見て元の版に戻すこともできる。対応バージョン・MODローダー(Forge/NeoForge/Fabric/Quilt)・ジャンルはタグから選ぶだけで、一覧はバージョン別・ローダー別・ジャンル別に絞り込める。CurseForge/ModrinthのURLを入れると、MOD名・対応バージョン・作者・ダウンロード数などを自動で読み込む。**太字**などの簡単な書き方で本文を書け、画像・GIFの貼り付け、作業台・かまどのレシピ表示、本文まで探せる検索、おすすめMODのまとめ記事にも対応。荒らし対策に通報ボタンと管理者機能つき。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/mc-mod-wiki/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🌐</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">MixAll +（二世代）</h2>
-        <p class="card-desc">掲示板「Uch」、個人・グループチャット「ぽけっと」、動画も投稿できるSNS「Ghost」、疑似メール、3Dワールドを作って遊べる「カスタム」、お絵かき・動画編集のスタジオ、便利ツール集までひとつにまとめたコミュニティサイト。チャットの本文はサーバーに残さず自分の端末に保存され、Googleドライブにも任意でバックアップできる。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">オンライン協力</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/mixall/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">📟</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">MODEM DELUXE</h2>
-        <p class="card-desc">90年代ダイヤルアップ接続を再現。3段階ハンドシェイクをこなして繋ぎ、300bpsから5Gまで回線を進化させる。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/modem-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">💰</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">MONEY CLICKER</h2>
-        <p class="card-desc">中央のコインをクリックしてお金を稼ぐCookie Clicker風クリッカー。全20種の建物(レモネードスタンド〜銀河コングロマリット)で自動収入を増やし、全8種のクリック強化で1クリックの額を上げる。価格は買うたび1.15倍、まとめ買いx1/x10/x100対応、数字はK/M/B/T…表記。コイン下のボタンでオートクリッカーをON/OFFでき、ONの間は1秒あたり5回自動でクリックし続ける(クリック倍率・バフもそのまま反映、離席中も進行)。画面にランダムで出現する金貨をクリックすると『ラッキー(即時ボーナス)』『フィーバー(生産×7)』『連打フィーバー(クリック×777)』『大当たり(全体×2)』が発動。実績は254種(建物・クリック回数・総資産・転生・ゴールドバー・ツリー・金貨・オートクリッカー・Infinity・プレイ時間など)、解除1個につき全生産+1%で無限に伸びる。今回の獲得額が$100万を超えると転生でき、額に応じてゴールドバー🥇を獲得→全19ノードのアップグレードツリー(クリック/自動収入倍率・購入価格減・開始資金・オフライン強化・🥇獲得量・転生スケール・金貨強化・実績ボーナス2倍)で永久強化。ツリーは🥇全額返却で振り直し可。所持金が$1e308(倍精度の上限)に到達すると次の段階「♾INFINITY」が解禁され、突入すると所持金・建物・ツリー・転生回数がリセットされる代わりに♾Infinityを獲得(1個につき永久に全収入+2%)。なまえを設定すると累計獲得額で競う世界ランキング(上位50名+自分の推定順位、♾やゴールドバーも表示)に参加できる。ニュースティッカー・獲得中バフ表示つき。離席中も収入継続、セーブは自動(localStorage)。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">クリッカー・放置</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/money-clicker/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎧</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">MUSIC LiDAR</h2>
-        <p class="card-desc">奥から手前へ流れるノーツを D F J K(スマホはタップ)で叩く、4キーの音ゲー。ジャズ・ロック/メタル・トランス・ダブステップ・ファンク・シンセウェイヴ・チップチューンなどいろんなジャンルで、初心者向けからBPM220の鬼畜曲、譜面が止まったり加速したりするギミック曲、魔王魂さんの「シャイニングスター」まで全16曲・各3難易度。ロングノーツ・同時押しあり、判定は PERFECT/GREAT/GOOD/MISS で100万点満点。曲ごとのオンラインランキング、アカウントを作ると貯まるコインで引けるキャラガチャ(★1〜★4・全26体)と5人編成(スコアUP・判定サポート・コンボガード・コインUP)、デイリーミッションと実績も。譜面メーカーではクリック・録音・自動譜面の手直しで譜面を作って「みんなの譜面」に投稿でき、手持ちの音声ファイルから自動で譜面を作って遊ぶこともできる。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">音楽・リズム</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/music-lidar/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔐</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Nandokuka Tools</h2>
-        <p class="card-desc">IDや文章をBase64・モールス信号・ハッシュ化など19方式で難読化・復号できるツール。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/nandokuka-tools/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🛸</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">NEON RAIDER</h2>
-        <p class="card-desc">ネオン調の縦スクロール弾幕STG。ウェーブ制で10ウェーブごとにボス、武器5種を拾って切り替え。ボス連戦のBOSS RUSHも搭載。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/neon-raider/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🗝️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ONCE A YEAR</h2>
-        <p class="card-desc">一年に一度しか開かない扉。その年だけの封書を読み、次に訪れる自分へ手紙を一通だけ残せる。次に読めるのは365日後。</p>
-        <div class="card-tags"><span class="card-tag">その他</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/once-a-year/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🌀</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">PARADOX LOOP</h2>
-        <p class="card-desc">時間ループの中で『過去の自分』の分身を利用して脱出する因果ループ脱出パズル。制限ティック数以内にゴールできず時間切れになると、その周のプレイヤーの動きが半透明の『分身』として記録され、次のループで同時に再現される。ドアはプレート(誰かが乗っている間だけ開く)かレバー(一度触れるとループを超えて永遠に開いたままになる)に連動しており、1周目でプレートに乗ったまま時間切れにして分身に任せ、2周目は身軽になったプレイヤー自身がドアを通り抜ける、といった『過去の自分と協力するパズル』を解いていく。全6ステージで、単純な移動から始まり、レバーの永続性、複数の分身を同時に運用する多重ループへと段階的に発展。使用したループ回数に応じて星評価(最大3つ)。矢印キー/WASDまたはスマホのD-Padで操作。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/paradox-loop/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🧮</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Phosphor Calc</h2>
-        <p class="card-desc">式入力・関数電卓・履歴・メモリー機能を備えたおしゃれな高機能電卓。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/phosphor-calc/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🪐</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">PHYSICS LAB DELUXE</h2>
-        <p class="card-desc">二重振り子・ニュートンのゆりかご・バネ(単振動)・放物運動・万有引力の軌道・静電気力・摩擦と傾斜・浮力・自由サンドボックスの9つの物理法則で遊べるプレイグラウンド。表示は完全に2Dだが、内部はThree.js+Cannon.jsによる本物の3D物理エンジンで、位置・回転・力の計算はすべて3Dベクトル/クォータニオンで行われている(見た目だけ2Dに固定したオルソグラフィックカメラ)。全モード共通で、物体をドラッグしてつまみ離すと実際にその速度で動き出す。二重振り子は初期角度をわずかにずらした複製を並べてカオス(初期値鋭敏性)を可視化、万有引力モードは衛星をドラッグで放り投げて楕円軌道や落下を試せ、サンドボックスは重力の向き・強さまで自由に変更できる。各モードのパラメータ(重力・バネ定数・摩擦係数・液体密度など)はリアルタイム調整可能、上部の速度スライダーでスローモーション/早送り/一時停止もできる。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/physics-lab-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎹</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">PIANO DELUXE</h2>
-        <p class="card-desc">PCキーボード/タッチで弾けるピアノ。録音・MIDI/WAV/MP3書き出し対応。</p>
-        <div class="card-tags"><span class="card-tag">音楽・リズム</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/piano-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎨</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">PIXEL PLACE</h2>
-        <p class="card-desc">世界中の人と共有する100×100のドット絵キャンバス。1マス塗るのにチャージを1個消費し、チャージは5秒に1個・最大50個までたまる。消しゴムはなく、上から塗り直すしかない。混雑したらSERVER 0001→0002…と別サーバーを選べる(最大50個)。16色パレット、ピンチ/ホイールでズーム、ドラッグで移動、スポイトで色拾い。接続人数と累計ドット数を表示。Supabaseで全員のキャンバスをリアルタイム同期。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">オンライン協力</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/pixel-place/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🏖️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">POWDER SANDBOX</h2>
-        <p class="card-desc">火・水・砂・油・溶岩・氷・草・酸・火薬など19素材のフォーリングサンド型物理サンドボックス。燃焼の延焼、水⇄水蒸気、溶岩+水→石、酸の溶解、火薬の連鎖爆発などをセルオートマトンでシミュレート。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/2d-sandbox/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎵</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Rhythmer</h2>
-        <p class="card-desc">上から降ってくるノーツを叩くリズムゲーム。譜面エディターで自作の譜面を作って書き出せる。</p>
-        <div class="card-tags"><span class="card-tag">音楽・リズム</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/rhythmer/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔴</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">RING JUMP DELUXE</h2>
-        <p class="card-desc">自分はボール。タップ／クリック／スペースキーで羽ばたいて浮き、放っておくと落ちていく『フラッピーバード』方式で、迫りくる輪(フープ)の穴だけをくぐり抜けるシンプル操作のハイスコア挑戦ゲーム。輪の枠・天井・地面に当たったら即ゲームオーバー。輪のど真ん中を通すと「SWISH」ボーナスで+2点、外周ギリギリを通す通常くぐりは+1点。スコアが伸びるほど流れる速度がアップし、輪の穴も徐々に狭くなっていく。ベストスコアはlocalStorageに保存。PC・スマホ両対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/ring-jump-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🪙</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">SCRATCH DELUXE</h2>
-        <p class="card-desc">1円玉代わりに指やマウスでこするだけのスクラッチくじゲーム。ブロンズ・シルバー・ゴールドの3種類のチケットをコインで購入し、3×3マスの銀色の膜をドラッグして削っていくと下から絵柄が現れる。同じ絵柄が3つ以上そろうとその絵柄に応じたコインを獲得(そろわなければハズレ)。上位のチケットほど購入コストは高いが景品も豪華になり、ゴールドの最高配当は購入額の50倍。1マスずつこするのが面倒なときは「一気に削る」ボタンで即座に全開示も可能。所持コインが尽きても24時間ごとに無料のブロンズチケットを1枚受け取れるので遊び続けられる。購入枚数・最高配当・収支などの統計と直近の当選履歴もブラウザに自動保存。PC/スマホ対応(タッチドラッグでこすれる)。</p>
-        <div class="card-tags"><span class="card-tag">RNG・運試し</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/scratch-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🚦</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">SIGNAL FLOW DELUXE</h2>
-        <p class="card-desc">経営要素ゼロの純粋パズルシム。グリッド状の交差点に立つ信号をタップして切り替え、道路が車で埋まる前にさばき続ける。各交差点は放っておいても一定間隔でNS/EWの通行方向が自動で入れ替わるが、それだけでは詰まりが起きるタイミングを見て手動で介入するのが腕の見せどころ。時間経過とともに車の出現間隔がだんだん短くなり、道路の入口が車で埋まって新しい車が入れなくなった瞬間「渋滞発生!」で即ゲームオーバー。スコアは通過させた台数、生存時間も記録され、難易度はEASY(3×3)/NORMAL(4×4)/HARD(5×4)の3種、それぞれベストスコアをブラウザに自動保存。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/signal-flow-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🥊</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">SMASH DELUXE</h2>
-        <p class="card-desc">オリジナルファイター8体で殴り合う、スマブラ風の対戦アクションゲーム。剣士のけんご、パワー型のロケッタ、高速忍者のニンジャカゲ、重量級グラップラーのパンダッシュ、ふわふわ浮遊する魔法少女のマホウショウジョ、遠距離ロボのロボQ、最高の飛行復帰を持つトリシャーマン、最重量タンクのヨロイクマの8人から選び、ダメージ%が高いほど吹っ飛びやすくなる本家準拠のノックバック計算・シールド/回避(その場回避・ローリング・エアドッジ)・つかみと投げ・スマッシュ攻撃の溜め・必殺技(ニュートラル/上/下)を実装。ステージは足場が浮かぶノーマルフィールド、流れる雲の上、溶岩が周期的に噴き上がるようがんこうざん、横に壁があり縦の撃墜だけが決着を分けるくうちゅうとりで、広々としたしんりんのほこらの全5種。アイテムはバット・レイガン・ばくだん・ハート・ホシ・ダッシュブーツ・バリアオーブ・とげのわなの全8種。最大4人対戦(キーボード2人+ゲームパッド2人)、CPUは4段階の強さから選択、ストック戦(1〜5)/時間戦(1〜5分)に対応。スマホ・タブレットはバーチャルスティック+ボタンのタッチ操作に対応、5桁のルームコードで1対1のオンライン対戦も可能。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/smash-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🧱</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">STACK DELUXE</h2>
-        <p class="card-desc">左右に動くブロックをクリック/タップ/スペースキーで落として積み上げていくタワーゲーム。ぴったり重ねると「PERFECT!」判定になり、ズレて重なるとはみ出た部分が物理的に崩れ落ちて次のブロックが小さくなる。積むごとにブロックの色が虹色にグラデーションしていき、ズレて完全に外れるとタワーが崩れてゲームオーバー。自己ベスト段数はローカルに保存され、高さ・累計ブロック数・パーフェクト回数・連続パーフェクト・プレイ回数・特殊条件など48種の実績を収録。世界共有のオンラインランキングにも自己ベストを送信できる。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/stack-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">📈</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">STONKS</h2>
-        <p class="card-desc">所持金100万円スタート。上がったり下がったりする7銘柄を売り買いして、40営業日でどこまで総資産を増やせるかを競うだけのシンプルな株ゲーム。株価はランダムウォーク＋ニュースによる急騰・暴落、売買手数料0.15%。アップグレード要素なしの純粋な相場勝負。40日後の総資産で世界ランキング。ベストは端末に保存。PC(↑↓/B/S/Space)/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/stonks/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🍉</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">SUIKA DELUXE</h2>
-        <p class="card-desc">スイカゲーム風の物理演算パズル。合体させて高得点を狙え。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/suika-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🥁</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">TAIKO SIM</h2>
-        <p class="card-desc">お手持ちの.tja譜面ファイルと音源ファイルを読み込んで遊べる、太鼓の達人風リズムゲームの非公式プレイヤー。ファイル/フォルダ選択やドラッグ&amp;ドロップでtjaと音源(mp3/ogg/wav等)をファイル名から自動マッチングし、難易度(かんたん/ふつう/むずかしい/おに/裏)を選んでプレイ。自作のTJAパーサーがTITLE/BPM/OFFSET/COURSE/LEVEL/BALLOONや音符データ、BPM変化・拍子変化・スクロール速度・ゴーゴータイム・分岐などのコマンドを解釈し、Canvas描画のスクロール譜面として再生。判定(良/可/不可)・コンボ・魂ゲージ・連打/風船/くす玉に対応し、PC(D/F/J/K)・スマホ(画面タップ)両対応。著作権フリーの自作シンセ音源によるお試しサンプル曲も同梱。読み込んだ譜面・音源ファイルは端末内でのみ処理しサーバーに送信しない。自己ベストスコアのみlocalStorageに保存。</p>
-        <div class="card-tags"><span class="card-tag">音楽・リズム</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/taiko-sim/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🟦</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">TETRIS DELUXE</h2>
-        <p class="card-desc">ガイドライン準拠のブラウザ版テトリス。7種バッグ抽選・ゴースト・ホールド・ネクスト5個表示に加え、SRS回転＋ウォールキック、ハードドロップ、ロックディレイ、T-スピン判定、B2B、REN(コンボ)、ライン消去演出まで搭載。10ラインごとにレベルアップして落下が速くなる。モードはマラソン(150ライン)、スプリント(40ライン計測)、ウルトラ(2分間スコアアタック)の3種類。スコアと各種ベストは端末内に保存。PC(矢印/Z/X/Space/C/Shift)・スマホ(画面ボタン＆スワイプ)対応。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/tetris-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🏰</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">TOWER CLASH</h2>
-        <p class="card-desc">ガチャで集めたキャラを編成して挑む本格タワーディフェンス。難易度3段階(かんたん/ふつう/むずかしい)×全5ステージで、ウェーブごとに現れる敵を通り道のそばに設置したキャラで迎撃する。戦って貯めたコイン・勝利報酬でガチャ(★1〜★5、全11種)を引いて仲間を収集、重複はランクアップに変換され永続強化。出撃前に最大6体まで編成でき、戦闘中は設置したキャラをその場でレベルアップ(最大Lv3)・売却も可能。連鎖攻撃・継続ダメージ・後退・周囲強化など特殊効果を持つキャラも登場。サブ要素として、防衛側/侵略側に分かれる非対称のオンライン対戦(5桁ルームコードでPC・スマホ間1対1)にも対応し、防衛側は自分が育てた編成キャラをそのまま持ち込める。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/tower-clash/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⌨️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">TYPING DELUXE</h2>
-        <p class="card-desc">複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、14カテゴリ約600問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。スマホは画面内キーボードをタップして入力。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/typing-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">💗</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">UNDERTALE BATTLE EMULATOR</h2>
-        <p class="card-desc">Undertale風の弾幕バトルを自作できるブラウザ製エディタ。骨(ボーン)オブジェクトをキャンバス上でドラッグして移動、先端の回転ハンドルをドラッグして回転させると、現在時刻にキーフレームが自動で打たれる仕組みで攻撃パターンを組み立てられる。タイムラインでキーフレームの時刻・座標・回転・拡大率・不透明度を細かく編集でき、プレビュー再生で動きを確認可能。作った攻撃は「プレイ」タブで矢印キー/WASD(スマホは画面下の十字ボタン)で魂を操作し、実際に骨を避けて耐えきれるか遊べる。横なぎ骨・回転する骨・隙間の壁・十字連打・波状の骨の5種のテンプレートを収録し、パターンはブラウザに保存またはJSONファイルとして書き出し/読み込みできる。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/undertale-battle-emulator/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🧩</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">VISUAL CODE DELUXE</h2>
-        <p class="card-desc">コードを一切書かずに、ブロックを組み立ててゲーム・アニメ・ツールを作れるScratch風のビジュアルプログラミング環境。左のパレットから右のキャンバスへブロックをドラッグすると近くのブロックに吸着し、C型ブロックの中や入力欄にも入れ子にできる。▶で実行、ブロック単体クリックでも動作、パレットに戻すと削除。マルチスレッド実行エンジンでイベント(旗・キー・クリック・メッセージ・背景切替・数値超え)、クローン、ずっと/繰り返し/条件/待機に対応。480x360ステージに複数スプライト(絵文字/図形/文字/画像コスチューム)、吹き出し、回転方法、画像効果。標準10カテゴリ(動き・見た目・音・イベント・制御・調べる・演算・変数・リスト・ペン)に加え、音楽/文字/音声合成(TTS)/保存/時間/デバッグ/画面演出まで大幅拡張し全226ブロック。変数・リストのステージ表示(スライダー対応)、引数つき自作ブロック(再帰OK)、WebAudio合成の効果音・楽器、音声/画像アップロード。作品は.vcd.jsonで保存/読み込み、自動保存、サンプル8種。ターボ/ダークモード/プレゼン表示。PC・タブレット推奨。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/visual-code-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">📍</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">あの日の町</h2>
-        <p class="card-desc">個人ブログ「境木町アーカイブ」を発見してしまった体で読み進める調査型ARGホラー。ハブ画面の記事一覧から調査地点を選び、写真・証言・資料の3タブに埋め込まれた『おかしいところ』をクリックして探し、8月31日の夜だけ町が一日分だけ長く続くという噂の正体に迫っていく。資料タブは写真・証言を読み終えるまでロックされ、読み解くと文字の断片を入手できることがある。画面上部の『検索』窓に記事中で見つけた言葉を打ち込むと反応が返り、集めた断片を組み合わせるとゲームの外へ続く隠しURLが明らかになることも。序章クリア後と最終章では位置情報の許可を求められ、許可すると実測の緯度経度から架空の『境木町』までの直線距離を計算して表示する演出がある(座標はどこにも送信されず、ブラウザ内だけで完結)。集めた証拠の割合と隠しページ到達の有無でエンディングが3種に分岐する。PC/スマホ対応(位置情報を使う演出はブラウザの許可が必要)。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/anohi-no-machi/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">😤</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">イライラアクション -IRAIRA ACTION-</h2>
-        <p class="card-desc">飛び乗った瞬間に前へすっ飛んで穴に落ちる——そんな理不尽トラップだらけの意地悪アクション。『しょぼんのアクション』『I Wanna Be The Guy』系オマージュ。偽の床、消える足場、見えないブロック、天井から予告つきで降ってくる敵、押した方向と逆に進む操作反転ゾーン、床がトゲになったら天井を歩く重力反転、触ると全部台無しの偽ゴール旗など、見た目どおりに動かない仕掛けが全8ステージ(さかさま/みえない/ぜんぶ/さいご ほか)に散りばめられている。落ち着いて、あわてて飛ばず、光るものに釣られなければ必ずクリアできる設計。チェックポイント・死亡回数・タイムあり。← →/A D移動、Space/↑/Zジャンプ(長押しで高い)、Rでステージやり直し。スマホはタッチボタン(横向き推奨)。セーブなし・一本勝負。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/iraira-action/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎰</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ゲームアイデアメーカー</h2>
-        <p class="card-desc">「ジャンル」「舞台」「特殊ルール」の3つをランダムに組み合わせて、ゲームの企画アイデアを一瞬で量産できるジェネレーター。各カテゴリ300種類以上を用意していて、組み合わせ数は約2700万通り。スロット風の演出でガチャを回すようにボタン一つで新しいアイデアが出てきて、気に入らなければ3つのうち1つだけを個別に振り直すことも可能。生成した組み合わせは自動で履歴に残り、気に入ったものはお気に入り登録してあとから見返せる。ゲームジャムのお題出しや企画のアイデア出し、暇つぶしに。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/game-idea-maker/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🏙️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">タウン DELUXE</h2>
-        <p class="card-desc">クリック&amp;放置で町を育てる街づくりゲーム。ゴールデンビルや花火など演出も派手。</p>
-        <div class="card-tags"><span class="card-tag">クリッカー・放置</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/town-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎲</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">チンチロDELUXE</h2>
-        <p class="card-desc">丼にサイコロを振り込む3Dチンチロリン。CPUの親とチップを賭けて勝負する本格ルール対応。</p>
-        <div class="card-tags"><span class="card-tag">RNG・運試し</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/chinchiro-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔴</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ドットバトル</h2>
-        <p class="card-desc">エサを食べて大きくなり、自分より小さい相手を飲み込んで吸収するagar.io風の多人数対戦ゲーム。個人戦/チーム戦/感染鬼ごっこ/キングオブザヒル/安全地帯が縮むバトルロイヤルの全5モード(管理者が切替可能)。スピードアップ・シールド・マグネット・巨大化・ミステリーのランダムアイテム、障害物・危険地帯・ワープホールのマップギミック、通常の15倍スコアが手に入る激レア「ゴールデンフード」、連続撃破を実況するキルストリーク演出、絵文字タウント、ミニマップ、参加せず観戦できるモードもあり。ゲストでもすぐ遊べ、アカウント登録すれば実績解除状況を次回以降も引き継げる。まだ何か隠された仕掛けもあるらしい。PC(マウス/WASD+スペースキー)・スマホ(ドラッグ+ボタン)対応。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://dotbattle-sg.onrender.com" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔐</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">パスワード地獄 DELUXE</h2>
-        <p class="card-desc">The Password Game風の脱出パズル。全60ルールを攻略せよ。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/password-hell-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🫧</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">プチプチDELUXE</h2>
-        <p class="card-desc">無限に潰し続けられるバブルラップ(プチプチ)緩衝材シミュレーター。画面いっぱいに敷き詰められたバブルをタップ、あるいは指でなぞってドラッグすると連続でプチプチ潰せる。潰すたびに合成音源でリアルな「プチッ」という破裂音が鳴り、対応端末では軽い振動も発生。一度潰したバブルは0.7〜2.6秒程度のランダムな時間で自動的にまた膨らむため、シートが尽きることなく本当に無限に潰し続けられる。累計で何回潰したかはブラウザに記録され、閉じてもまた同じ数から続けられる。音はワンタップでミュート可能。ただひたすら無心にプチプチしたい人向けの癒やし系フィジェットトイ。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">その他</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/puchipuchi-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔨</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ぶっ壊しルーム</h2>
-        <p class="card-desc">いろんな物をいろんな武器で壊しまくる、ストレス解消の破壊ゲーム。木箱・ブラウン管テレビ・花瓶・窓ガラス・スイカ・上司のマグカップ・冷蔵庫・金魚鉢・雪だるま・ケーキ・招き猫・金庫など29種類の物を、ハンマー・マシンガン・ショットガン・爆弾・火炎放射・落雷・レーザー・ブラックホール・チェーンソー・隕石・誘導ミサイル・冷凍ビームの12種類の武器で粉砕できる。壊した物は見た目のまま破片になって飛び散り、「パリーン」「グシャァ」などの擬音と素材ごとの効果音が鳴る。赤いドラム缶は爆発して周りを巻き込み、火は隣の物に燃え移り、落雷は次々に連鎖し、冷凍ビームで凍らせた物は一撃で粉々に砕ける。連続で壊すとコンボが伸び、溜まったブチギレゲージを解放すると画面中の物を一斉に爆破。「ストレス投入」に好きな言葉を書くと、その文字の看板が落ちてきて壊せる。豚の貯金箱や金庫を壊すとコインが飛び散り、消火器は泡で周りを吹き飛ばす。設定で表示クオリティ(弱め/普通/強め/最高)と落ちてくる数(少なめ〜限界)、音量、画面の揺れ・フラッシュのON/OFFを切り替えられる。スマホは2本指での同時攻撃と振動に対応。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/smash-room/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🚪</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ブラウザ脱出</h2>
-        <p class="card-desc">タブ切替・リサイズ・ダークモード・URLバー・戻るボタンなど、ブラウザの機能そのものを鍵にして全8部屋から脱出するネタ系脱出ゲーム。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/browser-escape/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🐹</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">モグラパニック DELUXE</h2>
-        <p class="card-desc">難易度30段階・実績289種を誇るモグラたたきゲーム。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/mogura-panic-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⚔️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">ゆうしゃ、はじめました。</h2>
-        <p class="card-desc">ドット絵のクラシックターン制RPG。コミカルな一人旅の勇者となって、王国からはじまり港町・雪山・砂漠・王都と5つの章を巡りながら魔王討伐を目指す王道ファンタジー。たたかう/とくぎ/どうぐ/にげるのコマンドバトルに属性相性・クリティカル・回避を実装し、ワールドマップは自由に行き来可能でランダムエンカウントが発生する。経験値でのレベルアップ、武器・防具・アクセサリの装備、ショップでの売買、宿屋での回復、モンスター図鑑コンプリートなどのやり込み要素を搭載。各章の中ボスを倒すと道が開けるフラグ制の進行で、クリア後は隠しダンジョンと裏ボスに挑戦できる引き継ぎ周回も可能。セーブは自動でlocalStorageに記録され、力尽きても直前地点からペナルティなしで再開できる。BGM・効果音はWeb Audio APIによる完全内部合成。</p>
-        <div class="card-tags"><span class="card-tag">その他</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/hero-quest/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔐</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">暗号解読DELUXE</h2>
-        <p class="card-desc">謎の送信者「ELEVEN」から傍受した通信を解読していく暗号解読パズル。Base64を開けたら中身はシーザー暗号、ずらし幅はチャンネル番号や署名、受信時刻の数字の合計に隠されている…といった多重暗号を全10ステージで解く。モールス信号・2進数・16進数・ROT13・アトバシュ・A1Z26・ヴィジュネル暗号なども登場し、ページ内に「見えない文字」で鍵が隠されたステージも。画面右の解読ワークベンチでツールを選んで結果を次の段に流していくだけで、何重にも包まれた暗号を一段ずつ剥がせる。各ステージに段階ヒントと暗号図鑑付き、答えはハッシュ照合なのでソースを見てもネタバレしない。進行状況はブラウザに自動保存。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/cipher-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">📁</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">異常観測機構 日本支部 (JOO-J)</h2>
-        <p class="card-desc">SCP風の異常事象アーカイブを誰でも自由に投稿・編集できるWikiサイト。収容番号(JOO-J-001から)は一覧の空き番号を選ぶか自由入力でき、タイトル・オブジェクトクラス(安全/ユークリッド/ケテル/サウマテル/無力化/未分類)・特別収容プロトコル・説明を記入して新規の収容記録を作成できる。作成済みの記録は誰でも閲覧・編集・追記でき、有用/有用でないの評価も可能。管理者はパスワードでログインすると、組織概要・投稿ルール・全ページ上部のお知らせバナーの編集や、記録の削除ができる。全投稿はSupabaseで共有保存され、他の閲覧者にも反映される。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/joo-j/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">👁️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">異常収容施設 管理記録</h2>
-        <p class="card-desc">Lobotomy Corporation風の怪物管理シミュレーション(非公式ファンゲーム)。職員に観察・対話・世話・制圧の作業を指示して怪物の機嫌を保ち、機嫌が0になると脱走した怪物をリアルタイムで鎮圧する。研究ptで情報解禁・装備作成・職員育成をしながら、施設を崩壊させずに20日間生き延びればクリア。MODローダー「Essen」で怪物を自作して.essenファイルで共有もできる。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/abno-facility/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🤔</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">一生二択</h2>
-        <p class="card-desc">「一生、学校に行かなくていい。ただし宿題は毎日5倍」か「一生、学校には通う。ただし宿題ゼロ」か——。一生に関わる絶妙に悩む二択を、ひたすら選ぶだけ。全521問・12カテゴリ。未回答からランダムに出題されるほか、『質問一覧』でカテゴリ絞り込み・キーワード検索して気になる質問を自分で選ぶこともできる。選ぶたびに、世界の何%が同じ方を選んだかが割合バーで表示され、多数派か少数派かのバッジがつく。投票は共有サーバーで集計。最後に自分の選択と多数派/少数派の数をまとめて振り返れる。回答は端末に保存され、途中からでも続けられる。正解はなし。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">その他</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/nibutaku/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🌓</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">影あわせDELUXE</h2>
-        <p class="card-desc">ライトをドラッグして動かし、浮かぶ立体の影を壁のシルエットにぴったり重ねるパズル。位置・遠近・回転を操作して一致度を上げる。全16ステージ＋エンドレス、実績20種。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/shadow-match/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎣</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">絵文字フィッシング</h2>
-        <p class="card-desc">絵文字を釣り上げるカジュアルゲーム。ランキング機能付き。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/emoji-fishing/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">💬</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">既読、しないで。</h2>
-        <p class="card-desc">深夜2時57分、知らない相手からメッセージが届くところから始まるチャット形式の心理ホラー。スマホのロック画面からトーク一覧、実際のチャット画面までを模したUIで進行し、『既読、はやいね』『後ろ、見た?』などのメッセージに既読(タップ)や選択肢で応じていく。画面を離れると相手がそれに気づいて指摘してきたり、操作を止めていると『まだそこにいる?』と問いかけてきたりと、プレイヤー自身の行動そのものが演出に反映される。ぼやけた写真の既読演出、着信画面、既読・タブ切り替え・停止を絡めた反応型の恐怖を経て、応答するか電話を切るかで結末が分岐する。音声はすべてWebAudioの自作合成で外部音源は不使用。「正しいノック」とは別系統の新作ホラー。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/kidoku/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎲</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">人生ゲーム DELUXE</h2>
-        <p class="card-desc">BOT対戦(1vs1/複数BOT乱闘)に対応したすごろく人生ゲーム。実績155種類以上。</p>
-        <div class="card-tags"><span class="card-tag">対戦</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/jinsei-game-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🚪</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">正しいノック -THE RIGHT KNOCK-</h2>
-        <p class="card-desc">深夜、扉を叩く音の回数を数えて『誰なのか』を見極める心理ホラー。大家さんから渡されたノートには『家族は2回、宅配便は3回、隣人は1回。それ以外の回数には絶対に応えるな』と書かれている。夜ごとにノックが響き、覗き穴を見る・呼びかける・扉を開ける・無視するの中から選んで切り抜ける全6夜。回数が合っていても油断はできず、家族の顔をした何かが笑っていたり、ノート自体が書き換わっていたりする。死因は6種類、エンディングは生存と真実の2種。実績26種(隠し実績あり)、記録画面、音量/フラッシュ演出軽減/マイクによる静寂検知の設定を搭載。ノックの音・心音・環境音はすべてWebAudioの自作合成で、外部の音源・画像素材は一切使用していない。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/right-knock/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔮</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">占い DELUXE</h2>
-        <p class="card-desc">日替わりおみくじ・星座・血液型・干支占いに運試しゲームも搭載。</p>
-        <div class="card-tags"><span class="card-tag">その他</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/uranai-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🏃</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">定時ダッシュ！</h2>
-        <p class="card-desc">17:00、退勤ダッシュで居酒屋を目指す3レーンのエンドレスランナー。部長・電話・書類の山をよけ、ビールチケットと有給を拾って走り抜けろ。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/teiji-dash/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔋</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">電源1%サバイバル</h2>
-        <p class="card-desc">スマホのバッテリーは残り1%。明るさ・Wi-Fi・モバイル・位置情報・アプリなど8種のクイック設定を切り詰めて、待ち合わせの相手が来るまで電源を持たせるだけ。ただし相手からの電話やLINEに時間内に出ないと、はぐれて合流できなくなる。画面は5秒で自動オフ、機内モードは超節約だけど着信が届かない諸刃の剣。難易度3段階、残量に応じた称号7段階、実績20種。セーブは端末内。PC(数字キー/Space)/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/battery-1percent/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🔤</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">読み仮名順テキスト並べ替え</h2>
-        <p class="card-desc">複数行のテキストをkuromoji.jsで読み仮名順に並べ替えるツール。漢字・ひらがな・カタカナ・記号の混在に対応。</p>
-        <div class="card-tags"><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/yomigana-sorter/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🚃</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">日本駅</h2>
-        <p class="card-desc">Three.jsで作った3D電車運転ゲーム。ノッチとブレーキで本格的に電車を操縦し、カーブの制限速度を守って走り続けよう。スピードを出しすぎると脱線して終了、走った距離(m)がそのままコインになる。駅の停止位置ぴったりに止めると停車ボーナス(連続停車で倍増)、カーブを制限ギリギリで抜けるとギリギリボーナス。赤信号では止まって待とう。晴れ・夕方・夜・雨の天気がランダムに変わり、隠し実績を含む37個の実績もある。コインでE235系・EF65形・885系・0系・E5系・923形・L0系などの実在モデルを含む25車両を買ったり、モーターやブレーキを強化できる。はじめての人向けのチュートリアル付き。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">シミュレーション</span><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/nihon-eki/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">💣</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">爆弾解除ゲーム</h2>
-        <p class="card-desc">『Keep Talking and Nobody Explodes』(KTANE)にインスパイアされた一人用の爆弾解除ゲーム。相方はいない——アプリ内の取扱説明書だけが頼り。配線(色と本数で切る1本が決まる)、ボタン(色・文字・電池・インジケーターでタップか長押しか、長押しならタイマーの数字を見て離す)、キーパッド(4つの記号が全部そろう列を探し上から順に押す)、記憶(表示された数字と前ステージの記録から押すボタンを決める全5段階・間違えると最初から)、サイモン(光る色をシリアルの母音とストライク数で別の色に変換して押し返す)、モールス信号(点滅する単語を読んで対応周波数を送信)の6モジュール。爆弾ごとにシリアルナンバー・電池・インジケーター・ポートが変化し、ルールの分岐に絡む。難易度4段階(かんたん3〜エキスパート6モジュール)。ミスするとストライク、ストライクが増えるとタイマーが加速し、規定回数で爆発。答えは一切表示されない。説明書は印刷対応。PC/スマホ対応。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/bomb-defusal-game/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">⚡</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">反射神経DELUXE</h2>
-        <p class="card-desc">緑になった瞬間にタップ!5回勝負の平均タイムで称号が決まる、反射神経を競うだけのサイト。</p>
-        <div class="card-tags"><span class="card-tag">アクション</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/hansha-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">📚</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">本を棚に戻すゲーム</h2>
-        <p class="card-desc">友達と部屋番号を入力してつながるマルチプレイ協力3Dゲーム。床一面に散らばった本を拾う(インタラクトボタンまたはEキー)と本来の場所(本棚)が光るので、そこまで運んで棚に収める。全冊を棚に戻せばクリア。誰でも自由に出入りできる公開ルームもあり、部屋を新規に作るときは本の冊数を500・1000・2000から選べる。進捗・プレイヤー同士の位置はリアルタイムで共有される。PC操作(W/S移動、A/D回転)対応。</p>
-        <div class="card-tags"><span class="card-tag">オンライン協力</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/book-shelf-party/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🌳</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">無限スキルツリー ～折れた世界樹～</h2>
-        <p class="card-desc">折れた「世界樹」の八つの根を辿り、493個のノードを解放して再生させる巨大スキルツリー放置ゲーム。剣術・魔法・商才・錬金術・知識・武具・精神統一・伝説の8系統×60階層に加え、転生5回で解禁される隠し系統「真実の道」も収録。クリックでSPを稼ぎつつ、Cookie Clicker風の施設8種を購入して自動生産を強化、実績と物語を解放しながら頂を目指す。ツリーをリセットして永続倍率を得る転生システム、ノード・施設をまとめ買いできる「買えるだけ買う」、セーブの書き出し/読み込みにも対応。パン・ズームで巨大なツリーを探索できる。</p>
-        <div class="card-tags"><span class="card-tag">クリッカー・放置</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/skill-tree-game/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🌀</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">迷路 DELUXE</h2>
-        <p class="card-desc">自動生成される迷路を探索するデラックス版迷路ゲーム。</p>
-        <div class="card-tags"><span class="card-tag">パズル</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/maze-DELUXE/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card">
-        <div class="card-top">
-          <div class="card-emoji">🎰</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">目押しマスター</h2>
-        <p class="card-desc">スロットの目押し技術を鍛えるドット絵スロットゲーム。</p>
-        <div class="card-tags"><span class="card-tag">RNG・運試し</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/Slot-Sites-AI-GENERETE-/" target="_blank" rel="noopener">遊びに行く →</a>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">⭕</div>
+        <div class="tile-main">
+          <h2 class="card-title">○×DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">3〜5並べ+ミゼール/重力/ワイルド等の特殊モードを備えた丸バツゲーム。CPU4段階と2人対戦に対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/marubatsu-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🧩</div>
+        <div class="tile-main">
+          <h2 class="card-title">15パズル DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">スライドパズルの定番「15パズル」をデラックス化。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/15puzzle/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🔢</div>
+        <div class="tile-main">
+          <h2 class="card-title">2048 DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">定番2048を拡張したデラックス版。新モードや実績を搭載。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/2048-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">🕓</div>
+        <div class="tile-main">
+          <h2 class="card-title">3時44分</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">いなくなった弟の家を、一人称で歩きまわる一晩だけのホラー。矢印キーや画面端で見まわし、ドアや通路をクリックして弟の部屋・廊下・居間・お母さんの部屋・玄関を行き来する。日記、窓の外の人影、顔を塗りつぶされた家族写真、止まったまま3時44分をさす時計、仏壇の遺影、姿見に映る自分でない誰か——調べて動くほど家の時計が進み、真夜中が近づくほど画面が侵食され心音が近づく。3時44分、玄関の扉がノックされたら『音のする方へ行く／動かない』、たどり着いた扉で『開ける／のぞく／うずくまる』。集めた手がかりの数と選択でエンド3種に分岐。canvas描画・セーブは端末内。テスト用 ?3:40 等で開始時刻指定。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/sanji44/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="RNG・運試し">
+        <div class="card-emoji tile-emoji">🪙</div>
+        <div class="tile-main">
+          <h2 class="card-title">8192分の1</h2>
+          <div class="tile-meta"><span class="tile-chip genre">RNG・運試し</span></div>
+          <p class="sr-only">左右どちらかを選び続けるだけ。当たり(1/2)を引けば1段前進、はずれた瞬間スタートに逆戻り。13連続的中でたどり着く 1/8192 が目標で、その先の 1/16384・1/32768… にも挑める。派手な効果音・画面演出、確率のはしご表示、統計、各段の到達回数表、実績54種、1/8192達成で解禁されるオートモード、歴代最高連勝を競う世界ランキング。セーブは端末内。PC(←→キー)/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/one-in-8192/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🏘️</div>
+        <div class="tile-main">
+          <h2 class="card-title">AI TOWN DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">8人の住人が暮らす架空の町を上から眺めるだけの放置系シミュレーション。パン屋・花屋・画家・司書・元漁師・小学生・市場の店主・大工という異なる仕事とスケジュール、性格(元気/皮肉屋/のんびり/心配性など)を持った住人たちが、時間経過とともに自宅・職場・公園・カフェ・図書館・広場などをそれぞれの生活リズムで歩き回る。同じ場所に居合わせると天気やその日のイベント、二人の関係性に応じた会話が自動生成され、右側の「町のできごとログ」にリアルタイムで流れていく。住人アイコンをクリックすると現在の様子・心の声・元気/社交/楽しさのステータスが見られる。天気は日替わりで変化し、まれにお祭りなどの特別イベントも発生。時間の流れは一時停止や1x/2x/4x速度に切り替え可能。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/ai-town-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">🗂️</div>
+        <div class="tile-main">
+          <h2 class="card-title">AMT -Abnormality monitoring tasks-</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">高時給のバイト求人に応募したら、AMT社の『観測補助(夜勤)』だった。アブノーマリティ(異常)の観察レポートを読み、点線付きの記述の中から『おかしいところ』——本文内の矛盾、前の資料との食い違い、あとから書き換えられた一文と崩れた日本語——を見つけてクリックしていく調査ゲーム。1日1体を3択から選び、資料3枚を読み解いて小推理3問に答えるとキーワードを入手。最終日はコルクボードでキーワードを線で結び、A〜Iの穴埋めで会社が何をしていたかを推理する。誤クリックのペナルティなし。エンドはバッド/通常/トゥルー(全ケース観測+2周目以降)の3種。緑文字CRT端末風。セーブは端末内。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/amt-corp/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">🥊</div>
+        <div class="tile-main">
+          <h2 class="card-title">ATTACK ATTACK BATTLE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">オリジナルファイターで殴り合うリアルタイム格闘アクション。まずはCPU対戦から遊べる。WASDで移動、Eで通常攻撃、Rで必殺技。Shiftキー+方向キーで状況に応じた特殊アクションが出せるのが特徴で、前方向なら弱いが連発が効くラッシュパンチ、後ろ方向なら素早い後退、Sなら1秒だけ無敵になる代わりに3秒隙だらけになる回避、Wなら高く舞い上がる復帰ジャンプ(空中で1回だけ)。ダメージ%が貯まるほど吹っ飛びが大きくなり、画面外まで飛ばされるとストックを1失う3ストック制。PC対応(キーボード操作)。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/attack-attack-battle/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="RNG・運試し">
+        <div class="card-emoji tile-emoji">🟨</div>
+        <div class="tile-main">
+          <h2 class="card-title">BACKROOMS ─ レベル移動</h2>
+          <div class="tile-meta"><span class="tile-chip genre">RNG・運試し</span></div>
+          <p class="sr-only">Level 0 から、行き先のレベル番号だけが書かれたボタンを選んで潜っていくBackrooms移動ゲーム。Backrooms Wiki(日本語版)の実レベルを収録し、無印通常階層とη(エータ)層あわせて63階層。ルートは各レベルの「出口」「入口」から採取。景色も音も危険度表示もなく、たよれるのは番号と自分の記憶だけ。危険なレベルほどSANITYが大きく減り、0になると振り出し。どの番号が危ないかはSANITYの増減から自分で覚えるしかない。到達記録には行ったレベルの番号と名前・回数だけが残り、死んでも消えない。Level 0→0ηがη層への入口、Level 3999から「現実」へ帰還できればクリア。レベルとルートはlevelコマンドで自由に組み替え可能。セーブは端末内。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/backrooms/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🛡️</div>
+        <div class="tile-main">
+          <h2 class="card-title">BASTION // NEON DEFENSE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">ネオン輝く防衛グリッドにユニットを配置し、押し寄せる敵のウェーブを撃退するタワーディフェンスゲーム。PRISM RAILやFROST PULSEなどのシステムを運用し、戦況に合わせて防衛網を強化する。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://neondefense-rpgwdakd.manus.space/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="クリッカー・放置">
+        <div class="card-emoji tile-emoji">👹</div>
+        <div class="tile-main">
+          <h2 class="card-title">BOSS RAID</h2>
+          <div class="tile-meta"><span class="tile-chip genre">クリッカー・放置</span></div>
+          <p class="sr-only">1億HPのボスを、世界中のプレイヤーとリアルタイム協力で連打して倒す。倒すたびに少し強い次のボスが無限に出現。同時接続人数・全体DPS表示、ダメージポップ、撃破ファンファーレ＋花火。完全匿名。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/boss-raid/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">⚔️</div>
+        <div class="tile-main">
+          <h2 class="card-title">BRAWL DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">オリジナルファイター10体で戦う見下ろし型対戦アクション。アサルトライフルのレックス、一撃必殺のノヴァ、壁越し爆弾のボム太、回復サポートのヒール、高HPショットガンのタンカー、俊足ブーメランのウィンド、連射ツインピストルのショウタ、減速アイスのフロスト、毒ダーツのヴェノム、茂み奇襲のゴーストから選択。モードは中央ジェム鉱山を奪い合うジェムグラブ、安全地帯が縮む10人バトルロイヤルのショーダウン、ボールを相手ゴールへ運ぶ3vs3のブロールボールの全3種、マップ全5種。CPUは4段階の強さ、トロフィーを稼ぐと新ファイターが解放される進行要素あり。茂みに隠れて奇襲したり必殺技ゲージを溜めて逆転を狙おう。PCはWASD+マウス照準、スマホはデュアルバーチャルスティックに対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/brawl-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🤖</div>
+        <div class="tile-main">
+          <h2 class="card-title">CAPTCHA地獄</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">「私はロボットではありません」から始まり、理不尽なCAPTCHAを全16問ノンストップで解かされるだけのネタ系ゲーム。ゆがみ文字、カーソルから逃げるチェックボックス、信号機グリッド、アナログ時計の時刻読み、音声CAPTCHA、間違い探し、人間であることの証明、CAPTCHAのためのCAPTCHA、拒否ボタンが極小のクッキーバナー、最後は3問連続の高速ラッシュ。ライフ3・各問に制限時間つきで、全問突破すると人間証明書が発行される。実績12種。クリアタイムを記録。セーブは端末内。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/captcha-hell/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🎼</div>
+        <div class="tile-main">
+          <h2 class="card-title">COMPOSE DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">クリックだけで曲が作れるブラウザ作曲ツール。メロディ/ベース/ドラムのトラックにポチポチ打ち込むステップシーケンサー形式で、BPM・小節数・波形(サイン/トライアングル/矩形/ノコギリ)・音量/ミュート/ソロを調整可能。キーとスケール(メジャー/マイナー)を選ぶとダイアトニックコードが自動表示され、王道進行やカノン進行などの定番コード進行プリセットをワンクリックでトラックに反映できる。音源はWeb Audio APIによる内部合成で外部音声ファイル不使用。作った曲はブラウザに自動保存され、JSONでの書き出し/読み込みにも対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/compose-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🏪</div>
+        <div class="tile-main">
+          <h2 class="card-title">CONVENI DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">おにぎり1個だけの小さなコンビニから始まる経営シミュレーション。レジに来たお客さんの商品を長押ししてスキャンすると会計完了、離すと進捗が戻ってしまうので最後まで押し続ける必要がある。列に並んだお客さんには忍耐ゲージがあり、待たせすぎると怒って帰ってしまう(評判ダウン)。一定確率でVIP客が来店し、通常より高額な商品を割増価格で購入してくれる。「PC」画面ではパン・飲み物・お弁当・スイーツ・アイス・揚げ物・コーヒー・雑誌・くじ引きまで全10種の商品を仕入れて品揃えを拡大でき、スキャン速度・客の忍耐時間・集客力・販売価格・VIP出現率・VIP単価アップの各種設備投資、レジ増設(最大3台)も可能。バイトを雇えばそのレジは長押し不要で自動スキャン・自動会計してくれるようになり、離席していた時間もバイトが分の売上を計算して迎えてくれる(最大3時間分)。セーブは自動(localStorage)。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/conveni-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="クリッカー・放置">
+        <div class="card-emoji tile-emoji">🍪</div>
+        <div class="tile-main">
+          <h2 class="card-title">Cookie Factory</h2>
+          <div class="tile-meta"><span class="tile-chip genre">クリッカー・放置</span></div>
+          <p class="sr-only">レーンを流れるクッキーをリズムよくタップして稼ぐクッキークリッカー。工場で自動化、リボーンでツリー強化。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/cookie-factory/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">⚖️</div>
+        <div class="tile-main">
+          <h2 class="card-title">COURT DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">部屋を作って役職(タグ)を決め、裁判官BOTの進行でリアルタイムに議論できる模擬裁判・会議アプリ。部屋作成者はお題(議題)とパスワードを決め、原告・検察官/被告人/弁護人/証人/傍聴人などの役職と人数を事前に設定できる(独自の役職名も追加可能、不要な役職は0人にしてOK)。参加者は部屋コード+パスワードで入室してニックネームと役職を選び、ホストが開廷すると裁判官BOTが開廷宣言・出席確認・進行説明を行って最初の発言者を指名する。以降は誰でも次の発言者を指名でき、重要な発言には⭐マークを付けられる。議論が出尽くしたら誰でも「まとめを求める」ボタンで裁判官BOTに論点整理を依頼できるが、判決や勝敗は一切出さない設計。複数人でのリアルタイム同時接続に対応。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/court-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🥚</div>
+        <div class="tile-main">
+          <h2 class="card-title">Divine出現タイマー</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">Robloxの「卵を盗む」で最高レアのDivineが出やすい時間帯を、みんなの記録から計算するツール。Divineが出た日時を記録すると、出やすい時間帯ランキング・24時間グラフ・「今は狙い目か」と次の狙い目の時間を表示する。「◯分ごとに出る」ような周期パターンの検出、曜日別の回数、日ごとのカレンダー表示、前回のDivineからの経過時間にも対応。張り込んで出なかった時間も記録でき、「出た記録だけ」と「出なかったも含む」の2部門で分析を切り替えられる。記録は全員でリアルタイム共有され、追加・修正・削除はパスワード制。CSVでの保存/読み込み、ホーム画面への追加にも対応。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://divine-timer-egg.netlify.app/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">◈</div>
+        <div class="tile-main">
+          <h2 class="card-title">DREAMCORE // NO EXIT</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">家のふりをした何かが待つ、リミナルスペースを探索する一人称ホラーシミュレーション。プレイルームを探しながら、夢の記録と異常な空間の奥へ進んでいく。WASD/矢印キーで移動、マウスで視点操作、Shiftで走る。PC対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://dreamcore-6jfcky5e.manus.space/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="その他">
+        <div class="card-emoji tile-emoji">🥚</div>
+        <div class="tile-main">
+          <h2 class="card-title">EGG HUNT</h2>
+          <div class="tile-meta"><span class="tile-chip genre">その他</span></div>
+          <p class="sr-only">全50個のイースターエッグを探し出す隠し要素満載の収集ゲーム。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/easter-egg-hunter/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🐤</div>
+        <div class="tile-main">
+          <h2 class="card-title">FLAPPY DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">フラッピーバード風の連打アクションをデラックス強化。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/-FLAPPY_DELUXE-/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="RNG・運試し">
+        <div class="card-emoji tile-emoji">🎰</div>
+        <div class="tile-main">
+          <h2 class="card-title">GACHA LIFE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">RNG・運試し</span></div>
+          <p class="sr-only">アップグレードも戦闘もない。ただ一生ガチャを引くだけのRNGゲーム。放置でジェムが貯まり、単発/10連/無料枠を回す。SSR確定の天井100連、ソフト天井、図鑑71種、ガチャ道ランク20段階、実績40種、重複を星屑に替えて交換する星屑ショップ。セーブはブラウザ内、オフライン報酬あり。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/gacha-life/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🐞</div>
+        <div class="tile-main">
+          <h2 class="card-title">GLITCH RUN DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">「このゲームには、いくつかのバグがあります。」ダッシュ(8方向)・壁ジャンプ・しゃがみを駆使して全10ステージを駆け抜ける2Dスピードランアクション。ステージは正攻法でもクリアできるが、ゲーム内にはあからさまではない6種類のバグが隠されており、見つけて使いこなすとタイムが大きく縮む。発見したバグは「バグ図鑑」に記録され、一度全クリするとヒントが開放される。全ステージ通しのRTAタイムは共有の世界ランキングで競える(バグ使用なんでもあり)。ステージ単位の練習モード・スプリット表示・自己ベスト比較付き。キー設定で全操作を自由に割り当て可能(ゲームパッド対応)。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/glitch-run/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🌌</div>
+        <div class="tile-main">
+          <h2 class="card-title">GRAVITY DRIFT</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">特異点へダイブし、重力で外へ弾き出されながら火花の間を縫って完璧なチェインをつなぐアーケードアクション。重力の流れを読み、タイミングよく進路を切り替えて高スコアを目指す。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://gravity-drift-arcade.netlify.app/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">⛰️</div>
+        <div class="tile-main">
+          <h2 class="card-title">HAMMER CLIMB DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">Getting Over It風の物理登りゲーム。壺に入ったキャラクターがハンマー1本だけを頼りに、理不尽な地形が続く山をひたすら登る。画面をドラッグ(スマホは指で)してハンマーを振り回し、岩の出っ張りに引っかけたり叩きつけたりして体を持ち上げていく。ハンマーの当たり判定は地形の折れ線に対する物理演算で、油断すると足場を失って下まで滑り落ちることも。序盤の斜面から、オーバーハング、滑りやすい長い坂、狭いチムニーのジグザグ、V字の谷など、テンポよく難所が変化していき、山頂の旗を目指す。進んだ高さは自動でセーブされ、次に開いたときは「つづきから」で再開できる(タイトルで「さいしょから」を選ぶとリセットも可能)。高度に応じて空の色が朝焼けから満点の星空まで変化する。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/hammer-climb-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">🔢</div>
+        <div class="tile-main">
+          <h2 class="card-title">HIT &amp; BLOW 対戦</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">秘密の数字をおたがいに当て合う1vs1。各ラウンド同時提出で、予想した数字が1桁ずつ色で返る（ワードル式）＝緑はその場所で正解、橙は数字はあるが場所ちがい、灰はハズレ。先に全部緑にした人の勝ち。CPUフリー戦は よわい〜じごくの5段階＋桁数3〜5・重複あり選択。レート戦は世界中の人とレート帯マッチングしてElo変動（相手不在時はレート帯CPU）、野良戦は未ランク、合言葉ルームは友達と1対1、デイリーは全員共通の問題を最少手数で競う。定型スタンプ・候補数ヒント・リプレイ共有リンク・実績27種・統計・効果音。相手切断時は勝ち確定かCPU戦に切替。世界ランキングあり。PC(数字キー/Enter)・スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/hit-and-blow/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">⏱️</div>
+        <div class="tile-main">
+          <h2 class="card-title">HOLD ON</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">表示された秒数だけボタンを長押しして離すだけ。押している間は時間が表示されず、たよれるのは体内時計のみ。全5ラウンドのズレ(ミリ秒)の合計で7段階の称号を判定し、世界ランキングに登録できる。ベストは端末に保存。PC(スペースキー)/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/hold-on/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">🚪</div>
+        <div class="tile-main">
+          <h2 class="card-title">human or [CENSORED]</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">世紀末、正体不明の擬態生物『アリス』が現れ、家を失った人々が扉という扉に押し寄せるようになった夜を描く選択型サバイバルノベル。テレビのニュースで異変を知った後、チャイムが鳴るたびインターホンモニター越しの映像と会話だけを頼りに、扉の向こうにいるのが人間か[CENSORED]かを見極めて開閉を選ぶ。話しかけて言葉や仕草の違和感を探ることもできるが、判断を誤って招き入れてしまうと、その夜は何事もなく過ぎても翌朝には手遅れになっている。家に迎えた人とは夜に言葉を交わして信頼を積み重ねられ、その積み重ねが最終日の分かれ道――BAD END・GOOD END?・TRUE ENDの3つの結末を左右する。全7日のストーリーモード。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/human-or-censored/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🔖</div>
+        <div class="tile-main">
+          <h2 class="card-title">INSPECTOR DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">架空の「中央書類管理局」の審査官として、次々届く「申請書」と「身分証明書」を見比べ、本日の規則に沿って承認・却下のスタンプを押していくだけの書類審査シミュレーター(クリッカー要素なし)。DAY1は「有効期限切れは却下」だけのシンプルな規則からスタートし、DAY2で氏名の一致確認、DAY3で写真(アイコン)の一致確認、DAY4で日替わりの公式印影との照合、DAY5で番号の書式チェック、DAY6で生年月日から算出した年齢制限と、日を追うごとに確認すべき規則が1つずつ積み重なっていく。前日までの規則はすべて継続して有効なので、後半は複数の規則を同時に頭に入れながら短時間で判断する必要がある。DAY7以降は全規則が出揃った状態のまま制限時間がさらに短縮され、難度が上がり続ける。制限時間内の処理件数と正答率でスコアが決まり、ミスをした際は違反箇所が赤枠で示されるので次に活かせる。ベストスコアと到達DAYはブラウザに自動保存。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/inspector-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">🕯️</div>
+        <div class="tile-main">
+          <h2 class="card-title">KAGE: 04:13</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">Gemini AI制作。旧市立病院の地下棟を、音を立てずに進む短編ホラー。暗い廊下の奥で起きる異変を調べ、精神を保ちながら朝まで生き残る。Web Audio APIの動的な効果音、CSS 3Dの一人称廊下、人影の演出、精神値による2種類のエンディングを搭載。PCは矢印キー/WASD/Space、スマホは画面上のボタンで操作可能。ヘッドフォン推奨。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/kage-0413/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🧠</div>
+        <div class="tile-main">
+          <h2 class="card-title">LOBOTOMY DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">謎の「収容体」を職員に管理させ、作業エネルギーを取り出しながら施設を運営するオリジナルの管理シミュレーター。職員を選んで収容体のセルに割り当てると、本能・洞察・愛着・抑圧の4種の作業エネルギーを供給。1日3フェーズ制で、フェーズ終了ごとに作業を解決し、日次決算で4種すべてのノルマ達成を目指す。作業に失敗し続けると封印カウンターが減少し、0になると収容体が「収容違反」を起こして脱走、放置すると待機中の職員を襲撃する。脱走中は職員を割り当てて鎮圧しないと被害が拡大。ノルマ未達成が続くと信頼度が低下し0で運営終了、職員が全滅しても終了。コインで新規職員の雇用や負傷した職員の休養処置が可能。収容体は全15種(ZAYIN〜ALEPH全5等級)、実績41種。セーブはlocalStorage自動保存。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/lobotomy-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">💬</div>
+        <div class="tile-main">
+          <h2 class="card-title">MESSAGE DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">友達コードでつながるシンプルなメッセージアプリ。ゲストとして始めるとその端末のCookieにログイン情報が保存され(削除すると復元不可)、設定画面からユーザー名+パスワードやパスキー(生体認証/Googleパスワードマネージャー)を追加登録すれば別の端末からもログイン可能。自分専用のフレンドコード(例 D5E2-O32P-I90W)を相手に伝えて申請→相手が承認すると1対1のリアルタイムチャットが始まる。テキストに加えて画像(5MBまで)・動画(20MBまで)の送信、既読表示にも対応。表示名はログインIDとは別にいつでも変更できる。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/message-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🚇</div>
+        <div class="tile-main">
+          <h2 class="card-title">METRO TYCOON</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">初期資金¥100で駅を買い、駅と駅を線路でつないで、走る電車で稼ぐ Mini Metro 風の鉄道経営ゲーム。駅をタップして選択→別の駅をタップで線路を敷設。同じ駅からさらに別方向へつなげば枝分かれ自由(1駅→2駅、3駅→1駅と2駅…)、線路をタップすれば撤去。線路がつながると列車が自動で走り出し、分岐点では乗せている客の目的地や待ち客のいる方向へ自動で進む。乗客(行き先を示す図形マークつき)を運ぶたびに運賃が入り、区間が長いほど割り増し、運行するだけでも少額の営業収入。線路を増やすと列車も自動で増発。マップ上の点線の丸は購入できる駅で、買うほど価格が上がり乗客の発生も増える。乗客が溢れた駅を放置すると赤いリングが一周してダイヤ崩壊(ゲームオーバー)。アップグレードは6種——運賃改定(運賃+50%)、車両大型化(定員+3)、加速性能(速度+22%)、増発(全路線の列車+1)、沿線開発(乗客+35%)、新規開業(路線スロット+1)。最大5路線・色分けされた別ネットワークを運営でき、路線網を広げるほど乗客と収入が伸びる。進行はブラウザに自動保存。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/metro-tycoon/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="クリッカー・放置">
+        <div class="card-emoji tile-emoji">👆</div>
+        <div class="tile-main">
+          <h2 class="card-title">MILLION CLICKER</h2>
+          <div class="tile-meta"><span class="tile-chip genre">クリッカー・放置</span></div>
+          <p class="sr-only">アップグレード要素なし。ただひたすら100万回クリックするだけ。達成すると超派手な花火とファンファーレ演出。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/million-clicker/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🧱</div>
+        <div class="tile-main">
+          <h2 class="card-title">Minecraft MOD Wiki</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">マイクラ(Minecraft)のMOD・リソースパック・MODパックを日本語で解説する、だれでも編集できるWiki。ログイン不要でブラウザからページを作ったり直したりでき、編集はユーザー名つきで履歴に残るので、差分を見て元の版に戻すこともできる。対応バージョン・MODローダー(Forge/NeoForge/Fabric/Quilt)・ジャンルはタグから選ぶだけで、一覧はバージョン別・ローダー別・ジャンル別に絞り込める。CurseForge/ModrinthのURLを入れると、MOD名・対応バージョン・作者・ダウンロード数などを自動で読み込む。**太字**などの簡単な書き方で本文を書け、画像・GIFの貼り付け、作業台・かまどのレシピ表示、本文まで探せる検索、おすすめMODのまとめ記事にも対応。荒らし対策に通報ボタンと管理者機能つき。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/mc-mod-wiki/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="オンライン協力">
+        <div class="card-emoji tile-emoji">🌐</div>
+        <div class="tile-main">
+          <h2 class="card-title">MixAll +（二世代）</h2>
+          <div class="tile-meta"><span class="tile-chip genre">オンライン協力</span></div>
+          <p class="sr-only">掲示板「Uch」、個人・グループチャット「ぽけっと」、動画も投稿できるSNS「Ghost」、疑似メール、3Dワールドを作って遊べる「カスタム」、お絵かき・動画編集のスタジオ、便利ツール集までひとつにまとめたコミュニティサイト。チャットの本文はサーバーに残さず自分の端末に保存され、Googleドライブにも任意でバックアップできる。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/mixall/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">📟</div>
+        <div class="tile-main">
+          <h2 class="card-title">MODEM DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">90年代ダイヤルアップ接続を再現。3段階ハンドシェイクをこなして繋ぎ、300bpsから5Gまで回線を進化させる。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/modem-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="クリッカー・放置">
+        <div class="card-emoji tile-emoji">💰</div>
+        <div class="tile-main">
+          <h2 class="card-title">MONEY CLICKER</h2>
+          <div class="tile-meta"><span class="tile-chip genre">クリッカー・放置</span></div>
+          <p class="sr-only">中央のコインをクリックしてお金を稼ぐCookie Clicker風クリッカー。全20種の建物(レモネードスタンド〜銀河コングロマリット)で自動収入を増やし、全8種のクリック強化で1クリックの額を上げる。価格は買うたび1.15倍、まとめ買いx1/x10/x100対応、数字はK/M/B/T…表記。コイン下のボタンでオートクリッカーをON/OFFでき、ONの間は1秒あたり5回自動でクリックし続ける(クリック倍率・バフもそのまま反映、離席中も進行)。画面にランダムで出現する金貨をクリックすると『ラッキー(即時ボーナス)』『フィーバー(生産×7)』『連打フィーバー(クリック×777)』『大当たり(全体×2)』が発動。実績は254種(建物・クリック回数・総資産・転生・ゴールドバー・ツリー・金貨・オートクリッカー・Infinity・プレイ時間など)、解除1個につき全生産+1%で無限に伸びる。今回の獲得額が$100万を超えると転生でき、額に応じてゴールドバー🥇を獲得→全19ノードのアップグレードツリー(クリック/自動収入倍率・購入価格減・開始資金・オフライン強化・🥇獲得量・転生スケール・金貨強化・実績ボーナス2倍)で永久強化。ツリーは🥇全額返却で振り直し可。所持金が$1e308(倍精度の上限)に到達すると次の段階「♾INFINITY」が解禁され、突入すると所持金・建物・ツリー・転生回数がリセットされる代わりに♾Infinityを獲得(1個につき永久に全収入+2%)。なまえを設定すると累計獲得額で競う世界ランキング(上位50名+自分の推定順位、♾やゴールドバーも表示)に参加できる。ニュースティッカー・獲得中バフ表示つき。離席中も収入継続、セーブは自動(localStorage)。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/money-clicker/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="音楽・リズム">
+        <div class="card-emoji tile-emoji">🎧</div>
+        <div class="tile-main">
+          <h2 class="card-title">MUSIC LiDAR</h2>
+          <div class="tile-meta"><span class="tile-chip genre">音楽・リズム</span></div>
+          <p class="sr-only">奥から手前へ流れるノーツを D F J K(スマホはタップ)で叩く、4キーの音ゲー。ジャズ・ロック/メタル・トランス・ダブステップ・ファンク・シンセウェイヴ・チップチューンなどいろんなジャンルで、初心者向けからBPM220の鬼畜曲、譜面が止まったり加速したりするギミック曲、魔王魂さんの「シャイニングスター」まで全16曲・各3難易度。ロングノーツ・同時押しあり、判定は PERFECT/GREAT/GOOD/MISS で100万点満点。曲ごとのオンラインランキング、アカウントを作ると貯まるコインで引けるキャラガチャ(★1〜★4・全26体)と5人編成(スコアUP・判定サポート・コンボガード・コインUP)、デイリーミッションと実績も。譜面メーカーではクリック・録音・自動譜面の手直しで譜面を作って「みんなの譜面」に投稿でき、手持ちの音声ファイルから自動で譜面を作って遊ぶこともできる。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/music-lidar/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🔐</div>
+        <div class="tile-main">
+          <h2 class="card-title">Nandokuka Tools</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">IDや文章をBase64・モールス信号・ハッシュ化など19方式で難読化・復号できるツール。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/nandokuka-tools/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🛸</div>
+        <div class="tile-main">
+          <h2 class="card-title">NEON RAIDER</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">ネオン調の縦スクロール弾幕STG。ウェーブ制で10ウェーブごとにボス、武器5種を拾って切り替え。ボス連戦のBOSS RUSHも搭載。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/neon-raider/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="その他">
+        <div class="card-emoji tile-emoji">🗝️</div>
+        <div class="tile-main">
+          <h2 class="card-title">ONCE A YEAR</h2>
+          <div class="tile-meta"><span class="tile-chip genre">その他</span></div>
+          <p class="sr-only">一年に一度しか開かない扉。その年だけの封書を読み、次に訪れる自分へ手紙を一通だけ残せる。次に読めるのは365日後。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/once-a-year/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🌀</div>
+        <div class="tile-main">
+          <h2 class="card-title">PARADOX LOOP</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">時間ループの中で『過去の自分』の分身を利用して脱出する因果ループ脱出パズル。制限ティック数以内にゴールできず時間切れになると、その周のプレイヤーの動きが半透明の『分身』として記録され、次のループで同時に再現される。ドアはプレート(誰かが乗っている間だけ開く)かレバー(一度触れるとループを超えて永遠に開いたままになる)に連動しており、1周目でプレートに乗ったまま時間切れにして分身に任せ、2周目は身軽になったプレイヤー自身がドアを通り抜ける、といった『過去の自分と協力するパズル』を解いていく。全6ステージで、単純な移動から始まり、レバーの永続性、複数の分身を同時に運用する多重ループへと段階的に発展。使用したループ回数に応じて星評価(最大3つ)。矢印キー/WASDまたはスマホのD-Padで操作。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/paradox-loop/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🧮</div>
+        <div class="tile-main">
+          <h2 class="card-title">Phosphor Calc</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">式入力・関数電卓・履歴・メモリー機能を備えたおしゃれな高機能電卓。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/phosphor-calc/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🪐</div>
+        <div class="tile-main">
+          <h2 class="card-title">PHYSICS LAB DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">二重振り子・ニュートンのゆりかご・バネ(単振動)・放物運動・万有引力の軌道・静電気力・摩擦と傾斜・浮力・自由サンドボックスの9つの物理法則で遊べるプレイグラウンド。表示は完全に2Dだが、内部はThree.js+Cannon.jsによる本物の3D物理エンジンで、位置・回転・力の計算はすべて3Dベクトル/クォータニオンで行われている(見た目だけ2Dに固定したオルソグラフィックカメラ)。全モード共通で、物体をドラッグしてつまみ離すと実際にその速度で動き出す。二重振り子は初期角度をわずかにずらした複製を並べてカオス(初期値鋭敏性)を可視化、万有引力モードは衛星をドラッグで放り投げて楕円軌道や落下を試せ、サンドボックスは重力の向き・強さまで自由に変更できる。各モードのパラメータ(重力・バネ定数・摩擦係数・液体密度など)はリアルタイム調整可能、上部の速度スライダーでスローモーション/早送り/一時停止もできる。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/physics-lab-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="音楽・リズム">
+        <div class="card-emoji tile-emoji">🎹</div>
+        <div class="tile-main">
+          <h2 class="card-title">PIANO DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">音楽・リズム</span></div>
+          <p class="sr-only">PCキーボード/タッチで弾けるピアノ。録音・MIDI/WAV/MP3書き出し対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/piano-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="オンライン協力">
+        <div class="card-emoji tile-emoji">🎨</div>
+        <div class="tile-main">
+          <h2 class="card-title">PIXEL PLACE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">オンライン協力</span></div>
+          <p class="sr-only">世界中の人と共有する100×100のドット絵キャンバス。1マス塗るのにチャージを1個消費し、チャージは5秒に1個・最大50個までたまる。消しゴムはなく、上から塗り直すしかない。混雑したらSERVER 0001→0002…と別サーバーを選べる(最大50個)。16色パレット、ピンチ/ホイールでズーム、ドラッグで移動、スポイトで色拾い。接続人数と累計ドット数を表示。Supabaseで全員のキャンバスをリアルタイム同期。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/pixel-place/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🏖️</div>
+        <div class="tile-main">
+          <h2 class="card-title">POWDER SANDBOX</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">火・水・砂・油・溶岩・氷・草・酸・火薬など19素材のフォーリングサンド型物理サンドボックス。燃焼の延焼、水⇄水蒸気、溶岩+水→石、酸の溶解、火薬の連鎖爆発などをセルオートマトンでシミュレート。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/2d-sandbox/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="音楽・リズム">
+        <div class="card-emoji tile-emoji">🎵</div>
+        <div class="tile-main">
+          <h2 class="card-title">Rhythmer</h2>
+          <div class="tile-meta"><span class="tile-chip genre">音楽・リズム</span></div>
+          <p class="sr-only">上から降ってくるノーツを叩くリズムゲーム。譜面エディターで自作の譜面を作って書き出せる。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/rhythmer/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🔴</div>
+        <div class="tile-main">
+          <h2 class="card-title">RING JUMP DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">自分はボール。タップ／クリック／スペースキーで羽ばたいて浮き、放っておくと落ちていく『フラッピーバード』方式で、迫りくる輪(フープ)の穴だけをくぐり抜けるシンプル操作のハイスコア挑戦ゲーム。輪の枠・天井・地面に当たったら即ゲームオーバー。輪のど真ん中を通すと「SWISH」ボーナスで+2点、外周ギリギリを通す通常くぐりは+1点。スコアが伸びるほど流れる速度がアップし、輪の穴も徐々に狭くなっていく。ベストスコアはlocalStorageに保存。PC・スマホ両対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/ring-jump-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="RNG・運試し">
+        <div class="card-emoji tile-emoji">🪙</div>
+        <div class="tile-main">
+          <h2 class="card-title">SCRATCH DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">RNG・運試し</span></div>
+          <p class="sr-only">1円玉代わりに指やマウスでこするだけのスクラッチくじゲーム。ブロンズ・シルバー・ゴールドの3種類のチケットをコインで購入し、3×3マスの銀色の膜をドラッグして削っていくと下から絵柄が現れる。同じ絵柄が3つ以上そろうとその絵柄に応じたコインを獲得(そろわなければハズレ)。上位のチケットほど購入コストは高いが景品も豪華になり、ゴールドの最高配当は購入額の50倍。1マスずつこするのが面倒なときは「一気に削る」ボタンで即座に全開示も可能。所持コインが尽きても24時間ごとに無料のブロンズチケットを1枚受け取れるので遊び続けられる。購入枚数・最高配当・収支などの統計と直近の当選履歴もブラウザに自動保存。PC/スマホ対応(タッチドラッグでこすれる)。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/scratch-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🚦</div>
+        <div class="tile-main">
+          <h2 class="card-title">SIGNAL FLOW DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">経営要素ゼロの純粋パズルシム。グリッド状の交差点に立つ信号をタップして切り替え、道路が車で埋まる前にさばき続ける。各交差点は放っておいても一定間隔でNS/EWの通行方向が自動で入れ替わるが、それだけでは詰まりが起きるタイミングを見て手動で介入するのが腕の見せどころ。時間経過とともに車の出現間隔がだんだん短くなり、道路の入口が車で埋まって新しい車が入れなくなった瞬間「渋滞発生!」で即ゲームオーバー。スコアは通過させた台数、生存時間も記録され、難易度はEASY(3×3)/NORMAL(4×4)/HARD(5×4)の3種、それぞれベストスコアをブラウザに自動保存。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/signal-flow-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">🥊</div>
+        <div class="tile-main">
+          <h2 class="card-title">SMASH DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">オリジナルファイター8体で殴り合う、スマブラ風の対戦アクションゲーム。剣士のけんご、パワー型のロケッタ、高速忍者のニンジャカゲ、重量級グラップラーのパンダッシュ、ふわふわ浮遊する魔法少女のマホウショウジョ、遠距離ロボのロボQ、最高の飛行復帰を持つトリシャーマン、最重量タンクのヨロイクマの8人から選び、ダメージ%が高いほど吹っ飛びやすくなる本家準拠のノックバック計算・シールド/回避(その場回避・ローリング・エアドッジ)・つかみと投げ・スマッシュ攻撃の溜め・必殺技(ニュートラル/上/下)を実装。ステージは足場が浮かぶノーマルフィールド、流れる雲の上、溶岩が周期的に噴き上がるようがんこうざん、横に壁があり縦の撃墜だけが決着を分けるくうちゅうとりで、広々としたしんりんのほこらの全5種。アイテムはバット・レイガン・ばくだん・ハート・ホシ・ダッシュブーツ・バリアオーブ・とげのわなの全8種。最大4人対戦(キーボード2人+ゲームパッド2人)、CPUは4段階の強さから選択、ストック戦(1〜5)/時間戦(1〜5分)に対応。スマホ・タブレットはバーチャルスティック+ボタンのタッチ操作に対応、5桁のルームコードで1対1のオンライン対戦も可能。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/smash-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🧱</div>
+        <div class="tile-main">
+          <h2 class="card-title">STACK DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">左右に動くブロックをクリック/タップ/スペースキーで落として積み上げていくタワーゲーム。ぴったり重ねると「PERFECT!」判定になり、ズレて重なるとはみ出た部分が物理的に崩れ落ちて次のブロックが小さくなる。積むごとにブロックの色が虹色にグラデーションしていき、ズレて完全に外れるとタワーが崩れてゲームオーバー。自己ベスト段数はローカルに保存され、高さ・累計ブロック数・パーフェクト回数・連続パーフェクト・プレイ回数・特殊条件など48種の実績を収録。世界共有のオンラインランキングにも自己ベストを送信できる。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/stack-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">📈</div>
+        <div class="tile-main">
+          <h2 class="card-title">STONKS</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">所持金100万円スタート。上がったり下がったりする7銘柄を売り買いして、40営業日でどこまで総資産を増やせるかを競うだけのシンプルな株ゲーム。株価はランダムウォーク＋ニュースによる急騰・暴落、売買手数料0.15%。アップグレード要素なしの純粋な相場勝負。40日後の総資産で世界ランキング。ベストは端末に保存。PC(↑↓/B/S/Space)/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/stonks/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🍉</div>
+        <div class="tile-main">
+          <h2 class="card-title">SUIKA DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">スイカゲーム風の物理演算パズル。合体させて高得点を狙え。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/suika-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="音楽・リズム">
+        <div class="card-emoji tile-emoji">🥁</div>
+        <div class="tile-main">
+          <h2 class="card-title">TAIKO SIM</h2>
+          <div class="tile-meta"><span class="tile-chip genre">音楽・リズム</span></div>
+          <p class="sr-only">お手持ちの.tja譜面ファイルと音源ファイルを読み込んで遊べる、太鼓の達人風リズムゲームの非公式プレイヤー。ファイル/フォルダ選択やドラッグ&amp;ドロップでtjaと音源(mp3/ogg/wav等)をファイル名から自動マッチングし、難易度(かんたん/ふつう/むずかしい/おに/裏)を選んでプレイ。自作のTJAパーサーがTITLE/BPM/OFFSET/COURSE/LEVEL/BALLOONや音符データ、BPM変化・拍子変化・スクロール速度・ゴーゴータイム・分岐などのコマンドを解釈し、Canvas描画のスクロール譜面として再生。判定(良/可/不可)・コンボ・魂ゲージ・連打/風船/くす玉に対応し、PC(D/F/J/K)・スマホ(画面タップ)両対応。著作権フリーの自作シンセ音源によるお試しサンプル曲も同梱。読み込んだ譜面・音源ファイルは端末内でのみ処理しサーバーに送信しない。自己ベストスコアのみlocalStorageに保存。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/taiko-sim/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🟦</div>
+        <div class="tile-main">
+          <h2 class="card-title">TETRIS DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">ガイドライン準拠のブラウザ版テトリス。7種バッグ抽選・ゴースト・ホールド・ネクスト5個表示に加え、SRS回転＋ウォールキック、ハードドロップ、ロックディレイ、T-スピン判定、B2B、REN(コンボ)、ライン消去演出まで搭載。10ラインごとにレベルアップして落下が速くなる。モードはマラソン(150ライン)、スプリント(40ライン計測)、ウルトラ(2分間スコアアタック)の3種類。スコアと各種ベストは端末内に保存。PC(矢印/Z/X/Space/C/Shift)・スマホ(画面ボタン＆スワイプ)対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/tetris-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">🏰</div>
+        <div class="tile-main">
+          <h2 class="card-title">TOWER CLASH</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">ガチャで集めたキャラを編成して挑む本格タワーディフェンス。難易度3段階(かんたん/ふつう/むずかしい)×全5ステージで、ウェーブごとに現れる敵を通り道のそばに設置したキャラで迎撃する。戦って貯めたコイン・勝利報酬でガチャ(★1〜★5、全11種)を引いて仲間を収集、重複はランクアップに変換され永続強化。出撃前に最大6体まで編成でき、戦闘中は設置したキャラをその場でレベルアップ(最大Lv3)・売却も可能。連鎖攻撃・継続ダメージ・後退・周囲強化など特殊効果を持つキャラも登場。サブ要素として、防衛側/侵略側に分かれる非対称のオンライン対戦(5桁ルームコードでPC・スマホ間1対1)にも対応し、防衛側は自分が育てた編成キャラをそのまま持ち込める。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/tower-clash/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">⌨️</div>
+        <div class="tile-main">
+          <h2 class="card-title">TYPING DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">複数ローマ字入力(shi/si、fu/hu、ん、っ 等)に対応したタイピングゲーム。タイムアタック・お題数・サドンデスの3モード、14カテゴリ約600問。KPM・正確率・コンボで称号判定、次に押すキーをキーボードでハイライト。スマホは画面内キーボードをタップして入力。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/typing-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">💗</div>
+        <div class="tile-main">
+          <h2 class="card-title">UNDERTALE BATTLE EMULATOR</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">Undertale風の弾幕バトルを自作できるブラウザ製エディタ。骨(ボーン)オブジェクトをキャンバス上でドラッグして移動、先端の回転ハンドルをドラッグして回転させると、現在時刻にキーフレームが自動で打たれる仕組みで攻撃パターンを組み立てられる。タイムラインでキーフレームの時刻・座標・回転・拡大率・不透明度を細かく編集でき、プレビュー再生で動きを確認可能。作った攻撃は「プレイ」タブで矢印キー/WASD(スマホは画面下の十字ボタン)で魂を操作し、実際に骨を避けて耐えきれるか遊べる。横なぎ骨・回転する骨・隙間の壁・十字連打・波状の骨の5種のテンプレートを収録し、パターンはブラウザに保存またはJSONファイルとして書き出し/読み込みできる。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/undertale-battle-emulator/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🧩</div>
+        <div class="tile-main">
+          <h2 class="card-title">VISUAL CODE DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">コードを一切書かずに、ブロックを組み立ててゲーム・アニメ・ツールを作れるScratch風のビジュアルプログラミング環境。左のパレットから右のキャンバスへブロックをドラッグすると近くのブロックに吸着し、C型ブロックの中や入力欄にも入れ子にできる。▶で実行、ブロック単体クリックでも動作、パレットに戻すと削除。マルチスレッド実行エンジンでイベント(旗・キー・クリック・メッセージ・背景切替・数値超え)、クローン、ずっと/繰り返し/条件/待機に対応。480x360ステージに複数スプライト(絵文字/図形/文字/画像コスチューム)、吹き出し、回転方法、画像効果。標準10カテゴリ(動き・見た目・音・イベント・制御・調べる・演算・変数・リスト・ペン)に加え、音楽/文字/音声合成(TTS)/保存/時間/デバッグ/画面演出まで大幅拡張し全226ブロック。変数・リストのステージ表示(スライダー対応)、引数つき自作ブロック(再帰OK)、WebAudio合成の効果音・楽器、音声/画像アップロード。作品は.vcd.jsonで保存/読み込み、自動保存、サンプル8種。ターボ/ダークモード/プレゼン表示。PC・タブレット推奨。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/visual-code-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">📍</div>
+        <div class="tile-main">
+          <h2 class="card-title">あの日の町</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">個人ブログ「境木町アーカイブ」を発見してしまった体で読み進める調査型ARGホラー。ハブ画面の記事一覧から調査地点を選び、写真・証言・資料の3タブに埋め込まれた『おかしいところ』をクリックして探し、8月31日の夜だけ町が一日分だけ長く続くという噂の正体に迫っていく。資料タブは写真・証言を読み終えるまでロックされ、読み解くと文字の断片を入手できることがある。画面上部の『検索』窓に記事中で見つけた言葉を打ち込むと反応が返り、集めた断片を組み合わせるとゲームの外へ続く隠しURLが明らかになることも。序章クリア後と最終章では位置情報の許可を求められ、許可すると実測の緯度経度から架空の『境木町』までの直線距離を計算して表示する演出がある(座標はどこにも送信されず、ブラウザ内だけで完結)。集めた証拠の割合と隠しページ到達の有無でエンディングが3種に分岐する。PC/スマホ対応(位置情報を使う演出はブラウザの許可が必要)。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/anohi-no-machi/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">😤</div>
+        <div class="tile-main">
+          <h2 class="card-title">イライラアクション -IRAIRA ACTION-</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">飛び乗った瞬間に前へすっ飛んで穴に落ちる——そんな理不尽トラップだらけの意地悪アクション。『しょぼんのアクション』『I Wanna Be The Guy』系オマージュ。偽の床、消える足場、見えないブロック、天井から予告つきで降ってくる敵、押した方向と逆に進む操作反転ゾーン、床がトゲになったら天井を歩く重力反転、触ると全部台無しの偽ゴール旗など、見た目どおりに動かない仕掛けが全8ステージ(さかさま/みえない/ぜんぶ/さいご ほか)に散りばめられている。落ち着いて、あわてて飛ばず、光るものに釣られなければ必ずクリアできる設計。チェックポイント・死亡回数・タイムあり。← →/A D移動、Space/↑/Zジャンプ(長押しで高い)、Rでステージやり直し。スマホはタッチボタン(横向き推奨)。セーブなし・一本勝負。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/iraira-action/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🎰</div>
+        <div class="tile-main">
+          <h2 class="card-title">ゲームアイデアメーカー</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">「ジャンル」「舞台」「特殊ルール」の3つをランダムに組み合わせて、ゲームの企画アイデアを一瞬で量産できるジェネレーター。各カテゴリ300種類以上を用意していて、組み合わせ数は約2700万通り。スロット風の演出でガチャを回すようにボタン一つで新しいアイデアが出てきて、気に入らなければ3つのうち1つだけを個別に振り直すことも可能。生成した組み合わせは自動で履歴に残り、気に入ったものはお気に入り登録してあとから見返せる。ゲームジャムのお題出しや企画のアイデア出し、暇つぶしに。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/game-idea-maker/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="クリッカー・放置">
+        <div class="card-emoji tile-emoji">🏙️</div>
+        <div class="tile-main">
+          <h2 class="card-title">タウン DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">クリッカー・放置</span></div>
+          <p class="sr-only">クリック&amp;放置で町を育てる街づくりゲーム。ゴールデンビルや花火など演出も派手。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/town-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="RNG・運試し">
+        <div class="card-emoji tile-emoji">🎲</div>
+        <div class="tile-main">
+          <h2 class="card-title">チンチロDELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">RNG・運試し</span></div>
+          <p class="sr-only">丼にサイコロを振り込む3Dチンチロリン。CPUの親とチップを賭けて勝負する本格ルール対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/chinchiro-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">🔴</div>
+        <div class="tile-main">
+          <h2 class="card-title">ドットバトル</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">エサを食べて大きくなり、自分より小さい相手を飲み込んで吸収するagar.io風の多人数対戦ゲーム。個人戦/チーム戦/感染鬼ごっこ/キングオブザヒル/安全地帯が縮むバトルロイヤルの全5モード(管理者が切替可能)。スピードアップ・シールド・マグネット・巨大化・ミステリーのランダムアイテム、障害物・危険地帯・ワープホールのマップギミック、通常の15倍スコアが手に入る激レア「ゴールデンフード」、連続撃破を実況するキルストリーク演出、絵文字タウント、ミニマップ、参加せず観戦できるモードもあり。ゲストでもすぐ遊べ、アカウント登録すれば実績解除状況を次回以降も引き継げる。まだ何か隠された仕掛けもあるらしい。PC(マウス/WASD+スペースキー)・スマホ(ドラッグ+ボタン)対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://dotbattle-sg.onrender.com" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🔐</div>
+        <div class="tile-main">
+          <h2 class="card-title">パスワード地獄 DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">The Password Game風の脱出パズル。全60ルールを攻略せよ。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/password-hell-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="その他">
+        <div class="card-emoji tile-emoji">🫧</div>
+        <div class="tile-main">
+          <h2 class="card-title">プチプチDELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">その他</span></div>
+          <p class="sr-only">無限に潰し続けられるバブルラップ(プチプチ)緩衝材シミュレーター。画面いっぱいに敷き詰められたバブルをタップ、あるいは指でなぞってドラッグすると連続でプチプチ潰せる。潰すたびに合成音源でリアルな「プチッ」という破裂音が鳴り、対応端末では軽い振動も発生。一度潰したバブルは0.7〜2.6秒程度のランダムな時間で自動的にまた膨らむため、シートが尽きることなく本当に無限に潰し続けられる。累計で何回潰したかはブラウザに記録され、閉じてもまた同じ数から続けられる。音はワンタップでミュート可能。ただひたすら無心にプチプチしたい人向けの癒やし系フィジェットトイ。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/puchipuchi-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🔨</div>
+        <div class="tile-main">
+          <h2 class="card-title">ぶっ壊しルーム</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">いろんな物をいろんな武器で壊しまくる、ストレス解消の破壊ゲーム。木箱・ブラウン管テレビ・花瓶・窓ガラス・スイカ・上司のマグカップ・冷蔵庫・金魚鉢・雪だるま・ケーキ・招き猫・金庫など29種類の物を、ハンマー・マシンガン・ショットガン・爆弾・火炎放射・落雷・レーザー・ブラックホール・チェーンソー・隕石・誘導ミサイル・冷凍ビームの12種類の武器で粉砕できる。壊した物は見た目のまま破片になって飛び散り、「パリーン」「グシャァ」などの擬音と素材ごとの効果音が鳴る。赤いドラム缶は爆発して周りを巻き込み、火は隣の物に燃え移り、落雷は次々に連鎖し、冷凍ビームで凍らせた物は一撃で粉々に砕ける。連続で壊すとコンボが伸び、溜まったブチギレゲージを解放すると画面中の物を一斉に爆破。「ストレス投入」に好きな言葉を書くと、その文字の看板が落ちてきて壊せる。豚の貯金箱や金庫を壊すとコインが飛び散り、消火器は泡で周りを吹き飛ばす。設定で表示クオリティ(弱め/普通/強め/最高)と落ちてくる数(少なめ〜限界)、音量、画面の揺れ・フラッシュのON/OFFを切り替えられる。スマホは2本指での同時攻撃と振動に対応。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/smash-room/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🚪</div>
+        <div class="tile-main">
+          <h2 class="card-title">ブラウザ脱出</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">タブ切替・リサイズ・ダークモード・URLバー・戻るボタンなど、ブラウザの機能そのものを鍵にして全8部屋から脱出するネタ系脱出ゲーム。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/browser-escape/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🐹</div>
+        <div class="tile-main">
+          <h2 class="card-title">モグラパニック DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">難易度30段階・実績289種を誇るモグラたたきゲーム。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/mogura-panic-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="その他">
+        <div class="card-emoji tile-emoji">⚔️</div>
+        <div class="tile-main">
+          <h2 class="card-title">ゆうしゃ、はじめました。</h2>
+          <div class="tile-meta"><span class="tile-chip genre">その他</span></div>
+          <p class="sr-only">ドット絵のクラシックターン制RPG。コミカルな一人旅の勇者となって、王国からはじまり港町・雪山・砂漠・王都と5つの章を巡りながら魔王討伐を目指す王道ファンタジー。たたかう/とくぎ/どうぐ/にげるのコマンドバトルに属性相性・クリティカル・回避を実装し、ワールドマップは自由に行き来可能でランダムエンカウントが発生する。経験値でのレベルアップ、武器・防具・アクセサリの装備、ショップでの売買、宿屋での回復、モンスター図鑑コンプリートなどのやり込み要素を搭載。各章の中ボスを倒すと道が開けるフラグ制の進行で、クリア後は隠しダンジョンと裏ボスに挑戦できる引き継ぎ周回も可能。セーブは自動でlocalStorageに記録され、力尽きても直前地点からペナルティなしで再開できる。BGM・効果音はWeb Audio APIによる完全内部合成。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/hero-quest/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🔐</div>
+        <div class="tile-main">
+          <h2 class="card-title">暗号解読DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">謎の送信者「ELEVEN」から傍受した通信を解読していく暗号解読パズル。Base64を開けたら中身はシーザー暗号、ずらし幅はチャンネル番号や署名、受信時刻の数字の合計に隠されている…といった多重暗号を全10ステージで解く。モールス信号・2進数・16進数・ROT13・アトバシュ・A1Z26・ヴィジュネル暗号なども登場し、ページ内に「見えない文字」で鍵が隠されたステージも。画面右の解読ワークベンチでツールを選んで結果を次の段に流していくだけで、何重にも包まれた暗号を一段ずつ剥がせる。各ステージに段階ヒントと暗号図鑑付き、答えはハッシュ照合なのでソースを見てもネタバレしない。進行状況はブラウザに自動保存。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/cipher-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">📁</div>
+        <div class="tile-main">
+          <h2 class="card-title">異常観測機構 日本支部 (JOO-J)</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">SCP風の異常事象アーカイブを誰でも自由に投稿・編集できるWikiサイト。収容番号(JOO-J-001から)は一覧の空き番号を選ぶか自由入力でき、タイトル・オブジェクトクラス(安全/ユークリッド/ケテル/サウマテル/無力化/未分類)・特別収容プロトコル・説明を記入して新規の収容記録を作成できる。作成済みの記録は誰でも閲覧・編集・追記でき、有用/有用でないの評価も可能。管理者はパスワードでログインすると、組織概要・投稿ルール・全ページ上部のお知らせバナーの編集や、記録の削除ができる。全投稿はSupabaseで共有保存され、他の閲覧者にも反映される。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/joo-j/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">👁️</div>
+        <div class="tile-main">
+          <h2 class="card-title">異常収容施設 管理記録</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">Lobotomy Corporation風の怪物管理シミュレーション(非公式ファンゲーム)。職員に観察・対話・世話・制圧の作業を指示して怪物の機嫌を保ち、機嫌が0になると脱走した怪物をリアルタイムで鎮圧する。研究ptで情報解禁・装備作成・職員育成をしながら、施設を崩壊させずに20日間生き延びればクリア。MODローダー「Essen」で怪物を自作して.essenファイルで共有もできる。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/abno-facility/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="その他">
+        <div class="card-emoji tile-emoji">🤔</div>
+        <div class="tile-main">
+          <h2 class="card-title">一生二択</h2>
+          <div class="tile-meta"><span class="tile-chip genre">その他</span></div>
+          <p class="sr-only">「一生、学校に行かなくていい。ただし宿題は毎日5倍」か「一生、学校には通う。ただし宿題ゼロ」か——。一生に関わる絶妙に悩む二択を、ひたすら選ぶだけ。全521問・12カテゴリ。未回答からランダムに出題されるほか、『質問一覧』でカテゴリ絞り込み・キーワード検索して気になる質問を自分で選ぶこともできる。選ぶたびに、世界の何%が同じ方を選んだかが割合バーで表示され、多数派か少数派かのバッジがつく。投票は共有サーバーで集計。最後に自分の選択と多数派/少数派の数をまとめて振り返れる。回答は端末に保存され、途中からでも続けられる。正解はなし。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/nibutaku/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🌓</div>
+        <div class="tile-main">
+          <h2 class="card-title">影あわせDELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">ライトをドラッグして動かし、浮かぶ立体の影を壁のシルエットにぴったり重ねるパズル。位置・遠近・回転を操作して一致度を上げる。全16ステージ＋エンドレス、実績20種。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/shadow-match/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🎣</div>
+        <div class="tile-main">
+          <h2 class="card-title">絵文字フィッシング</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">絵文字を釣り上げるカジュアルゲーム。ランキング機能付き。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/emoji-fishing/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">💬</div>
+        <div class="tile-main">
+          <h2 class="card-title">既読、しないで。</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">深夜2時57分、知らない相手からメッセージが届くところから始まるチャット形式の心理ホラー。スマホのロック画面からトーク一覧、実際のチャット画面までを模したUIで進行し、『既読、はやいね』『後ろ、見た?』などのメッセージに既読(タップ)や選択肢で応じていく。画面を離れると相手がそれに気づいて指摘してきたり、操作を止めていると『まだそこにいる?』と問いかけてきたりと、プレイヤー自身の行動そのものが演出に反映される。ぼやけた写真の既読演出、着信画面、既読・タブ切り替え・停止を絡めた反応型の恐怖を経て、応答するか電話を切るかで結末が分岐する。音声はすべてWebAudioの自作合成で外部音源は不使用。「正しいノック」とは別系統の新作ホラー。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/kidoku/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="対戦">
+        <div class="card-emoji tile-emoji">🎲</div>
+        <div class="tile-main">
+          <h2 class="card-title">人生ゲーム DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">対戦</span></div>
+          <p class="sr-only">BOT対戦(1vs1/複数BOT乱闘)に対応したすごろく人生ゲーム。実績155種類以上。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/jinsei-game-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ホラー・ノベル">
+        <div class="card-emoji tile-emoji">🚪</div>
+        <div class="tile-main">
+          <h2 class="card-title">正しいノック -THE RIGHT KNOCK-</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ホラー・ノベル</span></div>
+          <p class="sr-only">深夜、扉を叩く音の回数を数えて『誰なのか』を見極める心理ホラー。大家さんから渡されたノートには『家族は2回、宅配便は3回、隣人は1回。それ以外の回数には絶対に応えるな』と書かれている。夜ごとにノックが響き、覗き穴を見る・呼びかける・扉を開ける・無視するの中から選んで切り抜ける全6夜。回数が合っていても油断はできず、家族の顔をした何かが笑っていたり、ノート自体が書き換わっていたりする。死因は6種類、エンディングは生存と真実の2種。実績26種(隠し実績あり)、記録画面、音量/フラッシュ演出軽減/マイクによる静寂検知の設定を搭載。ノックの音・心音・環境音はすべてWebAudioの自作合成で、外部の音源・画像素材は一切使用していない。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/right-knock/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="その他">
+        <div class="card-emoji tile-emoji">🔮</div>
+        <div class="tile-main">
+          <h2 class="card-title">占い DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">その他</span></div>
+          <p class="sr-only">日替わりおみくじ・星座・血液型・干支占いに運試しゲームも搭載。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/uranai-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">🏃</div>
+        <div class="tile-main">
+          <h2 class="card-title">定時ダッシュ！</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">17:00、退勤ダッシュで居酒屋を目指す3レーンのエンドレスランナー。部長・電話・書類の山をよけ、ビールチケットと有給を拾って走り抜けろ。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/teiji-dash/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🔋</div>
+        <div class="tile-main">
+          <h2 class="card-title">電源1%サバイバル</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">スマホのバッテリーは残り1%。明るさ・Wi-Fi・モバイル・位置情報・アプリなど8種のクイック設定を切り詰めて、待ち合わせの相手が来るまで電源を持たせるだけ。ただし相手からの電話やLINEに時間内に出ないと、はぐれて合流できなくなる。画面は5秒で自動オフ、機内モードは超節約だけど着信が届かない諸刃の剣。難易度3段階、残量に応じた称号7段階、実績20種。セーブは端末内。PC(数字キー/Space)/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/battery-1percent/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="ツール">
+        <div class="card-emoji tile-emoji">🔤</div>
+        <div class="tile-main">
+          <h2 class="card-title">読み仮名順テキスト並べ替え</h2>
+          <div class="tile-meta"><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">複数行のテキストをkuromoji.jsで読み仮名順に並べ替えるツール。漢字・ひらがな・カタカナ・記号の混在に対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/yomigana-sorter/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="シミュレーション">
+        <div class="card-emoji tile-emoji">🚃</div>
+        <div class="tile-main">
+          <h2 class="card-title">日本駅</h2>
+          <div class="tile-meta"><span class="tile-chip genre">シミュレーション</span></div>
+          <p class="sr-only">Three.jsで作った3D電車運転ゲーム。ノッチとブレーキで本格的に電車を操縦し、カーブの制限速度を守って走り続けよう。スピードを出しすぎると脱線して終了、走った距離(m)がそのままコインになる。駅の停止位置ぴったりに止めると停車ボーナス(連続停車で倍増)、カーブを制限ギリギリで抜けるとギリギリボーナス。赤信号では止まって待とう。晴れ・夕方・夜・雨の天気がランダムに変わり、隠し実績を含む37個の実績もある。コインでE235系・EF65形・885系・0系・E5系・923形・L0系などの実在モデルを含む25車両を買ったり、モーターやブレーキを強化できる。はじめての人向けのチュートリアル付き。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/nihon-eki/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">💣</div>
+        <div class="tile-main">
+          <h2 class="card-title">爆弾解除ゲーム</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">『Keep Talking and Nobody Explodes』(KTANE)にインスパイアされた一人用の爆弾解除ゲーム。相方はいない——アプリ内の取扱説明書だけが頼り。配線(色と本数で切る1本が決まる)、ボタン(色・文字・電池・インジケーターでタップか長押しか、長押しならタイマーの数字を見て離す)、キーパッド(4つの記号が全部そろう列を探し上から順に押す)、記憶(表示された数字と前ステージの記録から押すボタンを決める全5段階・間違えると最初から)、サイモン(光る色をシリアルの母音とストライク数で別の色に変換して押し返す)、モールス信号(点滅する単語を読んで対応周波数を送信)の6モジュール。爆弾ごとにシリアルナンバー・電池・インジケーター・ポートが変化し、ルールの分岐に絡む。難易度4段階(かんたん3〜エキスパート6モジュール)。ミスするとストライク、ストライクが増えるとタイマーが加速し、規定回数で爆発。答えは一切表示されない。説明書は印刷対応。PC/スマホ対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/bomb-defusal-game/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="アクション">
+        <div class="card-emoji tile-emoji">⚡</div>
+        <div class="tile-main">
+          <h2 class="card-title">反射神経DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">アクション</span></div>
+          <p class="sr-only">緑になった瞬間にタップ!5回勝負の平均タイムで称号が決まる、反射神経を競うだけのサイト。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/hansha-deluxe/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="オンライン協力">
+        <div class="card-emoji tile-emoji">📚</div>
+        <div class="tile-main">
+          <h2 class="card-title">本を棚に戻すゲーム</h2>
+          <div class="tile-meta"><span class="tile-chip genre">オンライン協力</span></div>
+          <p class="sr-only">友達と部屋番号を入力してつながるマルチプレイ協力3Dゲーム。床一面に散らばった本を拾う(インタラクトボタンまたはEキー)と本来の場所(本棚)が光るので、そこまで運んで棚に収める。全冊を棚に戻せばクリア。誰でも自由に出入りできる公開ルームもあり、部屋を新規に作るときは本の冊数を500・1000・2000から選べる。進捗・プレイヤー同士の位置はリアルタイムで共有される。PC操作(W/S移動、A/D回転)対応。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/book-shelf-party/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="クリッカー・放置">
+        <div class="card-emoji tile-emoji">🌳</div>
+        <div class="tile-main">
+          <h2 class="card-title">無限スキルツリー ～折れた世界樹～</h2>
+          <div class="tile-meta"><span class="tile-chip genre">クリッカー・放置</span></div>
+          <p class="sr-only">折れた「世界樹」の八つの根を辿り、493個のノードを解放して再生させる巨大スキルツリー放置ゲーム。剣術・魔法・商才・錬金術・知識・武具・精神統一・伝説の8系統×60階層に加え、転生5回で解禁される隠し系統「真実の道」も収録。クリックでSPを稼ぎつつ、Cookie Clicker風の施設8種を購入して自動生産を強化、実績と物語を解放しながら頂を目指す。ツリーをリセットして永続倍率を得る転生システム、ノード・施設をまとめ買いできる「買えるだけ買う」、セーブの書き出し/読み込みにも対応。パン・ズームで巨大なツリーを探索できる。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/skill-tree-game/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="パズル">
+        <div class="card-emoji tile-emoji">🌀</div>
+        <div class="tile-main">
+          <h2 class="card-title">迷路 DELUXE</h2>
+          <div class="tile-meta"><span class="tile-chip genre">パズル</span></div>
+          <p class="sr-only">自動生成される迷路を探索するデラックス版迷路ゲーム。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/maze-DELUXE/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
+      </article>
+      <article class="game-card tile" data-genre="RNG・運試し">
+        <div class="card-emoji tile-emoji">🎰</div>
+        <div class="tile-main">
+          <h2 class="card-title">目押しマスター</h2>
+          <div class="tile-meta"><span class="tile-chip genre">RNG・運試し</span></div>
+          <p class="sr-only">スロットの目押し技術を鍛えるドット絵スロットゲーム。</p>
+        </div>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/Slot-Sites-AI-GENERETE-/" target="_blank" rel="noopener" title="遊びに行く">▶</a>
+        </div>
       </article>
     <!-- SEO-GAMES:END -->
   </section>
 
-  <div class="section-head" id="softHead">
-    <h2 class="section-title">🧰 ソフト・MOD <span class="section-count" id="softCountLabel"></span></h2>
-    <p class="section-note">ゲームではない、自作のアプリ・ツール・MODです。</p>
-  </div>
 
   <section class="game-grid" id="softGrid">
     <!-- SEO-SOFT:START -->
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">📸</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="ソフト">
+        <div class="card-emoji tile-emoji">📸</div>
+        <div class="tile-main">
+          <h2 class="card-title">App Screenshotter</h2>
+          <div class="tile-meta"><span class="tile-chip soft">💻 ソフト・Windows</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">指定したアプリのウィンドウだけを撮影して、指定フォルダに保存するWindows常駐ツール。裏に隠れているウィンドウもPrintWindow APIで撮れる。ホットキー・一定間隔・スケジュール・対象アプリの起動検知で撮影でき、ドラッグでの範囲選択、縦長ページを1枚にするスクロールキャプチャ、複数アプリの一括撮影、Before/Afterの横並び保存、撮影後の簡易エディタ(矢印・モザイク・ぼかしなど)、Discord WebhookやimgurへのアップロードやGIF/録画にも対応する。</p>
         </div>
-        <h2 class="card-title">App Screenshotter</h2>
-        <p class="card-desc">指定したアプリのウィンドウだけを撮影して、指定フォルダに保存するWindows常駐ツール。裏に隠れているウィンドウもPrintWindow APIで撮れる。ホットキー・一定間隔・スケジュール・対象アプリの起動検知で撮影でき、ドラッグでの範囲選択、縦長ページを1枚にするスクロールキャプチャ、複数アプリの一括撮影、Before/Afterの横並び保存、撮影後の簡易エディタ(矢印・モザイク・ぼかしなど)、Discord WebhookやimgurへのアップロードやGIF/録画にも対応する。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/app-screenshotter/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/app-screenshotter/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">🐱</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="MOD">
+        <div class="card-emoji tile-emoji">🐱</div>
+        <div class="tile-main">
+          <h2 class="card-title">Bongo Cat SuperKRWKMod</h2>
+          <div class="tile-meta"><span class="tile-chip soft">🧩 MOD・Bongo Cat(Steam)</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">Bongo Cat用の「見た目だけ」のMOD。タイピングが速いと猫が跳ねて虹色に光るZoomies、カーソルを追いかける目、眠そうな猫、タイピング速度メーター(KPS)、コンボ表示、宝箱が開けられる通知、タイピング記録、アプリごとのルールを、ゲーム内の「Mods」設定ページからオン/オフできる。ゲームのカウンターやSteamの統計・アイテム・ドロップは一切変えず、チート要素はない。Shilo氏のCatnip Modをベースにしている。</p>
         </div>
-        <h2 class="card-title">Bongo Cat SuperKRWKMod</h2>
-        <p class="card-desc">Bongo Cat用の「見た目だけ」のMOD。タイピングが速いと猫が跳ねて虹色に光るZoomies、カーソルを追いかける目、眠そうな猫、タイピング速度メーター(KPS)、コンボ表示、宝箱が開けられる通知、タイピング記録、アプリごとのルールを、ゲーム内の「Mods」設定ページからオン/オフできる。ゲームのカウンターやSteamの統計・アイテム・ドロップは一切変えず、チート要素はない。Shilo氏のCatnip Modをベースにしている。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">🧩 MOD・Bongo Cat(Steam)</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/SuperKRWKMod/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/SuperKRWKMod/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">🌿</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="ソフト">
+        <div class="card-emoji tile-emoji">🌿</div>
+        <div class="tile-main">
+          <h2 class="card-title">Komorebi(木漏れ日)</h2>
+          <div class="tile-meta"><span class="tile-chip soft">💻 ソフト・Windows</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">Windows用の自作デスクトップブラウザ。中身はChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。配布は約2.5MBのzip。</p>
         </div>
-        <h2 class="card-title">Komorebi(木漏れ日)</h2>
-        <p class="card-desc">Windows用の自作デスクトップブラウザ。中身はChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。配布は約2.5MBのzip。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/Komorebi/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/Komorebi/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">🔔</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="ソフト">
+        <div class="card-emoji tile-emoji">🔔</div>
+        <div class="tile-main">
+          <h2 class="card-title">SNR Room Notifier</h2>
+          <div class="tile-meta"><span class="tile-chip soft">💻 ソフト・Windows</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">Among UsのMOD「SuperNewRoles」のカスタムサーバーで公開部屋が開かれたら、Windowsの通知で知らせる常駐アプリ。通知や一覧からそのまま部屋に参加でき、Among Usが起動していなければ起動→読み込み待ち→参加まで自動で行う。通知の条件(マップ・インポスター数・人数・部屋名)、お気に入り/ミュートのホスト、満員の部屋の空き通知、静かな時間帯を設定できる。個人が作った非公式ツールで、SuperNewRoles開発チームやInnersloth(Among Us)とは関係がない。</p>
         </div>
-        <h2 class="card-title">SNR Room Notifier</h2>
-        <p class="card-desc">Among UsのMOD「SuperNewRoles」のカスタムサーバーで公開部屋が開かれたら、Windowsの通知で知らせる常駐アプリ。通知や一覧からそのまま部屋に参加でき、Among Usが起動していなければ起動→読み込み待ち→参加まで自動で行う。通知の条件(マップ・インポスター数・人数・部屋名)、お気に入り/ミュートのホスト、満員の部屋の空き通知、静かな時間帯を設定できる。個人が作った非公式ツールで、SuperNewRoles開発チームやInnersloth(Among Us)とは関係がない。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/snr-room-notifier/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/snr-room-notifier/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">🎚️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="ソフト">
+        <div class="card-emoji tile-emoji">🎚️</div>
+        <div class="tile-main">
+          <h2 class="card-title">SoundVoice Mixer</h2>
+          <div class="tile-meta"><span class="tile-chip soft">💻 ソフト・Windows / Android</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">デスクトップの音とマイクをミックスして、仮想オーディオケーブル(VB-CABLEなど)へ出力するWindows用の音声ミキサー。録音側を「soundvoice Output」にすれば仮想マイクとして使える。ボイチェン(プリセット14種とピッチ・震え・ロボット・リバーブ・フィルターの調整)、音割れ、ノイズゲート、エコー、8枠のサウンドボード、グローバルホットキー、自分で聞くモニターに対応。マイクとスマホ内の音を混ぜて聞いたり録音したりできるAndroid版(apk)もある。</p>
         </div>
-        <h2 class="card-title">SoundVoice Mixer</h2>
-        <p class="card-desc">デスクトップの音とマイクをミックスして、仮想オーディオケーブル(VB-CABLEなど)へ出力するWindows用の音声ミキサー。録音側を「soundvoice Output」にすれば仮想マイクとして使える。ボイチェン(プリセット14種とピッチ・震え・ロボット・リバーブ・フィルターの調整)、音割れ、ノイズゲート、エコー、8枠のサウンドボード、グローバルホットキー、自分で聞くモニターに対応。マイクとスマホ内の音を混ぜて聞いたり録音したりできるAndroid版(apk)もある。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows / Android</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/SoundVoiceMixer/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/SoundVoiceMixer/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">🧑‍🚀</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="MOD">
+        <div class="card-emoji tile-emoji">🧑‍🚀</div>
+        <div class="tile-main">
+          <h2 class="card-title">Town Of Host-P-P</h2>
+          <div class="tile-meta"><span class="tile-chip soft">🧩 MOD・Among Us</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">Among Usの人気MOD「TownOfHost-Pko」の非公式フォーク。友達と遊ぶための独自の役職を追加している。追加した役職は、潜伏者・口止め屋・マッドスター・ジャッカルスター・目撃者・カメラマン・ブックメーカー・ナイスボタナー・イビルボタナー・ハイエナ・足止め屋・灯台守・記録係・救急隊員・闇のうどん屋・万歩計・逆探知・孤狼と、SuperNewRolesから移したスター・イビルサイエンティスト・ナイスサイエンティスト。最新版(v1.12.0)はAmong Us v2026.9.29(v19)に対応し、ベースはTownOfHost-Pko v5.37.23.99。部屋主と参加者は同じバージョンが必要で、公開ルームでは使えない。TownOfHost-Pko公式・本家TOH/TOHK・Innerslothとは関係がなく、不具合をフォーク元に報告しないこと。ライセンスはGPL-3.0。</p>
         </div>
-        <h2 class="card-title">Town Of Host-P-P</h2>
-        <p class="card-desc">Among Usの人気MOD「TownOfHost-Pko」の非公式フォーク。友達と遊ぶための独自の役職を追加している。追加した役職は、潜伏者・口止め屋・マッドスター・ジャッカルスター・目撃者・カメラマン・ブックメーカー・ナイスボタナー・イビルボタナー・ハイエナ・足止め屋・灯台守・記録係・救急隊員・闇のうどん屋・万歩計・逆探知・孤狼と、SuperNewRolesから移したスター・イビルサイエンティスト・ナイスサイエンティスト。最新版(v1.12.0)はAmong Us v2026.9.29(v19)に対応し、ベースはTownOfHost-Pko v5.37.23.99。部屋主と参加者は同じバージョンが必要で、公開ルームでは使えない。TownOfHost-Pko公式・本家TOH/TOHK・Innerslothとは関係がなく、不具合をフォーク元に報告しないこと。ライセンスはGPL-3.0。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">🧩 MOD・Among Us</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/TOH-Pko-private/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/TOH-Pko-private/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">⏱️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="ソフト">
+        <div class="card-emoji tile-emoji">⏱️</div>
+        <div class="tile-main">
+          <h2 class="card-title">WorkMonitor</h2>
+          <div class="tile-meta"><span class="tile-chip soft">💻 ソフト・Windows</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">実際に手を動かしている時間だけを記録する、Windows 10 / 11 用の作業時間トラッカー。キーボードやマウスの操作が止まると記録も止まる(初期値は60秒で休憩中)ので、アプリを開いたまま放置した時間は数えない。1日の目標と連続達成日数、アプリごとの「作業に数えるか」の設定、日・週・月のダッシュボード(カテゴリ別・アプリ別・時間帯別)、ログインでクラウドに同期してウェブサイトからどの端末でも閲覧、画面の端に出すオーバーレイ、Discordの「作業中」表示、タスクトレイ常駐に対応。</p>
         </div>
-        <h2 class="card-title">WorkMonitor</h2>
-        <p class="card-desc">実際に手を動かしている時間だけを記録する、Windows 10 / 11 用の作業時間トラッカー。キーボードやマウスの操作が止まると記録も止まる(初期値は60秒で休憩中)ので、アプリを開いたまま放置した時間は数えない。1日の目標と連続達成日数、アプリごとの「作業に数えるか」の設定、日・週・月のダッシュボード(カテゴリ別・アプリ別・時間帯別)、ログインでクラウドに同期してウェブサイトからどの端末でも閲覧、画面の端に出すオーバーレイ、Discordの「作業中」表示、タスクトレイ常駐に対応。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/WorkMonitor/" target="_blank" rel="noopener">サイトを見る →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://kaikomziu.github.io/WorkMonitor/" target="_blank" rel="noopener" title="サイトを見る">↗</a>
+        </div>
       </article>
-      <article class="game-card is-soft">
-        <div class="card-top">
-          <div class="card-emoji">📦</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+      <article class="game-card tile is-soft" data-genre="ソフト">
+        <div class="card-emoji tile-emoji">📦</div>
+        <div class="tile-main">
+          <h2 class="card-title">マイクラBE アドオン簡単導入ツール</h2>
+          <div class="tile-meta"><span class="tile-chip soft">💻 ソフト・Windows</span><span class="tile-chip genre">ツール</span></div>
+          <p class="sr-only">Minecraft統合版(Bedrock Edition)の.mcaddon/.mcpack/.mcworldなどを、ドラッグ&amp;ドロップするだけで導入するWindows用の小さなツール。ZIPの中身をMinecraftの管理フォルダ(com.mojang)へ直接展開するので、Minecraftを閉じたり起動し直したりする必要がない。manifest.jsonを解析してビヘイビア/リソース/スキン/ワールドテンプレートを自動で仕分け、通常版とPreview版の両方・非公式ランチャーにも導入でき、導入先フォルダも手動で追加できる。インストール不要でexeを実行するだけ。</p>
         </div>
-        <h2 class="card-title">マイクラBE アドオン簡単導入ツール</h2>
-        <p class="card-desc">Minecraft統合版(Bedrock Edition)の.mcaddon/.mcpack/.mcworldなどを、ドラッグ&amp;ドロップするだけで導入するWindows用の小さなツール。ZIPの中身をMinecraftの管理フォルダ(com.mojang)へ直接展開するので、Minecraftを閉じたり起動し直したりする必要がない。manifest.jsonを解析してビヘイビア/リソース/スキン/ワールドテンプレートを自動で仕分け、通常版とPreview版の両方・非公式ランチャーにも導入でき、導入先フォルダも手動で追加できる。インストール不要でexeを実行するだけ。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/mc-addon-installer/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+        <div class="tile-side">
+        <a class="play-btn tile-play" href="https://github.com/kaikomziu/mc-addon-installer/releases/latest" target="_blank" rel="noopener" title="ダウンロードへ">⬇</a>
+        </div>
       </article>
     <!-- SEO-SOFT:END -->
   </section>
@@ -1172,6 +1273,7 @@
 <script src="js/version.js?v=2"></script>
 <script src="js/votes.js"></script>
 <script src="js/stats.js"></script>
+<script src="js/tiles.js?v=1"></script>
 <script src="js/main.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/aprilfools.js"></script>

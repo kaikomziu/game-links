@@ -1109,10 +1109,44 @@ favoriteOnlyCheck.addEventListener("change", () => {
 // ===== 描画 =====
 const grid = document.getElementById("gameGrid");
 const softGrid = document.getElementById("softGrid");
-const gamesHead = document.getElementById("gamesHead");
-const softHead = document.getElementById("softHead");
 const emptyMsg = document.getElementById("emptyMsg");
-const resultCount = document.getElementById("resultCount");
+
+// ===== 表示する区画(タブ): games = ゲーム / soft = ソフト・MOD =====
+let currentView = getCookie("view") === "soft" ? "soft" : "games";
+const viewTabs = document.getElementById("viewTabs");
+function syncViewTabs() {
+  viewTabs.querySelectorAll(".view-tab").forEach((t) => {
+    const on = t.dataset.view === currentView;
+    t.classList.toggle("active", on);
+    t.setAttribute("aria-selected", on ? "true" : "false");
+  });
+}
+function setView(v) {
+  currentView = v === "soft" ? "soft" : "games";
+  setCookie("view", currentView, 365);
+  syncViewTabs();
+  render();
+  window.scrollTo(0, 0);
+}
+viewTabs.addEventListener("click", (e) => {
+  const t = e.target.closest(".view-tab");
+  if (t) setView(t.dataset.view);
+});
+// 該当なしのときに表示する「もう一方の区画へ」ボタン
+emptyMsg.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-switch-view]");
+  if (b) setView(b.dataset.switchView);
+});
+
+// ===== 情報バー: 自己紹介・統計・今日の日付の開閉 =====
+const infoToggle = document.getElementById("infoToggle");
+const infoPanel = document.getElementById("infoPanel");
+infoToggle.addEventListener("click", () => {
+  const open = infoPanel.hidden;
+  infoPanel.hidden = !open;
+  infoToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  infoToggle.textContent = open ? "ℹ️ 自己紹介・統計 ▴" : "ℹ️ 自己紹介・統計 ▾";
+});
 
 // ランダム並び順は検索・タグ切替のたびに再シャッフルされると使いづらいので、
 // 一度生成した乱数を保持して並び順を固定する(ページ再読み込みで再抽選)。
@@ -1128,14 +1162,6 @@ function toggleFavorite(id) {
   else favorites.add(id);
   setCookie("favorites", JSON.stringify([...favorites]), 365);
   render();
-}
-
-// 説明文の最初の1文だけを取り出す(一覧をすっきり見せるため)。
-// 句点が無い(元々1文しかない)場合は全文をそのまま返す。
-function firstSentence(desc) {
-  const idx = desc.indexOf("。");
-  if (idx === -1) return desc;
-  return desc.slice(0, idx + 1);
 }
 
 function render() {
@@ -1203,114 +1229,34 @@ function render() {
   }
   // currentSort === "default" のときだけGAMES配列の追加順のまま表示する
 
-  const gamesCount = list.filter(g => !isSoftware(g)).length;
-  const softCount = list.length - gamesCount;
-  // 区画へ移動するリンクと件数(絞り込み後の件数)
-  resultCount.innerHTML =
-    `<a href="#gamesHead">🎮 ゲーム ${gamesCount} 件</a><a href="#softHead">🧰 ソフト・MOD ${softCount} 件</a>`;
-  document.getElementById("gamesCountLabel").textContent = gamesCount;
-  document.getElementById("softCountLabel").textContent = softCount;
-  gamesHead.hidden = gamesCount === 0;
-  softHead.hidden = softCount === 0;
+  // 区画ごとに分ける。タブには絞り込み後の件数を出す
+  const gamesList = list.filter(g => !isSoftware(g));
+  const softList = list.filter(isSoftware);
+  const viewList = currentView === "soft" ? softList : gamesList;
+  const otherList = currentView === "soft" ? gamesList : softList;
+  window.__viewList = viewList; // 詳細ウィンドウの「前へ/次へ」で使う
+  document.getElementById("tabGamesCount").textContent = gamesList.length;
+  document.getElementById("tabSoftCount").textContent = softList.length;
+  grid.hidden = currentView !== "games";
+  softGrid.hidden = currentView !== "soft";
+  document.getElementById("viewNote").hidden = currentView !== "soft";
+
   grid.innerHTML = "";
   softGrid.innerHTML = "";
-  emptyMsg.hidden = list.length !== 0;
+  gamesList.forEach(g => grid.appendChild(buildTile(g)));
+  softList.forEach(g => softGrid.appendChild(buildTile(g)));
 
-  list.forEach(g => {
-    const card = document.createElement("article");
-    const maint = !!g.maintenance;
-    const isNew = isNewGame(g) && !maint;
-    const isSoft = isSoftware(g);
-    card.className = "game-card" + (isNew ? " is-new" : "") + (maint ? " is-maintenance" : "") + (isSoft ? " is-soft" : "");
-    const isFav = favorites.has(g.id);
-
-    const hasVotes = typeof GameVotes !== "undefined";
-    const counts = hasVotes ? GameVotes.getCounts(g.id) : { like: 0, dislike: 0 };
-    const myVote = hasVotes ? GameVotes.getMyVote(g.id) : null;
-    const voted = !!myVote;
-    const plays = typeof GameStats !== "undefined" ? GameStats.getPlays(g.id) : 0;
-    const trivia = typeof TRIVIA !== "undefined" ? TRIVIA[g.id] : null;
-    const shortDesc = firstSentence(g.desc);
-    const hasMoreDesc = shortDesc.length < g.desc.length;
-
-    card.innerHTML = `
-      ${isNew ? `<span class="new-badge" aria-label="新作">NEW</span>` : ""}
-      ${maint ? `<span class="maint-badge">🔧 メンテナンス中</span>` : ""}
-      <div class="card-top">
-        <div class="card-emoji">${g.emoji}</div>
-        <div class="card-top-btns">
-          ${trivia ? `<button class="trivia-btn" aria-label="裏話・小ネタ">💭</button>` : ""}
-          <button class="share-btn" aria-label="このゲームを共有">🔗</button>
-          <button class="fav-btn ${isFav ? "active" : ""}" aria-label="お気に入り切替">${isFav ? "★" : "☆"}</button>
-        </div>
-      </div>
-      <h2 class="card-title">${g.title}</h2>
-      <p class="card-desc">${shortDesc}</p>
-      ${hasMoreDesc ? `<p class="card-desc card-desc-full" hidden>${g.desc}</p>` : ""}
-      ${hasMoreDesc ? `<button class="desc-more-btn" type="button">もっと見る ▾</button>` : ""}
-      ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
-      <div class="card-tags">${isSoft ? `<span class="card-tag kind-tag">${g.kind === "mod" ? "🧩 MOD" : "💻 ソフト"}${g.platform ? "・" + g.platform : ""}</span>` : ""}${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
-      <p class="card-author">作者: ${g.author || "Claude AI"}</p>
-      <div class="vote-row">
-        <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
-          👍 <span class="vote-count">${counts.like}</span>
-        </button>
-        <button class="vote-btn dislike ${myVote === "dislike" ? "active" : ""}" data-vote="dislike" ${voted ? "disabled" : ""} aria-label="低評価">
-          👎 <span class="vote-count">${counts.dislike}</span>
-        </button>
-      </div>
-      ${maint
-        ? `<span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
-        : `<a class="play-btn" href="${g.url}" target="_blank" rel="noopener">${g.action || (isSoft ? "見に行く →" : "遊びに行く →")}</a>`}
-      <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
-    `;
-    card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
-    if (hasMoreDesc) {
-      const shortP = card.querySelector(".card-desc:not(.card-desc-full)");
-      const fullP = card.querySelector(".card-desc-full");
-      const moreBtn = card.querySelector(".desc-more-btn");
-      moreBtn.addEventListener("click", () => {
-        const showingFull = !fullP.hidden;
-        fullP.hidden = showingFull;
-        shortP.hidden = !showingFull;
-        moreBtn.textContent = showingFull ? "もっと見る ▾" : "閉じる ▴";
-      });
-    }
-    if (trivia) {
-      const triviaBtn = card.querySelector(".trivia-btn");
-      const triviaP = card.querySelector(".card-trivia");
-      triviaBtn.addEventListener("click", () => {
-        triviaP.hidden = !triviaP.hidden;
-        triviaBtn.classList.toggle("active", !triviaP.hidden);
-      });
-    }
-    card.querySelector(".share-btn").addEventListener("click", () => {
-      if (typeof GameExtras !== "undefined") GameExtras.shareGame(g.title, g.url);
-    });
-    const playLink = card.querySelector("a.play-btn");
-    if (playLink) {
-      playLink.addEventListener("click", () => {
-        if (typeof GameStats !== "undefined") GameStats.recordPlay(g.id);
-      });
-    }
-
-    if (hasVotes) {
-      card.querySelectorAll(".vote-btn").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          if (btn.disabled) return;
-          card.querySelectorAll(".vote-btn").forEach((b) => (b.disabled = true)); // 連打での二重送信を防止
-          const type = btn.dataset.vote;
-          const result = await GameVotes.vote(g.id, type);
-          render();
-          if (!result.ok && result.reason === "error") {
-            alert("投票に失敗しました。通信環境をご確認のうえ、もう一度お試しください。");
-          }
-        });
-      });
-    }
-
-    (isSoft ? softGrid : grid).appendChild(card);
-  });
+  if (viewList.length === 0) {
+    const otherName = currentView === "soft" ? "ゲーム" : "ソフト・MOD";
+    const otherView = currentView === "soft" ? "games" : "soft";
+    emptyMsg.innerHTML = otherList.length > 0
+      ? `この区画には該当する作品がありません。<button type="button" class="empty-switch" data-switch-view="${otherView}">${otherName}に ${otherList.length} 件あります →</button>`
+      : "該当する作品が見つかりませんでした。";
+    emptyMsg.hidden = false;
+  } else {
+    emptyMsg.hidden = true;
+  }
+  if (typeof refreshDetailIfOpen === "function") refreshDetailIfOpen();
 }
 
 if (typeof GameVotes !== "undefined") {
@@ -1321,4 +1267,5 @@ if (typeof GameStats !== "undefined") {
 }
 
 syncTagChips();
+syncViewTabs();
 render();

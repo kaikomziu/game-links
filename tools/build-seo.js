@@ -95,27 +95,27 @@ function isSoftware(g) {
 
 function renderCard(game) {
   const isSoft = isSoftware(game);
-  const kindHtml = isSoft
-    ? `<span class="card-tag kind-tag">${game.kind === "mod" ? "🧩 MOD" : "💻 ソフト"}${game.platform ? "・" + escapeHtml(game.platform) : ""}</span>`
+  const genre = isSoft ? (game.kind === "mod" ? "MOD" : "ソフト") : (game.tags || [])[0] || "";
+  const softChip = isSoft
+    ? `<span class="tile-chip soft">${game.kind === "mod" ? "🧩 MOD" : "💻 ソフト"}${game.platform ? "・" + escapeHtml(game.platform) : ""}</span>`
     : "";
-  const tagsHtml = kindHtml + (game.tags || [])
-    .map((t) => `<span class="card-tag">${escapeHtml(t)}</span>`)
-    .join("");
+  const act = game.action || (isSoft ? "見に行く →" : "遊びに行く →");
+  const icon = /ダウンロード/.test(act) ? "⬇" : isSoft ? "↗" : "▶";
+  const play = game.maintenance
+    ? `        <span class="play-btn tile-play maintenance-btn" aria-disabled="true">🔧</span>`
+    : `        <a class="play-btn tile-play" href="${escapeHtml(game.url)}" target="_blank" rel="noopener" title="${escapeHtml(act.replace(/\s*→$/, ""))}">${icon}</a>`;
   return [
-    `      <article class="game-card${isSoft ? " is-soft" : ""}">`,
-    `        <div class="card-top">`,
-    `          <div class="card-emoji">${escapeHtml(game.emoji || "🎮")}</div>`,
-    `          <button class="fav-btn" aria-label="お気に入り切替">☆</button>`,
+    `      <article class="game-card tile${isSoft ? " is-soft" : ""}${game.maintenance ? " is-maintenance" : ""}" data-genre="${escapeHtml(genre)}">`,
+    `        <div class="card-emoji tile-emoji">${escapeHtml(game.emoji || "🎮")}</div>`,
+    `        <div class="tile-main">`,
+    `          <h2 class="card-title">${escapeHtml(game.title)}</h2>`,
+    `          <div class="tile-meta">${softChip}<span class="tile-chip genre">${escapeHtml((game.tags || [])[0] || "")}</span></div>`,
+    // 検索エンジンや非JS環境向けに説明文を残す(画面には出さない。JSが描画すると置き換わる)
+    `          <p class="sr-only">${escapeHtml(game.desc)}</p>`,
     `        </div>`,
-    `        <h2 class="card-title">${escapeHtml(game.title)}</h2>`,
-    `        <p class="card-desc">${escapeHtml(game.desc)}</p>`,
-    `        <div class="card-tags">${tagsHtml}</div>`,
-    ...(game.author
-      ? [`        <p class="card-author">作者: ${escapeHtml(game.author)}</p>`]
-      : []),
-    game.maintenance
-      ? `        <span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
-      : `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">${escapeHtml(game.action || (isSoft ? "見に行く →" : "遊びに行く →"))}</a>`,
+    `        <div class="tile-side">`,
+    play,
+    `        </div>`,
     `      </article>`,
   ].join("\n");
 }

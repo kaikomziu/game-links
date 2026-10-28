@@ -41,10 +41,10 @@ html.halloween .game-card::after,
 html.hw-webs .game-card::after {
   content: "🕸️";
   position: absolute;
-  right: 8px;
-  bottom: 6px;
-  font-size: 1.1rem;
-  opacity: 0.35;
+  right: 38px;
+  bottom: 1px;
+  font-size: 0.8rem;
+  opacity: 0.4;
   pointer-events: none;
 }
 

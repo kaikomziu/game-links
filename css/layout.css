@@ -1,0 +1,455 @@
+/* かるわか GAMES — コンパクトなレイアウト(1画面にたくさん並べる)
+   style.css / arcade.css の後に読み込む。タイル・閲覧バー・詳細ウィンドウ・情報バーなど */
+
+body { font-family: "Yu Gothic UI", "Hiragino Sans", "Meiryo", system-ui, sans-serif; }
+
+.container { max-width: 1760px; padding: 10px 14px 36px; }
+
+/* ===== ヘッダー(1行): ロゴ | 検索 | ボタン ===== */
+.site-header { z-index: 30; }
+.header-inner {
+  max-width: 1760px;
+  padding: 8px 14px;
+  gap: 14px;
+  justify-content: flex-start;
+}
+.logo { flex: 0 0 auto; font-size: 1.22rem; white-space: nowrap; }
+.header-search { flex: 1 1 auto; max-width: 560px; margin: 0 auto; }
+.header-search .search-input {
+  width: 100%;
+  padding: 7px 14px;
+  font-size: 0.9rem;
+  border-radius: 999px;
+}
+.header-controls { flex: 0 0 auto; }
+.icon-btn { width: 36px; height: 36px; }
+
+/* ===== 情報バー: INSERT COIN・稼働台数・自己紹介/統計の開閉 ===== */
+.info-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 5px 10px;
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 10px;
+  box-shadow: inset 0 0 16px rgba(24, 213, 255, 0.14);
+}
+.hero-insert {
+  flex: 0 0 auto;
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  color: var(--neon-yellow);
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--neon-yellow);
+  animation: insertBlink 1.2s steps(1) infinite;
+}
+.hero-insert:hover { color: #fff; }
+@keyframes insertBlink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.3; }
+}
+.hero-sub {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--neon-green);
+  text-shadow: 0 0 6px rgba(57, 255, 136, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.info-toggle {
+  flex: 0 0 auto;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 1px solid var(--cab-edge);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.info-toggle:hover { border-color: var(--neon-pink); }
+
+.info-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 10px;
+  margin: 0 0 10px;
+}
+.info-panel[hidden] { display: none; }
+.info-panel .profile-card { margin: 0; }
+.info-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.info-side .stat-dashboard { margin: 0; }
+.info-side .today-banner { margin: 0; }
+
+/* ===== 閲覧バー(画面上部に固定): タブ・並び順・ジャンル ===== */
+.browse-bar {
+  position: sticky;
+  top: var(--hdr-h, 64px);
+  z-index: 15;
+  margin: 0 -14px 8px;
+  padding: 6px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+}
+.browse-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.view-tabs { display: flex; gap: 6px; flex: 0 0 auto; }
+.view-tab {
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 2px solid var(--cab-edge);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.view-tab b {
+  margin-left: 4px;
+  padding: 0 7px;
+  font-size: 0.74rem;
+  color: var(--neon-green);
+  background: var(--screen);
+  border-radius: 999px;
+}
+.view-tab:hover { border-color: var(--neon-pink); }
+.view-tab.active {
+  color: #fff;
+  background: var(--neon-pink);
+  border-color: #ffd0ea;
+  box-shadow: 0 0 12px rgba(255, 62, 165, 0.55);
+}
+
+.toolbar-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.toolbar-right .sort-select { padding: 6px 8px; font-size: 0.8rem; border-width: 2px; }
+.favorite-only-toggle { font-size: 0.8rem; }
+
+.tag-filter {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  order: 0;
+  gap: 5px;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+.tag-chip {
+  flex: 0 0 auto;
+  padding: 3px 9px 3px 7px;
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+  border-width: 2px;
+  text-shadow: none;
+}
+.tag-chip::before { font-size: 0.64rem; margin-right: 4px; }
+.tag-mode-btn { flex: 0 0 auto; padding: 3px 9px; font-family: inherit; font-size: 0.74rem; }
+.view-note { margin: 0; font-size: 0.78rem; color: var(--text-muted); }
+.view-note[hidden] { display: none; }
+
+/* ===== タイル一覧 ===== */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  gap: 7px;
+  padding: 0;
+}
+.game-grid[hidden] { display: none; }
+
+.game-card.tile {
+  --g: var(--cab-edge);
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 9px;
+  min-height: 54px;
+  padding: 5px 6px 5px 8px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border);
+  border-left: 5px solid var(--g);
+  border-radius: 10px;
+  box-shadow: none;
+  cursor: pointer;
+  animation: none;
+  transition: transform 0.1s ease, border-color 0.1s ease, background 0.1s ease;
+}
+.game-card.tile:hover {
+  transform: translateY(-1px);
+  border-color: var(--g);
+  background: var(--accent-soft);
+}
+.game-card.tile:focus-visible { outline: 3px solid var(--neon-yellow); outline-offset: 1px; }
+
+/* ジャンルごとの色(一覧をぱっと見分けるための左の帯) */
+.tile[data-genre="パズル"] { --g: #4aa8ff; }
+.tile[data-genre="アクション"] { --g: #ff6b4a; }
+.tile[data-genre="対戦"] { --g: #ff3ea5; }
+.tile[data-genre="クリッカー・放置"] { --g: #ffd23f; }
+.tile[data-genre="ホラー・ノベル"] { --g: #9b6bff; }
+.tile[data-genre="RNG・運試し"] { --g: #39d98a; }
+.tile[data-genre="音楽・リズム"] { --g: #18d5ff; }
+.tile[data-genre="オンライン協力"] { --g: #ff9f1c; }
+.tile[data-genre="シミュレーション"] { --g: #7bd16b; }
+.tile[data-genre="ツール"] { --g: #8fa0b8; }
+.tile[data-genre="その他"] { --g: #c79a9a; }
+.tile[data-genre="ソフト"] { --g: #ffe14d; }
+.tile[data-genre="MOD"] { --g: #ff9f1c; }
+
+.tile .tile-emoji {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 9px;
+  box-shadow: inset 0 0 10px rgba(24, 213, 255, 0.28);
+}
+.tile-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tile .card-title {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tile-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; font-size: 0.62rem; }
+.tile-chip {
+  padding: 0 6px;
+  font-weight: 700;
+  line-height: 1.45;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+.tile-chip.genre { color: var(--text); background: color-mix(in srgb, var(--g) 28%, var(--bg-elevated)); }
+.tile-chip.soft { color: #1d1240; background: var(--neon-yellow); }
+.tile-chip.new { color: #1d1240; background: var(--neon-yellow); animation: neonFlicker 2.4s steps(1) infinite; }
+.tile-chip.maint { color: #1d1240; background: #ffd23f; }
+.tile-like { color: var(--text-muted); font-weight: 700; }
+@keyframes neonFlicker {
+  0%, 86%, 90%, 94%, 100% { opacity: 1; }
+  88%, 92% { opacity: 0.45; }
+}
+
+.tile-side { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tile .fav-btn { padding: 0 2px; font-size: 1.05rem; line-height: 1.1; color: var(--text-muted); }
+.tile .fav-btn.active { color: var(--star); }
+.tile .tile-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 25px;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #fff;
+  background: radial-gradient(circle at 50% 25%, #ff86c4, var(--neon-pink) 60%, #b01268);
+  border: 2px solid var(--cab-edge);
+  border-radius: 999px;
+  box-shadow: none;
+}
+.tile .tile-play:hover { filter: brightness(1.15); opacity: 1; }
+
+/* 新作: 黄色い枠で光らせる */
+.game-card.tile.is-new {
+  border-color: var(--neon-yellow);
+  border-left-color: var(--neon-yellow);
+  box-shadow: 0 0 10px rgba(255, 225, 77, 0.35);
+}
+/* メンテナンス中: 暗くして遊べなくする(詳細は開ける) */
+.game-card.tile.is-maintenance { filter: grayscale(0.85) brightness(0.85); border-left-color: #6b6b6b; }
+.play-btn.maintenance-btn,
+.play-btn.maintenance-btn:hover {
+  cursor: not-allowed;
+  color: #bbb;
+  background: #4a4a4a;
+  border-color: #333;
+  box-shadow: none;
+  filter: none;
+  transform: none;
+}
+
+/* 該当なし */
+.empty-msg { padding: 36px 0; }
+.empty-switch {
+  margin-left: 6px;
+  padding: 5px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--neon-pink);
+  border: 2px solid var(--cab-edge);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* ===== 詳細ウィンドウ ===== */
+.dt-dialog {
+  width: min(580px, 100%);
+  max-height: min(90vh, 760px);
+  overflow-y: auto;
+  padding: 20px 20px 14px;
+}
+.dt-head { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; padding-right: 22px; }
+.dt-emoji {
+  flex: 0 0 68px;
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 14px;
+  box-shadow: inset 0 0 14px rgba(24, 213, 255, 0.3);
+}
+.dt-titlebox { min-width: 0; }
+.dt-title { margin: 0 0 5px; font-size: 1.3rem; line-height: 1.25; }
+.dt-badges { display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.72rem; }
+.dt-author { margin: 6px 0 0; font-size: 0.78rem; color: var(--text-muted); }
+.dt-desc { margin: 0 0 12px; font-size: 0.92rem; line-height: 1.75; color: var(--text); }
+.dt-trivia {
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--accent-soft);
+  border-radius: 10px;
+}
+.dt-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.dt-play {
+  flex: 1 1 200px;
+  display: block;
+  padding: 10px 14px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  background: radial-gradient(circle at 50% 25%, #ff86c4, var(--neon-pink) 60%, #b01268);
+  border: 2px solid var(--cab-edge);
+  border-radius: 999px;
+}
+.dt-play:hover { filter: brightness(1.12); opacity: 1; }
+.dt-btn {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.dt-btn:hover { border-color: var(--neon-pink); }
+.dt-btn.active { color: var(--star); border-color: var(--star); }
+.dt-votes { margin-bottom: 10px; }
+.dt-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.dt-step {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dt-step:hover { color: var(--text); border-color: var(--neon-pink); }
+.dt-pos { font-size: 0.78rem; color: var(--text-muted); }
+
+/* ===== フッター・イベントのバナー(細く) ===== */
+.site-footer { padding: 16px 14px 28px; }
+.halloween-banner { margin: 0 0 6px; padding: 3px 10px; gap: 2px 12px; font-size: 0.76rem; border-width: 2px; border-left-width: 6px; border-radius: 10px; line-height: 1.3; }
+.hw-title { font-size: 0.85rem; }
+.halloween-banner button { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ===== 狭い画面 ===== */
+@media (max-width: 800px) {
+  .info-panel { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .header-inner { flex-wrap: wrap; gap: 6px 10px; }
+  .logo { font-size: 1.1rem; }
+  .logo-sub { display: none; }
+  .header-search { order: 3; flex: 1 1 100%; max-width: none; margin: 0; }
+  .header-controls { margin-left: auto; }
+  .icon-btn { width: 34px; height: 34px; }
+  /* 画面が狭いと固定バーが場所を取りすぎるので固定しない */
+  .browse-bar { position: static; margin: 0 -14px 8px; }
+  .toolbar-right { width: 100%; margin-left: 0; flex-wrap: wrap; }
+  .toolbar-right .sort-select { flex: 1 1 140px; min-width: 0; }
+  .game-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 156px), 1fr)); gap: 6px; }
+  .game-card.tile { gap: 7px; padding: 6px 6px 6px 8px; }
+  .tile .tile-emoji { flex-basis: 34px; width: 34px; height: 34px; font-size: 1.3rem; }
+  .tile .card-title { font-size: 0.82rem; }
+  .info-bar { padding: 3px 8px; }
+  .hero-sub { display: none; }
+  .info-toggle { margin-left: auto; }
+  .halloween-banner .hw-msg { display: none; }
+  .hw-title { font-size: 0.8rem; }
+  .view-tab { padding: 4px 10px; font-size: 0.8rem; }
+  .toolbar-right { flex-wrap: nowrap; gap: 5px; }
+  .toolbar-right .sort-select { flex: 1 1 0; font-size: 0.72rem; padding: 4px 5px; }
+  .favorite-only-toggle { font-size: 0.72rem; gap: 3px; white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-insert, .tile-chip.new { animation: none; }
+}
+
+/* 画面には出さず、検索エンジン・読み上げ向けにだけ残す文章 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

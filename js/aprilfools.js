@@ -101,17 +101,24 @@ const AprilFools = (() => {
     const grid = document.getElementById("gameGrid");
     if (!grid || grid.querySelector(`[${JOKE_CARD_ATTR}]`)) return;
     const card = document.createElement("article");
-    card.className = "game-card april-joke-card";
+    card.className = "game-card tile april-joke-card";
+    card.title = "あなたが人間であることを確認します。たぶん最後まではたどり着けません。";
     card.setAttribute(JOKE_CARD_ATTR, "1");
     card.innerHTML = `
-      <div class="card-top">
-        <div class="card-emoji">🔐</div>
+      <div class="card-emoji tile-emoji">🔐</div>
+      <div class="tile-main">
+        <h2 class="card-title">本人確認センター</h2>
+        <div class="tile-meta"><span class="tile-chip genre">エイプリルフール</span></div>
       </div>
-      <h2 class="card-title">本人確認センター</h2>
-      <p class="card-desc">あなたが人間であることを確認します。たぶん最後まではたどり着けません。</p>
-      <div class="card-tags"><span class="card-tag">エイプリルフール</span></div>
-      <a class="play-btn" href="aprilfools-game/?0401" target="_blank" rel="noopener" data-april-joke-link>信じて遊びに行く →</a>
+      <div class="tile-side">
+        <a class="play-btn tile-play" href="aprilfools-game/?0401" target="_blank" rel="noopener" data-april-joke-link title="信じて遊びに行く">▶</a>
+      </div>
     `;
+    // タイルは通常クリックで詳細を開くが、このカードは直接ゲームへ飛ばす
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("a")) return;
+      window.open("aprilfools-game/?0401", "_blank", "noopener");
+    });
     grid.prepend(card);
   }
 
@@ -127,7 +134,7 @@ const AprilFools = (() => {
   function swapPlayButtons() {
     document
       .querySelectorAll(`#gameGrid .game-card:not([${JOKE_CARD_ATTR}]) .play-btn:not(.maintenance-btn)`)
-      .forEach((el) => { el.textContent = "たぶん遊べる →"; });
+      .forEach((el) => { el.title = "たぶん遊べる"; });
   }
 
   // 全カードを常時ふわふわ揺らす。カードごとにズレた開始タイミング・
