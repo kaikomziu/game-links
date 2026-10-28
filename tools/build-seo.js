@@ -89,11 +89,15 @@ function escapeHtml(str) {
 }
 
 function renderCard(game) {
-  const tagsHtml = (game.tags || [])
+  const isApp = game.kind === "app";
+  const kindHtml = isApp
+    ? `<span class="card-tag kind-tag">💻 アプリ${game.platform ? "・" + escapeHtml(game.platform) : ""}</span>`
+    : "";
+  const tagsHtml = kindHtml + (game.tags || [])
     .map((t) => `<span class="card-tag">${escapeHtml(t)}</span>`)
     .join("");
   return [
-    `      <article class="game-card">`,
+    `      <article class="game-card${isApp ? " is-app" : ""}">`,
     `        <div class="card-top">`,
     `          <div class="card-emoji">${escapeHtml(game.emoji || "🎮")}</div>`,
     `          <button class="fav-btn" aria-label="お気に入り切替">☆</button>`,
@@ -106,7 +110,7 @@ function renderCard(game) {
       : []),
     game.maintenance
       ? `        <span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
-      : `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">遊びに行く →</a>`,
+      : `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">${escapeHtml(game.action || (isApp ? "見に行く →" : "遊びに行く →"))}</a>`,
     `      </article>`,
   ].join("\n");
 }
@@ -150,7 +154,7 @@ function main() {
 function buildSitemap(games) {
   const HUB = "https://kaikomziu.github.io/game-links/";
   const today = new Date().toISOString().slice(0, 10);
-  const urls = [HUB, ...games.filter((g) => !g.maintenance).map((g) => g.url)];
+  const urls = [HUB, ...games.filter((g) => !g.maintenance && g.kind !== "app").map((g) => g.url)];
   // 重複除去・順序維持
   const seen = new Set();
   const uniq = urls.filter((u) => (seen.has(u) ? false : (seen.add(u), true)));

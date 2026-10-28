@@ -1055,5 +1055,15 @@ const CHANGELOG = [
     notes: [
       "ドットバトルの不具合を修正して、メンテナンス中を解除(公開URLが古く、Render上の現在のサービス dotbattle-sg に向け直した。無料プランのため、休止明けは最初の読み込みに20秒ほどかかる)"
     ]
+  },
+  {
+    version: "1.148.0",
+    date: "2026-10-28",
+    notes: [
+      "ゲーム以外の自作アプリ・ツール・MODも載せられるようにした。カードに「💻 アプリ」の札が付き、「種類」フィルター(すべて/ゲーム/アプリ・ツール)で分けられる",
+      "アプリを7本追加: WorkMonitor・Komorebi(木漏れ日)・Bongo Cat SuperKRWKMod・SoundVoice Mixer・SNR Room Notifier・App Screenshotter・マイクラBE アドオン簡単導入ツール",
+      "KomorebiとSoundVoice MixerはGitHubに新規公開(リリースからexe/apkをダウンロードできる)",
+      "ゲーム数・稼働台数・今日の1本・サイトマップはゲームだけを数える/対象にする(アプリは別枠)"
+    ]
   }
 ];

@@ -1,7 +1,92 @@
 // ===== ゲーム一覧データ =====
 // 新規ゲームは必ず added: "YYYY-MM-DD"(公開日)を付けること。公開から7日間だけ「NEW」バッジが出る。
+// ゲームではないアプリ・ツール・MODは kind: "app"(任意で platform: "Windows" と action: "ダウンロードへ →" も指定)。「種類」フィルターで分けられる。
 // 不具合のあるゲームは maintenance: "理由メモ" を付けると「メンテナンス中」表示になり、一覧からプレイできなくなる(直ったら削除する)。
 const GAMES = [
+  {
+    id: "workmonitor",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Windows",
+    action: "サイトを見る →",
+    title: "WorkMonitor",
+    emoji: "⏱️",
+    tags: ["ツール"],
+    desc: "実際に手を動かしている時間だけを記録する、Windows 10 / 11 用の作業時間トラッカー。キーボードやマウスの操作が止まると記録も止まる(初期値は60秒で休憩中)ので、アプリを開いたまま放置した時間は数えない。1日の目標と連続達成日数、アプリごとの「作業に数えるか」の設定、日・週・月のダッシュボード(カテゴリ別・アプリ別・時間帯別)、ログインでクラウドに同期してウェブサイトからどの端末でも閲覧、画面の端に出すオーバーレイ、Discordの「作業中」表示、タスクトレイ常駐に対応。",
+    url: "https://kaikomziu.github.io/WorkMonitor/"
+  },
+  {
+    id: "komorebi",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Windows",
+    action: "ダウンロードへ →",
+    title: "Komorebi(木漏れ日)",
+    emoji: "🌿",
+    tags: ["ツール"],
+    desc: "Windows用の自作デスクトップブラウザ。中身はChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。配布は約2.5MBのzip。",
+    url: "https://github.com/kaikomziu/Komorebi/releases/latest"
+  },
+  {
+    id: "superkrwkmod",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Bongo Cat(Steam)",
+    action: "ダウンロードへ →",
+    title: "Bongo Cat SuperKRWKMod",
+    emoji: "🐱",
+    tags: ["ツール"],
+    desc: "Bongo Cat用の「見た目だけ」のMOD。タイピングが速いと猫が跳ねて虹色に光るZoomies、カーソルを追いかける目、眠そうな猫、タイピング速度メーター(KPS)、コンボ表示、宝箱が開けられる通知、タイピング記録、アプリごとのルールを、ゲーム内の「Mods」設定ページからオン/オフできる。ゲームのカウンターやSteamの統計・アイテム・ドロップは一切変えず、チート要素はない。Shilo氏のCatnip Modをベースにしている。",
+    url: "https://github.com/kaikomziu/SuperKRWKMod/releases/latest"
+  },
+  {
+    id: "soundvoice-mixer",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Windows / Android",
+    action: "ダウンロードへ →",
+    title: "SoundVoice Mixer",
+    emoji: "🎚️",
+    tags: ["ツール"],
+    desc: "デスクトップの音とマイクをミックスして、仮想オーディオケーブル(VB-CABLEなど)へ出力するWindows用の音声ミキサー。録音側を「soundvoice Output」にすれば仮想マイクとして使える。ボイチェン(プリセット14種とピッチ・震え・ロボット・リバーブ・フィルターの調整)、音割れ、ノイズゲート、エコー、8枠のサウンドボード、グローバルホットキー、自分で聞くモニターに対応。マイクとスマホ内の音を混ぜて聞いたり録音したりできるAndroid版(apk)もある。",
+    url: "https://github.com/kaikomziu/SoundVoiceMixer/releases/latest"
+  },
+  {
+    id: "snr-room-notifier",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Windows",
+    action: "ダウンロードへ →",
+    title: "SNR Room Notifier",
+    emoji: "🔔",
+    tags: ["ツール"],
+    desc: "Among UsのMOD「SuperNewRoles」のカスタムサーバーで公開部屋が開かれたら、Windowsの通知で知らせる常駐アプリ。通知や一覧からそのまま部屋に参加でき、Among Usが起動していなければ起動→読み込み待ち→参加まで自動で行う。通知の条件(マップ・インポスター数・人数・部屋名)、お気に入り/ミュートのホスト、満員の部屋の空き通知、静かな時間帯を設定できる。個人が作った非公式ツールで、SuperNewRoles開発チームやInnersloth(Among Us)とは関係がない。",
+    url: "https://github.com/kaikomziu/snr-room-notifier/releases/latest"
+  },
+  {
+    id: "app-screenshotter",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Windows",
+    action: "ダウンロードへ →",
+    title: "App Screenshotter",
+    emoji: "📸",
+    tags: ["ツール"],
+    desc: "指定したアプリのウィンドウだけを撮影して、指定フォルダに保存するWindows常駐ツール。裏に隠れているウィンドウもPrintWindow APIで撮れる。ホットキー・一定間隔・スケジュール・対象アプリの起動検知で撮影でき、ドラッグでの範囲選択、縦長ページを1枚にするスクロールキャプチャ、複数アプリの一括撮影、Before/Afterの横並び保存、撮影後の簡易エディタ(矢印・モザイク・ぼかしなど)、Discord WebhookやimgurへのアップロードやGIF/録画にも対応する。",
+    url: "https://github.com/kaikomziu/app-screenshotter/releases/latest"
+  },
+  {
+    id: "mc-addon-installer",
+    added: "2026-10-28",
+    kind: "app",
+    platform: "Windows",
+    action: "ダウンロードへ →",
+    title: "マイクラBE アドオン簡単導入ツール",
+    emoji: "📦",
+    tags: ["ツール"],
+    desc: "Minecraft統合版(Bedrock Edition)の.mcaddon/.mcpack/.mcworldなどを、ドラッグ&ドロップするだけで導入するWindows用の小さなツール。ZIPの中身をMinecraftの管理フォルダ(com.mojang)へ直接展開するので、Minecraftを閉じたり起動し直したりする必要がない。manifest.jsonを解析してビヘイビア/リソース/スキン/ワールドテンプレートを自動で仕分け、通常版とPreview版の両方・非公式ランチャーにも導入でき、導入先フォルダも手動で追加できる。インストール不要でexeを実行するだけ。",
+    url: "https://github.com/kaikomziu/mc-addon-installer/releases/latest"
+  },
   {
     id: "abno-facility",
     added: "2026-10-27",
@@ -894,6 +979,7 @@ let tagMode = getCookie("tagMode") === "and" ? "and" : "or";
 let currentSort = getCookie("sortOrder") || "name";
 let favoriteOnly = false;
 let selectedAuthor = "all";
+let selectedKind = "all"; // all / game / app
 
 // ===== 初期化: ダークモード =====
 function applyTheme(theme) {
@@ -956,6 +1042,10 @@ allAuthors.forEach(author => {
 });
 authorFilterEl.addEventListener("change", () => {
   selectedAuthor = authorFilterEl.value;
+  render();
+});
+document.getElementById("kindFilter").addEventListener("change", (e) => {
+  selectedKind = e.target.value;
   render();
 });
 
@@ -1046,8 +1136,9 @@ function render() {
       g.tags.some(t => t.toLowerCase().includes(query)) ||
       (g.author || "Claude AI").toLowerCase().includes(query);
     const matchesAuthor = selectedAuthor === "all" || (g.author || "Claude AI") === selectedAuthor;
+    const matchesKind = selectedKind === "all" || (selectedKind === "app") === (g.kind === "app");
     const matchesFavorite = !favoriteOnly || favorites.has(g.id);
-    return matchesTag && matchesQuery && matchesAuthor && matchesFavorite;
+    return matchesTag && matchesQuery && matchesAuthor && matchesKind && matchesFavorite;
   });
 
   const byName = (a, b) => a.title.localeCompare(b.title, "ja");
@@ -1097,7 +1188,7 @@ function render() {
   }
   // currentSort === "default" のときだけGAMES配列の追加順のまま表示する
 
-  resultCount.textContent = `${list.length} 件のゲーム`;
+  resultCount.textContent = `${list.length} 件の作品`;
   grid.innerHTML = "";
   emptyMsg.hidden = list.length !== 0;
 
@@ -1105,7 +1196,8 @@ function render() {
     const card = document.createElement("article");
     const maint = !!g.maintenance;
     const isNew = isNewGame(g) && !maint;
-    card.className = "game-card" + (isNew ? " is-new" : "") + (maint ? " is-maintenance" : "");
+    const isApp = g.kind === "app";
+    card.className = "game-card" + (isNew ? " is-new" : "") + (maint ? " is-maintenance" : "") + (isApp ? " is-app" : "");
     const isFav = favorites.has(g.id);
 
     const hasVotes = typeof GameVotes !== "undefined";
@@ -1133,7 +1225,7 @@ function render() {
       ${hasMoreDesc ? `<p class="card-desc card-desc-full" hidden>${g.desc}</p>` : ""}
       ${hasMoreDesc ? `<button class="desc-more-btn" type="button">もっと見る ▾</button>` : ""}
       ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
-      <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
+      <div class="card-tags">${isApp ? `<span class="card-tag kind-tag">💻 アプリ${g.platform ? "・" + g.platform : ""}</span>` : ""}${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
       <p class="card-author">作者: ${g.author || "Claude AI"}</p>
       <div class="vote-row">
         <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
@@ -1145,7 +1237,7 @@ function render() {
       </div>
       ${maint
         ? `<span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
-        : `<a class="play-btn" href="${g.url}" target="_blank" rel="noopener">遊びに行く →</a>`}
+        : `<a class="play-btn" href="${g.url}" target="_blank" rel="noopener">${g.action || (isApp ? "見に行く →" : "遊びに行く →")}</a>`}
       <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));

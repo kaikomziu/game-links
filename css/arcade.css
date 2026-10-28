@@ -437,3 +437,12 @@ body {
   filter: none;
   transform: none;
 }
+
+/* ===== アプリ・ツール(ゲームではない作品) ===== */
+.game-card.is-app { --marquee: linear-gradient(90deg, #18d5ff, #39ff88, #18d5ff); }
+.card-tag.kind-tag {
+  color: #1d1240;
+  background: var(--neon-yellow);
+  border-color: var(--cab-edge);
+  font-weight: 700;
+}
