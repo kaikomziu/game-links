@@ -29,16 +29,16 @@ const GAMES = [
     url: "https://kaikomziu.github.io/WorkMonitor/"
   },
   {
-    id: "komorebi",
+    id: "hizashi",
     added: "2026-10-28",
     kind: "app",
     platform: "Windows",
     action: "ダウンロードへ →",
-    title: "Komorebi(木漏れ日)",
+    title: "Hizashi(日差し)",
     emoji: "🌿",
     tags: ["ツール"],
-    desc: "Windows用の自作デスクトップブラウザ。中身はChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。配布は約2.5MBのzip。",
-    url: "https://github.com/kaikomziu/Komorebi/releases/latest"
+    desc: "Windows用の自作デスクトップブラウザ。中身はEdgeと同じChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。exeを1つダウンロードしてダブルクリックするだけで起動でき(約46MB)、インストールは不要。拡張機能には対応していない。MITライセンスのオープンソース。",
+    url: "https://github.com/kaikomziu/hizashi/releases/latest"
   },
   {
     id: "superkrwkmod",
