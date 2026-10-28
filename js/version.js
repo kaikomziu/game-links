@@ -1065,5 +1065,14 @@ const CHANGELOG = [
       "KomorebiとSoundVoice MixerはGitHubに新規公開(リリースからexe/apkをダウンロードできる)",
       "ゲーム数・稼働台数・今日の1本・サイトマップはゲームだけを数える/対象にする(アプリは別枠)"
     ]
+  },
+  {
+    version: "1.149.0",
+    date: "2026-10-28",
+    notes: [
+      "「ゲーム」と「ソフト・MOD」を別の区画に分けた(ゲームの下に「🧰 ソフト・MOD」の区画を新設。上部のリンクから行き来でき、検索・タグ・並び順は両方に効く)。前回の「種類」フィルターは不要になったので廃止",
+      "MODのカードには「🧩 MOD」、ソフトには「💻 ソフト」の札を表示。Bongo Cat SuperKRWKModはMODに分類",
+      "Town Of Host-P-P(Among Us用MOD「TownOfHost-Pko」の非公式フォーク)を追加"
+    ]
   }
 ];

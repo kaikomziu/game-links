@@ -56,8 +56,8 @@ const GameExtras = (() => {
   function visibleGames() {
     // 検索・タグの絞り込みが効いていれば、その中から選ぶ
     // メンテナンス中のゲームは選ばない
-    // メンテナンス中のゲームとアプリは「今日の1本」に出さない
-    const playable = GAMES.filter((g) => !g.maintenance && g.kind !== "app");
+    // メンテナンス中のゲームとソフト/MODは「今日の1本」に出さない
+    const playable = GAMES.filter((g) => !g.maintenance && !isSoftware(g));
     const cards = [...document.querySelectorAll("#gameGrid .game-card .card-title")].map((h) => h.textContent);
     if (cards.length && cards.length < GAMES.length) {
       const set = new Set(cards);
@@ -147,7 +147,7 @@ const GameExtras = (() => {
   function renderDashboard() {
     const wrap = document.getElementById("statDashboard");
     if (!wrap) return;
-    const totalGames = typeof GAMES !== "undefined" ? GAMES.filter((g) => g.kind !== "app").length : 0;
+    const totalGames = typeof GAMES !== "undefined" ? GAMES.filter((g) => !isSoftware(g)).length : 0;
     const statsReady = typeof GameStats !== "undefined" && GameStats.isLoaded();
     const totalPlays = statsReady ? GameStats.totalPlays() : null;
     let totalLikes = 0;

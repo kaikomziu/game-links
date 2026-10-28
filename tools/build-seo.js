@@ -88,16 +88,21 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
+// ゲームではないもの(ソフト/MOD)かどうか(js/main.js の isSoftware と同じ)
+function isSoftware(g) {
+  return g.kind === "app" || g.kind === "mod";
+}
+
 function renderCard(game) {
-  const isApp = game.kind === "app";
-  const kindHtml = isApp
-    ? `<span class="card-tag kind-tag">💻 アプリ${game.platform ? "・" + escapeHtml(game.platform) : ""}</span>`
+  const isSoft = isSoftware(game);
+  const kindHtml = isSoft
+    ? `<span class="card-tag kind-tag">${game.kind === "mod" ? "🧩 MOD" : "💻 ソフト"}${game.platform ? "・" + escapeHtml(game.platform) : ""}</span>`
     : "";
   const tagsHtml = kindHtml + (game.tags || [])
     .map((t) => `<span class="card-tag">${escapeHtml(t)}</span>`)
     .join("");
   return [
-    `      <article class="game-card${isApp ? " is-app" : ""}">`,
+    `      <article class="game-card${isSoft ? " is-soft" : ""}">`,
     `        <div class="card-top">`,
     `          <div class="card-emoji">${escapeHtml(game.emoji || "🎮")}</div>`,
     `          <button class="fav-btn" aria-label="お気に入り切替">☆</button>`,
@@ -110,7 +115,7 @@ function renderCard(game) {
       : []),
     game.maintenance
       ? `        <span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
-      : `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">${escapeHtml(game.action || (isApp ? "見に行く →" : "遊びに行く →"))}</a>`,
+      : `        <a class="play-btn" href="${escapeHtml(game.url)}" target="_blank" rel="noopener">${escapeHtml(game.action || (isSoft ? "見に行く →" : "遊びに行く →"))}</a>`,
     `      </article>`,
   ].join("\n");
 }
@@ -122,24 +127,24 @@ function main() {
   // main.js の初期表示(並び順の初期値=名前順)に合わせておく。
   const sorted = [...games].sort((a, b) => a.title.localeCompare(b.title, "ja"));
 
-  const cardsHtml = sorted.map(renderCard).join("\n");
-  const block = `${START_MARKER}\n${cardsHtml}\n    ${END_MARKER}`;
+  let html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
+  // ゲームの区画(SEO-GAMES)と、ソフト・MODの区画(SEO-SOFT)に分けて埋め込む
+  const fill = (startMarker, endMarker, list) => {
+    const startIdx = html.indexOf(startMarker);
+    const endIdx = html.indexOf(endMarker);
+    if (startIdx === -1 || endIdx === -1) {
+      throw new Error(`index.html に ${startMarker} / ${endMarker} のマーカーが見つかりません。`);
+    }
+    const block = `${startMarker}\n${list.map(renderCard).join("\n")}\n    ${endMarker}`;
+    html = html.slice(0, startIdx) + block + html.slice(endIdx + endMarker.length);
+  };
+  const gameList = sorted.filter((g) => !isSoftware(g));
+  const softList = sorted.filter(isSoftware);
+  fill(START_MARKER, END_MARKER, gameList);
+  fill("<!-- SEO-SOFT:START -->", "<!-- SEO-SOFT:END -->", softList);
 
-  const html = fs.readFileSync(INDEX_HTML_PATH, "utf8");
-  const startIdx = html.indexOf(START_MARKER);
-  const endIdx = html.indexOf(END_MARKER);
-  if (startIdx === -1 || endIdx === -1) {
-    throw new Error(
-      "index.html に SEO-GAMES マーカーが見つかりません。先に <!-- SEO-GAMES:START --> と <!-- SEO-GAMES:END --> を設置してください。"
-    );
-  }
-
-  const before = html.slice(0, startIdx);
-  const after = html.slice(endIdx + END_MARKER.length);
-  const newHtml = before + block + after;
-
-  fs.writeFileSync(INDEX_HTML_PATH, newHtml, "utf8");
-  console.log(`✓ ${sorted.length}件のゲームをindex.htmlに静的HTMLとして埋め込みました`);
+  fs.writeFileSync(INDEX_HTML_PATH, html, "utf8");
+  console.log(`✓ ${gameList.length}件のゲームと${softList.length}件のソフト/MODをindex.htmlに静的HTMLとして埋め込みました`);
 
   buildSitemap(sorted);
 }
@@ -154,7 +159,7 @@ function main() {
 function buildSitemap(games) {
   const HUB = "https://kaikomziu.github.io/game-links/";
   const today = new Date().toISOString().slice(0, 10);
-  const urls = [HUB, ...games.filter((g) => !g.maintenance && g.kind !== "app").map((g) => g.url)];
+  const urls = [HUB, ...games.filter((g) => !g.maintenance && !isSoftware(g)).map((g) => g.url)];
   // 重複除去・順序維持
   const seen = new Set();
   const uniq = urls.filter((u) => (seen.has(u) ? false : (seen.add(u), true)));

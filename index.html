@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/arcade.css?v=6">
+<link rel="stylesheet" href="css/arcade.css?v=7">
 <link rel="stylesheet" href="css/halloween.css?v=2">
 </head>
 <body>
@@ -79,11 +79,6 @@
         <input type="checkbox" id="favoriteOnlyCheck">
         <span>★お気に入りのみ</span>
       </label>
-      <select id="kindFilter" class="sort-select" aria-label="種類で絞り込み">
-        <option value="all">種類: すべて</option>
-        <option value="game">種類: ゲーム</option>
-        <option value="app">種類: アプリ・ツール</option>
-      </select>
       <select id="authorFilter" class="sort-select" aria-label="作者で絞り込み">
         <option value="all">作者: すべて</option>
       </select>
@@ -101,7 +96,11 @@
     </div>
   </section>
 
-  <p class="result-count" id="resultCount"></p>
+  <p class="result-count section-nav" id="resultCount"></p>
+
+  <div class="section-head" id="gamesHead">
+    <h2 class="section-title">🎮 ゲーム <span class="section-count" id="gamesCountLabel"></span></h2>
+  </div>
 
   <section class="game-grid" id="gameGrid">
     <!--
@@ -184,16 +183,6 @@
         <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
         <a class="play-btn" href="https://kaikomziu.github.io/amt-corp/" target="_blank" rel="noopener">遊びに行く →</a>
       </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">📸</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">App Screenshotter</h2>
-        <p class="card-desc">指定したアプリのウィンドウだけを撮影して、指定フォルダに保存するWindows常駐ツール。裏に隠れているウィンドウもPrintWindow APIで撮れる。ホットキー・一定間隔・スケジュール・対象アプリの起動検知で撮影でき、ドラッグでの範囲選択、縦長ページを1枚にするスクロールキャプチャ、複数アプリの一括撮影、Before/Afterの横並び保存、撮影後の簡易エディタ(矢印・モザイク・ぼかしなど)、Discord WebhookやimgurへのアップロードやGIF/録画にも対応する。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/app-screenshotter/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
-      </article>
       <article class="game-card">
         <div class="card-top">
           <div class="card-emoji">🥊</div>
@@ -224,16 +213,6 @@
         <div class="card-tags"><span class="card-tag">シミュレーション</span></div>
         <p class="card-author">作者: Manus AI</p>
         <a class="play-btn" href="https://neondefense-rpgwdakd.manus.space/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">🐱</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Bongo Cat SuperKRWKMod</h2>
-        <p class="card-desc">Bongo Cat用の「見た目だけ」のMOD。タイピングが速いと猫が跳ねて虹色に光るZoomies、カーソルを追いかける目、眠そうな猫、タイピング速度メーター(KPS)、コンボ表示、宝箱が開けられる通知、タイピング記録、アプリごとのルールを、ゲーム内の「Mods」設定ページからオン/オフできる。ゲームのカウンターやSteamの統計・アイテム・ドロップは一切変えず、チート要素はない。Shilo氏のCatnip Modをベースにしている。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Bongo Cat(Steam)</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/SuperKRWKMod/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
       </article>
       <article class="game-card">
         <div class="card-top">
@@ -437,16 +416,6 @@
         <div class="card-tags"><span class="card-tag">ホラー・ノベル</span></div>
         <p class="card-author">作者: Gemini AI</p>
         <a class="play-btn" href="https://kaikomziu.github.io/kage-0413/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">🌿</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">Komorebi(木漏れ日)</h2>
-        <p class="card-desc">Windows用の自作デスクトップブラウザ。中身はChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。配布は約2.5MBのzip。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/Komorebi/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
       </article>
       <article class="game-card">
         <div class="card-top">
@@ -678,26 +647,6 @@
         <div class="card-tags"><span class="card-tag">対戦</span></div>
         <a class="play-btn" href="https://kaikomziu.github.io/smash-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
       </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">🔔</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">SNR Room Notifier</h2>
-        <p class="card-desc">Among UsのMOD「SuperNewRoles」のカスタムサーバーで公開部屋が開かれたら、Windowsの通知で知らせる常駐アプリ。通知や一覧からそのまま部屋に参加でき、Among Usが起動していなければ起動→読み込み待ち→参加まで自動で行う。通知の条件(マップ・インポスター数・人数・部屋名)、お気に入り/ミュートのホスト、満員の部屋の空き通知、静かな時間帯を設定できる。個人が作った非公式ツールで、SuperNewRoles開発チームやInnersloth(Among Us)とは関係がない。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/snr-room-notifier/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
-      </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">🎚️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">SoundVoice Mixer</h2>
-        <p class="card-desc">デスクトップの音とマイクをミックスして、仮想オーディオケーブル(VB-CABLEなど)へ出力するWindows用の音声ミキサー。録音側を「soundvoice Output」にすれば仮想マイクとして使える。ボイチェン(プリセット14種とピッチ・震え・ロボット・リバーブ・フィルターの調整)、音割れ、ノイズゲート、エコー、8枠のサウンドボード、グローバルホットキー、自分で聞くモニターに対応。マイクとスマホ内の音を混ぜて聞いたり録音したりできるAndroid版(apk)もある。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Windows / Android</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/SoundVoiceMixer/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
-      </article>
       <article class="game-card">
         <div class="card-top">
           <div class="card-emoji">🧱</div>
@@ -787,16 +736,6 @@
         <p class="card-desc">コードを一切書かずに、ブロックを組み立ててゲーム・アニメ・ツールを作れるScratch風のビジュアルプログラミング環境。左のパレットから右のキャンバスへブロックをドラッグすると近くのブロックに吸着し、C型ブロックの中や入力欄にも入れ子にできる。▶で実行、ブロック単体クリックでも動作、パレットに戻すと削除。マルチスレッド実行エンジンでイベント(旗・キー・クリック・メッセージ・背景切替・数値超え)、クローン、ずっと/繰り返し/条件/待機に対応。480x360ステージに複数スプライト(絵文字/図形/文字/画像コスチューム)、吹き出し、回転方法、画像効果。標準10カテゴリ(動き・見た目・音・イベント・制御・調べる・演算・変数・リスト・ペン)に加え、音楽/文字/音声合成(TTS)/保存/時間/デバッグ/画面演出まで大幅拡張し全226ブロック。変数・リストのステージ表示(スライダー対応)、引数つき自作ブロック(再帰OK)、WebAudio合成の効果音・楽器、音声/画像アップロード。作品は.vcd.jsonで保存/読み込み、自動保存、サンプル8種。ターボ/ダークモード/プレゼン表示。PC・タブレット推奨。</p>
         <div class="card-tags"><span class="card-tag">ツール</span></div>
         <a class="play-btn" href="https://kaikomziu.github.io/visual-code-deluxe/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">⏱️</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">WorkMonitor</h2>
-        <p class="card-desc">実際に手を動かしている時間だけを記録する、Windows 10 / 11 用の作業時間トラッカー。キーボードやマウスの操作が止まると記録も止まる(初期値は60秒で休憩中)ので、アプリを開いたまま放置した時間は数えない。1日の目標と連続達成日数、アプリごとの「作業に数えるか」の設定、日・週・月のダッシュボード(カテゴリ別・アプリ別・時間帯別)、ログインでクラウドに同期してウェブサイトからどの端末でも閲覧、画面の端に出すオーバーレイ、Discordの「作業中」表示、タスクトレイ常駐に対応。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://kaikomziu.github.io/WorkMonitor/" target="_blank" rel="noopener">サイトを見る →</a>
       </article>
       <article class="game-card">
         <div class="card-top">
@@ -897,16 +836,6 @@
         <p class="card-desc">タブ切替・リサイズ・ダークモード・URLバー・戻るボタンなど、ブラウザの機能そのものを鍵にして全8部屋から脱出するネタ系脱出ゲーム。</p>
         <div class="card-tags"><span class="card-tag">パズル</span></div>
         <a class="play-btn" href="https://kaikomziu.github.io/browser-escape/" target="_blank" rel="noopener">遊びに行く →</a>
-      </article>
-      <article class="game-card is-app">
-        <div class="card-top">
-          <div class="card-emoji">📦</div>
-          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
-        </div>
-        <h2 class="card-title">マイクラBE アドオン簡単導入ツール</h2>
-        <p class="card-desc">Minecraft統合版(Bedrock Edition)の.mcaddon/.mcpack/.mcworldなどを、ドラッグ&amp;ドロップするだけで導入するWindows用の小さなツール。ZIPの中身をMinecraftの管理フォルダ(com.mojang)へ直接展開するので、Minecraftを閉じたり起動し直したりする必要がない。manifest.jsonを解析してビヘイビア/リソース/スキン/ワールドテンプレートを自動で仕分け、通常版とPreview版の両方・非公式ランチャーにも導入でき、導入先フォルダも手動で追加できる。インストール不要でexeを実行するだけ。</p>
-        <div class="card-tags"><span class="card-tag kind-tag">💻 アプリ・Windows</span><span class="card-tag">ツール</span></div>
-        <a class="play-btn" href="https://github.com/kaikomziu/mc-addon-installer/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
       </article>
       <article class="game-card">
         <div class="card-top">
@@ -1129,6 +1058,96 @@
         <a class="play-btn" href="https://kaikomziu.github.io/Slot-Sites-AI-GENERETE-/" target="_blank" rel="noopener">遊びに行く →</a>
       </article>
     <!-- SEO-GAMES:END -->
+  </section>
+
+  <div class="section-head" id="softHead">
+    <h2 class="section-title">🧰 ソフト・MOD <span class="section-count" id="softCountLabel"></span></h2>
+    <p class="section-note">ゲームではない、自作のアプリ・ツール・MODです。</p>
+  </div>
+
+  <section class="game-grid" id="softGrid">
+    <!-- SEO-SOFT:START -->
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">📸</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">App Screenshotter</h2>
+        <p class="card-desc">指定したアプリのウィンドウだけを撮影して、指定フォルダに保存するWindows常駐ツール。裏に隠れているウィンドウもPrintWindow APIで撮れる。ホットキー・一定間隔・スケジュール・対象アプリの起動検知で撮影でき、ドラッグでの範囲選択、縦長ページを1枚にするスクロールキャプチャ、複数アプリの一括撮影、Before/Afterの横並び保存、撮影後の簡易エディタ(矢印・モザイク・ぼかしなど)、Discord WebhookやimgurへのアップロードやGIF/録画にも対応する。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/app-screenshotter/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">🐱</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Bongo Cat SuperKRWKMod</h2>
+        <p class="card-desc">Bongo Cat用の「見た目だけ」のMOD。タイピングが速いと猫が跳ねて虹色に光るZoomies、カーソルを追いかける目、眠そうな猫、タイピング速度メーター(KPS)、コンボ表示、宝箱が開けられる通知、タイピング記録、アプリごとのルールを、ゲーム内の「Mods」設定ページからオン/オフできる。ゲームのカウンターやSteamの統計・アイテム・ドロップは一切変えず、チート要素はない。Shilo氏のCatnip Modをベースにしている。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">🧩 MOD・Bongo Cat(Steam)</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/SuperKRWKMod/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">🌿</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Komorebi(木漏れ日)</h2>
+        <p class="card-desc">Windows用の自作デスクトップブラウザ。中身はChromium(WebView2)なので、たいていのサイトがそのまま表示できる。コマンドパレット(Ctrl+K)でタブ・ブックマーク・履歴・全コマンドをあいまい検索でき、ワークスペース、縦タブ、分割表示、気が散るサイトをブロックする集中モード、本文だけを表示するリーダーモード、クリックで消してサイトごとに記憶する要素ブロッカー、広告・トラッカーのブロック、強制ダークモード、ページ全体のスクリーンショット、クイックメモなどを備える。配布は約2.5MBのzip。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/Komorebi/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">🔔</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">SNR Room Notifier</h2>
+        <p class="card-desc">Among UsのMOD「SuperNewRoles」のカスタムサーバーで公開部屋が開かれたら、Windowsの通知で知らせる常駐アプリ。通知や一覧からそのまま部屋に参加でき、Among Usが起動していなければ起動→読み込み待ち→参加まで自動で行う。通知の条件(マップ・インポスター数・人数・部屋名)、お気に入り/ミュートのホスト、満員の部屋の空き通知、静かな時間帯を設定できる。個人が作った非公式ツールで、SuperNewRoles開発チームやInnersloth(Among Us)とは関係がない。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/snr-room-notifier/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">🎚️</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">SoundVoice Mixer</h2>
+        <p class="card-desc">デスクトップの音とマイクをミックスして、仮想オーディオケーブル(VB-CABLEなど)へ出力するWindows用の音声ミキサー。録音側を「soundvoice Output」にすれば仮想マイクとして使える。ボイチェン(プリセット14種とピッチ・震え・ロボット・リバーブ・フィルターの調整)、音割れ、ノイズゲート、エコー、8枠のサウンドボード、グローバルホットキー、自分で聞くモニターに対応。マイクとスマホ内の音を混ぜて聞いたり録音したりできるAndroid版(apk)もある。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows / Android</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/SoundVoiceMixer/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">🧑‍🚀</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">Town Of Host-P-P</h2>
+        <p class="card-desc">Among Usの人気MOD「TownOfHost-Pko」の非公式フォーク。友達と遊ぶための独自の役職を追加している。追加した役職は、潜伏者・口止め屋・マッドスター・ジャッカルスター・目撃者・カメラマン・ブックメーカー・ナイスボタナー・イビルボタナー・ハイエナ・足止め屋・灯台守・記録係・救急隊員・闇のうどん屋・万歩計・逆探知・孤狼と、SuperNewRolesから移したスター・イビルサイエンティスト・ナイスサイエンティスト。最新版(v1.12.0)はAmong Us v2026.9.29(v19)に対応し、ベースはTownOfHost-Pko v5.37.23.99。部屋主と参加者は同じバージョンが必要で、公開ルームでは使えない。TownOfHost-Pko公式・本家TOH/TOHK・Innerslothとは関係がなく、不具合をフォーク元に報告しないこと。ライセンスはGPL-3.0。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">🧩 MOD・Among Us</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/TOH-Pko-private/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">⏱️</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">WorkMonitor</h2>
+        <p class="card-desc">実際に手を動かしている時間だけを記録する、Windows 10 / 11 用の作業時間トラッカー。キーボードやマウスの操作が止まると記録も止まる(初期値は60秒で休憩中)ので、アプリを開いたまま放置した時間は数えない。1日の目標と連続達成日数、アプリごとの「作業に数えるか」の設定、日・週・月のダッシュボード(カテゴリ別・アプリ別・時間帯別)、ログインでクラウドに同期してウェブサイトからどの端末でも閲覧、画面の端に出すオーバーレイ、Discordの「作業中」表示、タスクトレイ常駐に対応。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://kaikomziu.github.io/WorkMonitor/" target="_blank" rel="noopener">サイトを見る →</a>
+      </article>
+      <article class="game-card is-soft">
+        <div class="card-top">
+          <div class="card-emoji">📦</div>
+          <button class="fav-btn" aria-label="お気に入り切替">☆</button>
+        </div>
+        <h2 class="card-title">マイクラBE アドオン簡単導入ツール</h2>
+        <p class="card-desc">Minecraft統合版(Bedrock Edition)の.mcaddon/.mcpack/.mcworldなどを、ドラッグ&amp;ドロップするだけで導入するWindows用の小さなツール。ZIPの中身をMinecraftの管理フォルダ(com.mojang)へ直接展開するので、Minecraftを閉じたり起動し直したりする必要がない。manifest.jsonを解析してビヘイビア/リソース/スキン/ワールドテンプレートを自動で仕分け、通常版とPreview版の両方・非公式ランチャーにも導入でき、導入先フォルダも手動で追加できる。インストール不要でexeを実行するだけ。</p>
+        <div class="card-tags"><span class="card-tag kind-tag">💻 ソフト・Windows</span><span class="card-tag">ツール</span></div>
+        <a class="play-btn" href="https://github.com/kaikomziu/mc-addon-installer/releases/latest" target="_blank" rel="noopener">ダウンロードへ →</a>
+      </article>
+    <!-- SEO-SOFT:END -->
   </section>
 
   <p class="empty-msg" id="emptyMsg" hidden>該当する作品が見つかりませんでした。</p>

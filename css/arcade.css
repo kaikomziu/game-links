@@ -438,11 +438,48 @@ body {
   transform: none;
 }
 
-/* ===== アプリ・ツール(ゲームではない作品) ===== */
-.game-card.is-app { --marquee: linear-gradient(90deg, #18d5ff, #39ff88, #18d5ff); }
+/* ===== ソフト・MOD(ゲームではない作品)の区画 ===== */
+.game-card.is-soft { --marquee: linear-gradient(90deg, #18d5ff, #39ff88, #18d5ff); }
 .card-tag.kind-tag {
   color: #1d1240;
   background: var(--neon-yellow);
   border-color: var(--cab-edge);
   font-weight: 700;
 }
+
+.section-head { margin: 28px 2px 14px; }
+.section-head[hidden] { display: none; }
+.section-title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  text-shadow: 0 0 8px var(--neon-pink);
+}
+.section-count {
+  margin-left: 6px;
+  padding: 1px 9px;
+  font-size: 0.82rem;
+  color: var(--neon-green);
+  background: var(--screen);
+  border: 1px solid var(--cab-edge);
+  border-radius: 999px;
+  text-shadow: none;
+  vertical-align: middle;
+}
+.section-note { margin: 4px 0 0; color: var(--text-muted); font-size: 0.82rem; }
+.section-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.section-nav a {
+  padding: 5px 12px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  color: var(--neon-cyan);
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 6px;
+  text-decoration: none;
+}
+.section-nav a:hover { border-color: var(--neon-pink); color: #fff; }
+#gamesHead, #softHead { scroll-margin-top: 90px; }

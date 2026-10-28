@@ -2,15 +2,15 @@
 (function () {
   const sub = document.getElementById("heroSub");
   if (sub && typeof GAMES !== "undefined") {
-    const gamesOnly = GAMES.filter((g) => g.kind !== "app");
+    const gamesOnly = GAMES.filter((g) => !isSoftware(g));
     const fresh = typeof isNewGame === "function" ? gamesOnly.filter(isNewGame).length : 0;
     const maint = gamesOnly.filter((g) => g.maintenance).length;
     const apps = GAMES.length - gamesOnly.length;
-    sub.textContent = `NOW OPEN ─ 稼働中の筐体 ${gamesOnly.length - maint}台` + (fresh ? ` / NEW ${fresh}台` : "") + (maint ? ` / メンテナンス中 ${maint}台` : "") + (apps ? ` / アプリ ${apps}本` : "");
+    sub.textContent = `NOW OPEN ─ 稼働中の筐体 ${gamesOnly.length - maint}台` + (fresh ? ` / NEW ${fresh}台` : "") + (maint ? ` / メンテナンス中 ${maint}台` : "") + (apps ? ` / ソフト・MOD ${apps}本` : "");
   }
   const count = document.getElementById("profileCount");
   if (count && typeof GAMES !== "undefined") {
-    const n = GAMES.filter((g) => g.kind !== "app").length;
+    const n = GAMES.filter((g) => !isSoftware(g)).length;
     const msg = n >= 150 ? "150突破！！いろんなジャンルつくります！！"
       : n >= 100 ? "100突破！もっとがんばります！"
       : "いまはたくさん！";

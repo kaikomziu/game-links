@@ -1,8 +1,21 @@
 // ===== ゲーム一覧データ =====
 // 新規ゲームは必ず added: "YYYY-MM-DD"(公開日)を付けること。公開から7日間だけ「NEW」バッジが出る。
-// ゲームではないアプリ・ツール・MODは kind: "app"(任意で platform: "Windows" と action: "ダウンロードへ →" も指定)。「種類」フィルターで分けられる。
+// ゲームではないソフトは kind: "app"、MODは kind: "mod" を付ける(任意で platform: "Windows" と action: "ダウンロードへ →" も指定)。
+// kind を付けたものは「ゲーム」とは別の区画「ソフト・MOD」に並ぶ(ゲーム数・今日の1本・サイトマップの対象外)。
 // 不具合のあるゲームは maintenance: "理由メモ" を付けると「メンテナンス中」表示になり、一覧からプレイできなくなる(直ったら削除する)。
 const GAMES = [
+  {
+    id: "town-of-host-pp",
+    added: "2026-10-28",
+    kind: "mod",
+    platform: "Among Us",
+    action: "ダウンロードへ →",
+    title: "Town Of Host-P-P",
+    emoji: "🧑‍🚀",
+    tags: ["ツール"],
+    desc: "Among Usの人気MOD「TownOfHost-Pko」の非公式フォーク。友達と遊ぶための独自の役職を追加している。追加した役職は、潜伏者・口止め屋・マッドスター・ジャッカルスター・目撃者・カメラマン・ブックメーカー・ナイスボタナー・イビルボタナー・ハイエナ・足止め屋・灯台守・記録係・救急隊員・闇のうどん屋・万歩計・逆探知・孤狼と、SuperNewRolesから移したスター・イビルサイエンティスト・ナイスサイエンティスト。最新版(v1.12.0)はAmong Us v2026.9.29(v19)に対応し、ベースはTownOfHost-Pko v5.37.23.99。部屋主と参加者は同じバージョンが必要で、公開ルームでは使えない。TownOfHost-Pko公式・本家TOH/TOHK・Innerslothとは関係がなく、不具合をフォーク元に報告しないこと。ライセンスはGPL-3.0。",
+    url: "https://github.com/kaikomziu/TOH-Pko-private/releases/latest"
+  },
   {
     id: "workmonitor",
     added: "2026-10-28",
@@ -30,7 +43,7 @@ const GAMES = [
   {
     id: "superkrwkmod",
     added: "2026-10-28",
-    kind: "app",
+    kind: "mod",
     platform: "Bongo Cat(Steam)",
     action: "ダウンロードへ →",
     title: "Bongo Cat SuperKRWKMod",
@@ -940,6 +953,11 @@ const GAMES = [
 ];
 
 // ===== NEWバッジ(公開から7日間) =====
+// ゲームではないもの(ソフト/MOD)かどうか
+function isSoftware(g) {
+  return g.kind === "app" || g.kind === "mod";
+}
+
 const NEW_DAYS = 7;
 function isNewGame(g) {
   if (!g.added) return false;
@@ -979,7 +997,6 @@ let tagMode = getCookie("tagMode") === "and" ? "and" : "or";
 let currentSort = getCookie("sortOrder") || "name";
 let favoriteOnly = false;
 let selectedAuthor = "all";
-let selectedKind = "all"; // all / game / app
 
 // ===== 初期化: ダークモード =====
 function applyTheme(theme) {
@@ -1044,10 +1061,6 @@ authorFilterEl.addEventListener("change", () => {
   selectedAuthor = authorFilterEl.value;
   render();
 });
-document.getElementById("kindFilter").addEventListener("change", (e) => {
-  selectedKind = e.target.value;
-  render();
-});
 
 function syncTagChips() {
   [...tagFilterEl.querySelectorAll(".tag-chip")].forEach((c) => {
@@ -1095,6 +1108,9 @@ favoriteOnlyCheck.addEventListener("change", () => {
 
 // ===== 描画 =====
 const grid = document.getElementById("gameGrid");
+const softGrid = document.getElementById("softGrid");
+const gamesHead = document.getElementById("gamesHead");
+const softHead = document.getElementById("softHead");
 const emptyMsg = document.getElementById("emptyMsg");
 const resultCount = document.getElementById("resultCount");
 
@@ -1136,9 +1152,8 @@ function render() {
       g.tags.some(t => t.toLowerCase().includes(query)) ||
       (g.author || "Claude AI").toLowerCase().includes(query);
     const matchesAuthor = selectedAuthor === "all" || (g.author || "Claude AI") === selectedAuthor;
-    const matchesKind = selectedKind === "all" || (selectedKind === "app") === (g.kind === "app");
     const matchesFavorite = !favoriteOnly || favorites.has(g.id);
-    return matchesTag && matchesQuery && matchesAuthor && matchesKind && matchesFavorite;
+    return matchesTag && matchesQuery && matchesAuthor && matchesFavorite;
   });
 
   const byName = (a, b) => a.title.localeCompare(b.title, "ja");
@@ -1188,16 +1203,25 @@ function render() {
   }
   // currentSort === "default" のときだけGAMES配列の追加順のまま表示する
 
-  resultCount.textContent = `${list.length} 件の作品`;
+  const gamesCount = list.filter(g => !isSoftware(g)).length;
+  const softCount = list.length - gamesCount;
+  // 区画へ移動するリンクと件数(絞り込み後の件数)
+  resultCount.innerHTML =
+    `<a href="#gamesHead">🎮 ゲーム ${gamesCount} 件</a><a href="#softHead">🧰 ソフト・MOD ${softCount} 件</a>`;
+  document.getElementById("gamesCountLabel").textContent = gamesCount;
+  document.getElementById("softCountLabel").textContent = softCount;
+  gamesHead.hidden = gamesCount === 0;
+  softHead.hidden = softCount === 0;
   grid.innerHTML = "";
+  softGrid.innerHTML = "";
   emptyMsg.hidden = list.length !== 0;
 
   list.forEach(g => {
     const card = document.createElement("article");
     const maint = !!g.maintenance;
     const isNew = isNewGame(g) && !maint;
-    const isApp = g.kind === "app";
-    card.className = "game-card" + (isNew ? " is-new" : "") + (maint ? " is-maintenance" : "") + (isApp ? " is-app" : "");
+    const isSoft = isSoftware(g);
+    card.className = "game-card" + (isNew ? " is-new" : "") + (maint ? " is-maintenance" : "") + (isSoft ? " is-soft" : "");
     const isFav = favorites.has(g.id);
 
     const hasVotes = typeof GameVotes !== "undefined";
@@ -1225,7 +1249,7 @@ function render() {
       ${hasMoreDesc ? `<p class="card-desc card-desc-full" hidden>${g.desc}</p>` : ""}
       ${hasMoreDesc ? `<button class="desc-more-btn" type="button">もっと見る ▾</button>` : ""}
       ${trivia ? `<p class="card-trivia" hidden>💭 ${trivia}</p>` : ""}
-      <div class="card-tags">${isApp ? `<span class="card-tag kind-tag">💻 アプリ${g.platform ? "・" + g.platform : ""}</span>` : ""}${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
+      <div class="card-tags">${isSoft ? `<span class="card-tag kind-tag">${g.kind === "mod" ? "🧩 MOD" : "💻 ソフト"}${g.platform ? "・" + g.platform : ""}</span>` : ""}${g.tags.map(t => `<span class="card-tag">${t}</span>`).join("")}</div>
       <p class="card-author">作者: ${g.author || "Claude AI"}</p>
       <div class="vote-row">
         <button class="vote-btn like ${myVote === "like" ? "active" : ""}" data-vote="like" ${voted ? "disabled" : ""} aria-label="高評価">
@@ -1237,7 +1261,7 @@ function render() {
       </div>
       ${maint
         ? `<span class="play-btn maintenance-btn" aria-disabled="true">修正中のため遊べません</span>`
-        : `<a class="play-btn" href="${g.url}" target="_blank" rel="noopener">${g.action || (isApp ? "見に行く →" : "遊びに行く →")}</a>`}
+        : `<a class="play-btn" href="${g.url}" target="_blank" rel="noopener">${g.action || (isSoft ? "見に行く →" : "遊びに行く →")}</a>`}
       <span class="play-count" ${plays > 0 ? "" : "hidden"}>▶ ${plays.toLocaleString()} 回プレイ</span>
     `;
     card.querySelector(".fav-btn").addEventListener("click", () => toggleFavorite(g.id));
@@ -1285,7 +1309,7 @@ function render() {
       });
     }
 
-    grid.appendChild(card);
+    (isSoft ? softGrid : grid).appendChild(card);
   });
 }
 
