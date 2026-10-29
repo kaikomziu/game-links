@@ -57,12 +57,12 @@ const GAMES = [
     added: "2026-10-28",
     kind: "app",
     platform: "Windows / Android",
-    action: "ダウンロードへ →",
+    action: "サイトを見る →",
     title: "SoundVoice Mixer",
     emoji: "🎚️",
     tags: ["ツール"],
     desc: "デスクトップの音とマイクをミックスして、仮想オーディオケーブル(VB-CABLEなど)へ出力するWindows用の音声ミキサー。録音側を「soundvoice Output」にすれば仮想マイクとして使える。ボイチェン(プリセット14種とピッチ・震え・ロボット・リバーブ・フィルターの調整)、音割れ、ノイズゲート、エコー、8枠のサウンドボード、グローバルホットキー、自分で聞くモニターに対応。マイクとスマホ内の音を混ぜて聞いたり録音したりできるAndroid版(apk)もある。",
-    url: "https://github.com/kaikomziu/SoundVoiceMixer/releases/latest"
+    url: "https://kaikomziu.github.io/SoundVoiceMixer/"
   },
   {
     id: "snr-room-notifier",
