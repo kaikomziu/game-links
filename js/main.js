@@ -69,12 +69,12 @@ const GAMES = [
     added: "2026-10-28",
     kind: "app",
     platform: "Windows",
-    action: "ダウンロードへ →",
+    action: "公式サイトへ →",
     title: "SNR Room Notifier",
     emoji: "🔔",
     tags: ["ツール"],
     desc: "Among UsのMOD「SuperNewRoles」のカスタムサーバーで公開部屋が開かれたら、Windowsの通知で知らせる常駐アプリ。通知や一覧からそのまま部屋に参加でき、Among Usが起動していなければ起動→読み込み待ち→参加まで自動で行う。通知の条件(マップ・インポスター数・人数・部屋名)、お気に入り/ミュートのホスト、満員の部屋の空き通知、静かな時間帯を設定できる。個人が作った非公式ツールで、SuperNewRoles開発チームやInnersloth(Among Us)とは関係がない。",
-    url: "https://github.com/kaikomziu/snr-room-notifier/releases/latest"
+    url: "https://kaikomziu.github.io/snr-room-notifier/"
   },
   {
     id: "app-screenshotter",
