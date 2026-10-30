@@ -39,6 +39,8 @@ const Articles = (() => {
     } catch (e) { return null; }
   }
   function writeSession(s) {
+    // 他の画面(イベント)にログイン状態の変化を知らせる
+    setTimeout(() => document.dispatchEvent(new CustomEvent("gl-admin-change")), 0);
     try {
       if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
       else localStorage.removeItem(SESSION_KEY);
@@ -571,6 +573,8 @@ const Articles = (() => {
   return {
     renderMarkdown, openLogin, renderView: renderArticlesView, hideView: hideArticlesView,
     state: () => ({ admin: !!admin, name: admin && admin.name, count: list.length }),
+    // イベントタブなど、他の機能がログイン状態と共通部品を使うための口
+    api: { getAdmin: () => admin, callRpc, openModal, closeModal, esc, toast, openAdminManager, logout },
   };
 })();
 

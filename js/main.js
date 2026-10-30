@@ -1112,7 +1112,8 @@ const softGrid = document.getElementById("softGrid");
 const emptyMsg = document.getElementById("emptyMsg");
 
 // ===== 表示する区画(タブ): games = ゲーム / soft = ソフト・MOD =====
-let currentView = ["soft", "articles"].includes(getCookie("view")) ? getCookie("view") : "games";
+const VIEWS = ["games", "soft", "events", "articles"];
+let currentView = VIEWS.includes(getCookie("view")) ? getCookie("view") : "games";
 const viewTabs = document.getElementById("viewTabs");
 function syncViewTabs() {
   viewTabs.querySelectorAll(".view-tab").forEach((t) => {
@@ -1122,7 +1123,7 @@ function syncViewTabs() {
   });
 }
 function setView(v) {
-  currentView = ["soft", "articles"].includes(v) ? v : "games";
+  currentView = VIEWS.includes(v) ? v : "games";
   setCookie("view", currentView, 365);
   syncViewTabs();
   render();
@@ -1253,9 +1254,15 @@ function render() {
   } else if (typeof hideArticlesView === "function") {
     hideArticlesView();
   }
+  if (currentView === "events") {
+    emptyMsg.hidden = true;
+    if (typeof renderEventsView === "function") renderEventsView();
+  } else if (typeof hideEventsView === "function") {
+    hideEventsView();
+  }
 
-  if (currentView === "articles") {
-    // 記事タブの空表示は記事側で出す
+  if (currentView === "articles" || currentView === "events") {
+    // 記事・イベントタブの空表示はそれぞれ側で出す
   } else if (viewList.length === 0) {
     const otherName = currentView === "soft" ? "ゲーム" : "ソフト・MOD";
     const otherView = currentView === "soft" ? "games" : "soft";
