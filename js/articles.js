@@ -31,6 +31,7 @@ const Articles = (() => {
   let loaded = false;
   let loadError = false;
   let loading = false;
+  let counts = {};            // 記事ID → コメント数
 
   function readSession() {
     try {
@@ -132,6 +133,10 @@ const Articles = (() => {
         list = data || [];
       }
       loaded = true;
+      try {
+        const r = await c.rpc("gl_comment_counts");
+        counts = (r && r.data) || {};
+      } catch (e2) { counts = {}; }
     } catch (e) {
       loadError = true;
     } finally {
@@ -182,7 +187,7 @@ const Articles = (() => {
     wrap.innerHTML = items.map((a) => `
       <article class="ar-card${a.published === false ? " is-draft" : ""}" data-id="${esc(a.id)}" tabindex="0" role="button" aria-label="${esc(a.title)} を読む">
         <h3 class="ar-card-title">${esc(a.title)}${a.published === false ? ` <span class="ar-draft">下書き</span>` : ""}</h3>
-        <p class="ar-card-meta">${fmtDate(a.published_at || a.created_at)} ・ ${esc(a.author_name)}</p>
+        <p class="ar-card-meta">${fmtDate(a.published_at || a.created_at)} ・ ${esc(a.author_name)}${counts[a.id] ? ` ・ 💬 ${counts[a.id]}` : ""}</p>
         <p class="ar-card-summary">${esc(plainSummary(a))}</p>
       </article>`).join("");
   }
@@ -229,11 +234,22 @@ const Articles = (() => {
           <p class="ar-meta">${fmtDate(a.published_at || a.created_at)} ・ ${esc(a.author_name)}${a.updated_at && fmtDate(a.updated_at) !== fmtDate(a.published_at || a.created_at) ? ` ・ 更新 ${fmtDate(a.updated_at)}` : ""}</p>
           <div class="ar-body">${renderMarkdown(a.body)}</div>
         </article>
+        ${a.published === false ? "" : `<section class="cm" aria-label="コメント">
+          <h3 class="cm-h">💬 コメント <span class="cm-count"></span></h3>
+          <ul class="cm-list"><li class="cm-empty">読み込み中…</li></ul>
+          <form class="cm-form" autocomplete="off">
+            <input class="ad-input" name="cname" maxlength="20" placeholder="名前(ニックネーム)" ${admin ? `value="${esc(admin.name)}" readonly` : ""} required>
+            <textarea class="ad-input" name="cbody" rows="3" maxlength="500" placeholder="コメントを書く(500字まで)" required></textarea>
+            <p class="ad-error" role="alert"></p>
+            <div class="cm-row"><small class="cm-len">0 / 500</small><button type="submit" class="ad-btn primary">コメントする</button></div>
+          </form>
+        </section>`}
         <div class="ar-actions">
           <button type="button" class="ad-btn" data-ar-share>🔗 リンクをコピー</button>
           ${admin ? `<button type="button" class="ad-btn primary" data-ar-edit>✏️ 編集</button><button type="button" class="ad-btn danger" data-ar-delete>🗑 削除</button>` : ""}
         </div>
       </div>`);
+    if (a.published !== false) initComments(m, a);
     m.addEventListener("click", async (e) => {
       if (e.target.hasAttribute("data-ar-close")) { closeModal(m); return; }
       const g = e.target.closest(".ar-gamelink");
@@ -250,6 +266,88 @@ const Articles = (() => {
       }
     });
   }
+  // ---------- コメント ----------
+  const NAME_KEY = "gl_comment_name", CID_KEY = "gl_client_id";
+  function clientId() {
+    try {
+      let v = localStorage.getItem(CID_KEY);
+      if (!v || v.length < 16) {
+        v = Array.from(crypto.getRandomValues(new Uint8Array(16)), (x) => x.toString(16).padStart(2, "0")).join("");
+        localStorage.setItem(CID_KEY, v);
+      }
+      return v;
+    } catch (e) { return "anon-" + Math.random().toString(16).slice(2) + Date.now().toString(16); }
+  }
+  function fmtDateTime(iso) {
+    const d = new Date(iso);
+    const p2 = (n) => String(n).padStart(2, "0");
+    return isNaN(d) ? "" : (d.getMonth() + 1) + "/" + d.getDate() + " " + p2(d.getHours()) + ":" + p2(d.getMinutes());
+  }
+  const CM_ERR = {
+    rate: "短い間にコメントしすぎです。少し待ってからもう一度どうぞ。",
+    busy: "いまコメントが集中しています。しばらくしてからお試しください。",
+    dup: "同じ内容のコメントがすでにあります。",
+    name: "名前は1〜20字で入れてください。",
+    body: "コメントは1〜500字で入れてください。",
+    notfound: "この記事は見つかりません。",
+    client: "投稿できませんでした。ページを読み込み直してください。",
+  };
+  function initComments(m, a) {
+    const listEl = m.querySelector(".cm-list");
+    const form = m.querySelector(".cm-form");
+    if (!listEl || !form) return;
+    const err = form.querySelector(".ad-error");
+    const len = form.querySelector(".cm-len");
+    try { if (!admin) form.cname.value = localStorage.getItem(NAME_KEY) || ""; } catch (e) {}
+    form.cbody.addEventListener("input", () => { len.textContent = form.cbody.value.length + " / 500"; });
+
+    async function loadComments() {
+      const c = sb();
+      let rows = null;
+      try {
+        const r = c ? await c.from("gl_comments").select("id,name,body,is_admin,created_at").eq("article_id", a.id).order("created_at", { ascending: true }) : null;
+        rows = r && !r.error ? r.data : null;
+      } catch (e) {}
+      if (!m.isConnected) return;
+      if (!rows) { listEl.innerHTML = '<li class="cm-empty">コメントを読み込めませんでした。</li>'; return; }
+      counts[a.id] = rows.length;
+      if (typeof currentView !== "undefined" && currentView === "articles") renderArticlesView(); // 一覧の💬の数も更新
+      m.querySelector(".cm-count").textContent = rows.length ? "(" + rows.length + ")" : "";
+      listEl.innerHTML = rows.length ? rows.map((r) => '<li class="cm-item" data-id="' + esc(r.id) + '">'
+        + '<p class="cm-meta"><b class="cm-name">' + esc(r.name) + '</b>' + (r.is_admin ? ' <span class="cm-admin">管理者</span>' : '')
+        + ' <time>' + fmtDateTime(r.created_at) + '</time>'
+        + (admin ? ' <button type="button" class="ad-btn small danger" data-cm-del aria-label="このコメントを削除">削除</button>' : '') + '</p>'
+        + '<p class="cm-body">' + esc(r.body).replace(/\n/g, "<br>") + '</p></li>').join("")
+        : '<li class="cm-empty">まだコメントはありません。最初のコメントをどうぞ。</li>';
+    }
+    loadComments();
+
+    listEl.addEventListener("click", async (e) => {
+      const b = e.target.closest("[data-cm-del]");
+      if (!b) return;
+      if (!confirm("このコメントを削除しますか？(元に戻せません)")) return;
+      const r = await callRpc("gl_comment_delete", { p_id: b.closest(".cm-item").dataset.id });
+      if (r && r.ok) { toast("コメントを削除しました"); loadComments(); }
+    });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      err.textContent = "";
+      const btn = form.querySelector("button[type=submit]");
+      btn.disabled = true;
+      const c = sb();
+      const { data, error } = c
+        ? await c.rpc("gl_comment_add", { p_article: a.id, p_name: form.cname.value, p_body: form.cbody.value, p_client: clientId(), p_token: admin ? admin.token : null })
+        : { error: true };
+      btn.disabled = false;
+      if (error || !data) { err.textContent = "通信に失敗しました。もう一度お試しください。"; return; }
+      if (!data.ok) { err.textContent = CM_ERR[data.reason] || "投稿できませんでした。"; return; }
+      try { if (!admin) localStorage.setItem(NAME_KEY, form.cname.value.trim()); } catch (e2) {}
+      form.cbody.value = ""; len.textContent = "0 / 500";
+      toast("コメントしました");
+      loadComments();
+    });
+  }
+
   function openFromUrl() {
     let id = null;
     try { id = new URLSearchParams(location.search).get("article"); } catch (e) {}

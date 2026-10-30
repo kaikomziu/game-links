@@ -150,3 +150,20 @@ body[data-view="articles"] .toolbar-right { display: none; }
   .ar-dialog { padding: 18px 14px 12px; }
   .ar-h1 { font-size: 1.3rem; }
 }
+
+/* ---- コメント ---- */
+.cm { margin-top: 18px; padding-top: 12px; border-top: 2px dashed var(--border); }
+.cm-h { margin: 0 0 8px; font-size: 1rem; }
+.cm-count { color: var(--text-muted); font-weight: 400; font-size: 0.9rem; }
+.cm-list { margin: 0 0 12px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.cm-item { padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
+.cm-empty { font-size: 0.85rem; color: var(--text-muted); }
+.cm-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 3px; font-size: 0.78rem; color: var(--text-muted); }
+.cm-meta .ad-btn { margin-left: auto; }
+.cm-name { color: var(--text); font-size: 0.86rem; overflow-wrap: anywhere; }
+.cm-admin { padding: 0 7px; font-size: 0.66rem; font-weight: 700; color: #1d1240; background: var(--neon-yellow); border-radius: 4px; }
+.cm-body { margin: 0; font-size: 0.92rem; line-height: 1.7; overflow-wrap: anywhere; }
+.cm-form { display: flex; flex-direction: column; gap: 8px; }
+.cm-form textarea { resize: vertical; min-height: 70px; }
+.cm-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cm-len { color: var(--text-muted); }
