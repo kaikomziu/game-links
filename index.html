@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="css/articles.css?v=2">
 <link rel="stylesheet" href="css/events.css?v=3">
 <link rel="stylesheet" href="css/halloween.css?v=2">
-<link rel="stylesheet" href="css/live-info.css?v=1">
+<link rel="stylesheet" href="css/live-info.css?v=2">
 </head>
 <body>
 
@@ -65,6 +65,17 @@
     <div class="live-item live-weather"><span class="live-label">🌡️ 気温</span><span data-live="weather">読み込み中…</span></div>
     <div class="live-tools"><small data-live="updated">APIから取得中…</small><button type="button" data-live-refresh aria-label="地震と気温を更新">↻</button></div>
     <p class="live-source">情報元: <a href="https://www.p2pquake.net/" target="_blank" rel="noopener">P2P地震情報</a> / <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>
+  </section>
+
+  <section class="external-info" id="externalInfo" aria-label="週間天気予報とITニュース">
+    <section class="external-panel forecast-panel">
+      <h2 class="external-title">☁️ 週間予報 <small>市川市付近</small></h2>
+      <div class="forecast-list" data-live="forecast"><p class="external-loading">読み込み中…</p></div>
+    </section>
+    <section class="external-panel news-panel">
+      <h2 class="external-title">📰 ITニュース <small>Qiita新着</small></h2>
+      <div class="news-list" data-live="news"><p class="external-loading">読み込み中…</p></div>
+    </section>
   </section>
 
   <div class="info-panel" id="infoPanel" hidden>
@@ -1310,7 +1321,7 @@
 <script src="data/anniversaries.js"></script>
 <script src="data/trivia.js"></script>
 <script src="js/today.js"></script>
-<script src="js/live-info.js?v=1"></script>
+<script src="js/live-info.js?v=2"></script>
 <script src="js/version.js?v=2"></script>
 <script src="js/votes.js"></script>
 <script src="js/stats.js"></script>
