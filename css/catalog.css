@@ -1,0 +1,12 @@
+/* 管理者のゲーム・ソフト・MOD追加 */
+.catalog-admin { margin-top: 10px; }
+.catalog-dialog { width: min(620px, 100%); }
+.catalog-form { margin-bottom: 0; }
+.catalog-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.catalog-tags { min-height: 112px; padding: 5px 8px; }
+.catalog-tags option { padding: 3px 5px; }
+.catalog-tags option:checked { color: #fff; background: var(--neon-pink); }
+@media (max-width: 560px) {
+  .catalog-two-col { grid-template-columns: 1fr; gap: 10px; }
+  .catalog-dialog { padding: 18px 12px 12px; }
+}

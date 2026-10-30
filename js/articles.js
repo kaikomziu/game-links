@@ -597,6 +597,19 @@ const Articles = (() => {
   }
 
   // ---------- イベント ----------
+  async function getPublicGames() {
+    const c = sb();
+    if (!c) throw new Error("no client");
+    const { data, error } = await c
+      .from("gl_games")
+      .select("id,added,kind,platform,action,title,emoji,tags,description,url,author")
+      .eq("published", true)
+      .order("added", { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    return data || [];
+  }
+
   function init() {
     admin = readSession();
     const list0 = document.getElementById("articleList");
@@ -672,7 +685,7 @@ const Articles = (() => {
     renderMarkdown, openLogin, renderView: renderArticlesView, hideView: hideArticlesView,
     state: () => ({ admin: !!admin, name: admin && admin.name, count: list.length }),
     // イベントタブなど、他の機能がログイン状態と共通部品を使うための口
-    api: { getAdmin: () => admin, callRpc, openModal, closeModal, esc, toast, openAdminManager, logout },
+    api: { getAdmin: () => admin, callRpc, openModal, closeModal, esc, toast, openAdminManager, logout, getPublicGames },
   };
 })();
 

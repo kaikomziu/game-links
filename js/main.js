@@ -1080,6 +1080,36 @@ authorFilterEl.addEventListener("change", () => {
   render();
 });
 
+// Supabaseから後で読み込む管理者追加作品を、既存フィルターへ取り込む。
+window.refreshGameCatalog = function (items) {
+  const known = new Set(GAMES.map((g) => g.id));
+  (items || []).forEach((g) => {
+    if (!g || !g.id || known.has(g.id)) return;
+    GAMES.push(g);
+    known.add(g.id);
+    (g.tags || []).forEach((tag) => {
+      if (!allTags.includes(tag)) {
+        allTags.push(tag);
+        allTags.sort((a, b) => a.localeCompare(b, "ja"));
+        const btn = document.createElement("button");
+        btn.className = "tag-chip";
+        btn.dataset.tag = tag;
+        btn.textContent = tag;
+        tagFilterEl.insertBefore(btn, tagModeBtn);
+      }
+    });
+    const author = g.author || "Claude AI";
+    if (![...authorFilterEl.options].some((o) => o.value === author)) {
+      const option = document.createElement("option");
+      option.value = author;
+      option.textContent = `作者: ${author}`;
+      authorFilterEl.appendChild(option);
+    }
+    if (randomOrder) randomOrder.set(g.id, Math.random());
+  });
+  render();
+};
+
 function syncTagChips() {
   [...tagFilterEl.querySelectorAll(".tag-chip")].forEach((c) => {
     if (c.dataset.tag === "all") {
