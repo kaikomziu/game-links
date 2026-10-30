@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/arcade.css?v=8">
 <link rel="stylesheet" href="css/layout.css?v=4">
+<link rel="stylesheet" href="css/articles.css?v=1">
 <link rel="stylesheet" href="css/halloween.css?v=2">
 </head>
 <body>
@@ -81,6 +82,7 @@
       <div class="view-tabs" id="viewTabs" role="tablist" aria-label="表示する区画">
         <button class="view-tab active" type="button" role="tab" data-view="games" aria-selected="true">🎮 ゲーム <b id="tabGamesCount"></b></button>
         <button class="view-tab" type="button" role="tab" data-view="soft" aria-selected="false">🧰 ソフト・MOD <b id="tabSoftCount"></b></button>
+        <button class="view-tab" type="button" role="tab" data-view="articles" aria-selected="false">📝 記事 <b id="tabArticlesCount"></b></button>
       </div>
       <div class="toolbar-right">
         <label class="favorite-only-toggle">
@@ -1251,6 +1253,9 @@
     <!-- SEO-SOFT:END -->
   </section>
 
+  <div class="article-admin" id="articleAdmin" hidden></div>
+  <section class="article-list" id="articleList" hidden aria-label="記事一覧"></section>
+
   <p class="empty-msg" id="emptyMsg" hidden>該当する作品が見つかりませんでした。</p>
 
 </main>
@@ -1274,6 +1279,7 @@
 <script src="js/votes.js"></script>
 <script src="js/stats.js"></script>
 <script src="js/tiles.js?v=1"></script>
+<script src="js/articles.js?v=1"></script>
 <script src="js/main.js"></script>
 <script src="js/extras.js"></script>
 <script src="js/aprilfools.js"></script>

@@ -1112,7 +1112,7 @@ const softGrid = document.getElementById("softGrid");
 const emptyMsg = document.getElementById("emptyMsg");
 
 // ===== 表示する区画(タブ): games = ゲーム / soft = ソフト・MOD =====
-let currentView = getCookie("view") === "soft" ? "soft" : "games";
+let currentView = ["soft", "articles"].includes(getCookie("view")) ? getCookie("view") : "games";
 const viewTabs = document.getElementById("viewTabs");
 function syncViewTabs() {
   viewTabs.querySelectorAll(".view-tab").forEach((t) => {
@@ -1122,7 +1122,7 @@ function syncViewTabs() {
   });
 }
 function setView(v) {
-  currentView = v === "soft" ? "soft" : "games";
+  currentView = ["soft", "articles"].includes(v) ? v : "games";
   setCookie("view", currentView, 365);
   syncViewTabs();
   render();
@@ -1237,6 +1237,7 @@ function render() {
   window.__viewList = viewList; // 詳細ウィンドウの「前へ/次へ」で使う
   document.getElementById("tabGamesCount").textContent = gamesList.length;
   document.getElementById("tabSoftCount").textContent = softList.length;
+  document.body.dataset.view = currentView; // 記事タブではジャンル・並び順などを隠す(CSS)
   grid.hidden = currentView !== "games";
   softGrid.hidden = currentView !== "soft";
   document.getElementById("viewNote").hidden = currentView !== "soft";
@@ -1246,7 +1247,16 @@ function render() {
   gamesList.forEach(g => grid.appendChild(buildTile(g)));
   softList.forEach(g => softGrid.appendChild(buildTile(g)));
 
-  if (viewList.length === 0) {
+  if (currentView === "articles") {
+    emptyMsg.hidden = true;
+    if (typeof renderArticlesView === "function") renderArticlesView();
+  } else if (typeof hideArticlesView === "function") {
+    hideArticlesView();
+  }
+
+  if (currentView === "articles") {
+    // 記事タブの空表示は記事側で出す
+  } else if (viewList.length === 0) {
     const otherName = currentView === "soft" ? "ゲーム" : "ソフト・MOD";
     const otherView = currentView === "soft" ? "games" : "soft";
     emptyMsg.innerHTML = otherList.length > 0
