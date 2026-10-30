@@ -1,0 +1,87 @@
+/* ===== 地震・気温のライブ情報 ===== */
+.live-info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 7px 10px 5px;
+  color: #fff;
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 10px;
+  box-shadow: inset 0 0 16px rgba(24, 213, 255, 0.14);
+}
+.live-item {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  overflow: hidden;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.live-label {
+  flex: 0 0 auto;
+  color: var(--neon-yellow);
+  font-family: var(--font-pixel);
+  font-size: 0.72rem;
+}
+.live-item > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e9f8ff;
+}
+.live-item strong { color: var(--neon-green); font-size: 0.95rem; }
+.live-item span span { color: #a9c4d8; margin-left: 4px; }
+.live-item small {
+  color: #8eabc1;
+  margin-left: 4px;
+  font-size: 0.7rem;
+}
+.live-weather strong { color: var(--neon-cyan); }
+.live-tools {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.live-tools small { color: #8eabc1; font-size: 0.68rem; }
+.live-tools button {
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  color: var(--neon-cyan);
+  background: transparent;
+  border: 1px solid var(--neon-cyan);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.live-tools button:hover { color: #fff; border-color: var(--neon-pink); }
+.live-tools button:disabled { opacity: 0.45; cursor: wait; }
+.live-source {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #758da2;
+  font-size: 0.64rem;
+  text-align: right;
+}
+.live-source a { color: #91cde3; }
+.live-error { color: #ffb2c9; }
+
+@media (max-width: 760px) {
+  .live-info { grid-template-columns: 1fr 1fr; }
+  .live-tools { justify-content: flex-end; }
+  .live-source { text-align: left; }
+}
+
+@media (max-width: 480px) {
+  .live-info { grid-template-columns: 1fr; gap: 5px; }
+  .live-tools { justify-content: space-between; }
+  .live-item { font-size: 0.74rem; }
+  .live-source { font-size: 0.6rem; }
+}
