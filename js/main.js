@@ -5,6 +5,18 @@
 // 不具合のあるゲームは maintenance: "理由メモ" を付けると「メンテナンス中」表示になり、一覧からプレイできなくなる(直ったら削除する)。
 const GAMES = [
   {
+    id: "app-recorder",
+    added: "2026-10-31",
+    kind: "app",
+    platform: "Windows",
+    action: "ダウンロードへ →",
+    title: "AppRecorder",
+    emoji: "🎥",
+    tags: ["ツール"],
+    desc: "指定したアプリの画面と音だけを録画するWindows用ソフト。ウィンドウ単位でキャプチャするので、ほかのウィンドウが上に重なっても選んだウィンドウだけが映る。音もそのアプリ(子プロセスを含む)が鳴らしたものだけを録るので、Discordの通話や通知音、ほかのアプリの音は入らない。MP4(H.264 + AAC)で保存し、マウスカーソルを映すかどうか、FPS(10〜60)、保存先を選べる。録画中に対象のウィンドウを閉じると自動で停止して保存する。エンコードに使うffmpegが無ければ初回にwingetでインストールできる。Windows 10(2004以降)/ 11 対応で、exeをダウンロードしてダブルクリックするだけで起動でき、インストールは不要。MITライセンスのオープンソース。",
+    url: "https://github.com/kaikomziu/AppRecorder/releases/latest"
+  },
+  {
     id: "oekaki-chat",
     added: "2026-10-30",
     title: "絵チャ",
