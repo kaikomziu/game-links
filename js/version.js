@@ -1182,5 +1182,12 @@ const CHANGELOG = [
     notes: [
       "「AppRecorder」を追加した。指定したアプリの画面と音だけを録画できるWindows用ソフト"
     ]
+  },
+  {
+    version: "1.165.0",
+    date: "2026-10-31",
+    notes: [
+      "ソフトの「Hizashi(日差し)」にAndroid版(試験版)ができたので、説明に書き足した。公式サイトからAPKをダウンロードして入れるだけで使える(Android 10以降)"
+    ]
   }
 ];
