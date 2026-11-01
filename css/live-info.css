@@ -2,6 +2,8 @@
 .external-view { display: grid; gap: 8px; margin: 10px 0 18px; }
 body:not([data-view="external"]) #externalInfo { display: none !important; }
 body[data-view="external"] #externalInfo { display: grid !important; }
+.quake-alert { margin: 8px 0; padding: 10px 13px; color: #fff; background: #9f1239; border: 2px solid #fb7185; border-radius: 10px; box-shadow: 0 0 18px rgba(251, 113, 133, .42); font-size: .86rem; }
+.quake-alert small { margin-left: 6px; color: #fecdd3; }
 body[data-view="external"] .tag-filter,
 body[data-view="external"] .toolbar-right,
 body[data-view="external"] .catalog-admin { display: none; }

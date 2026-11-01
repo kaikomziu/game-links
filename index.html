@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="css/articles.css?v=2">
 <link rel="stylesheet" href="css/events.css?v=3">
 <link rel="stylesheet" href="css/halloween.css?v=2">
-<link rel="stylesheet" href="css/live-info.css?v=7">
+<link rel="stylesheet" href="css/live-info.css?v=8">
 <link rel="stylesheet" href="css/catalog.css?v=1">
 <link rel="stylesheet" href="css/polish.css?v=1">
 </head>
@@ -61,6 +61,7 @@
 <main class="container">
 
   <section class="april-banner" id="aprilBanner" hidden></section>
+  <div class="quake-alert" id="quakeAlert" hidden role="alert" aria-live="assertive"></div>
 
   <!-- 情報バー: INSERT COIN・稼働台数・自己紹介/統計の開閉ボタンを1行に -->
   <section class="info-bar" id="infoBar" aria-label="営業中">
@@ -101,6 +102,21 @@
         <h2 class="external-title">🌅 太陽の時刻 <small>市川市付近</small></h2>
         <div class="external-data-list" data-live="sun"><p class="external-loading" role="status">読み込み中…</p></div>
         <p class="external-source">情報元: <a href="https://sunrise-sunset.org/api" target="_blank" rel="noopener">Sunrise-Sunset.org</a></p>
+      </section>
+      <section class="external-panel" data-live-panel="holiday">
+        <h2 class="external-title">🎌 次の祝日 <small>日本</small></h2>
+        <div class="external-data-list" data-live="holiday"><p class="external-loading" role="status">読み込み中…</p></div>
+        <p class="external-source">情報元: <a href="https://date.nager.at/" target="_blank" rel="noopener">Nager.Date</a></p>
+      </section>
+      <section class="external-panel" data-live-panel="crypto">
+        <h2 class="external-title">₿ 暗号資産 <small>日本円</small></h2>
+        <div class="external-data-list" data-live="crypto"><p class="external-loading" role="status">読み込み中…</p></div>
+        <p class="external-source">情報元: <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a></p>
+      </section>
+      <section class="external-panel" data-live-panel="space">
+        <h2 class="external-title">🚀 宇宙ニュース <small>Spaceflight News</small></h2>
+        <div class="external-data-list" data-live="space"><p class="external-loading" role="status">読み込み中…</p></div>
+        <p class="external-source">情報元: <a href="https://www.spaceflightnewsapi.net/" target="_blank" rel="noopener">Spaceflight News API</a></p>
       </section>
     </div>
   </section>
@@ -1373,7 +1389,7 @@
 <script src="data/anniversaries.js"></script>
 <script src="data/trivia.js"></script>
 <script src="js/today.js"></script>
-<script src="js/live-info.js?v=6"></script>
+<script src="js/live-info.js?v=7"></script>
 <script src="js/version.js?v=5"></script>
 <script src="js/votes.js"></script>
 <script src="js/stats.js"></script>

@@ -7,6 +7,9 @@
   const AIR_URL = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=35.7148&longitude=139.9341&current=european_aqi,pm10,pm2_5,uv_index&timezone=Asia%2FTokyo";
   const FX_URL = "https://api.frankfurter.dev/v2/rates?base=JPY&quotes=USD,EUR,GBP";
   const SUN_URL = "https://api.sunrise-sunset.org/v2?lat=35.7148&lng=139.9341&tz=Asia%2FTokyo";
+  const HOLIDAY_URL = "https://date.nager.at/api/v3/NextPublicHolidays/JP";
+  const CRYPTO_URL = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=jpy";
+  const SPACE_URL = "https://api.spaceflightnewsapi.net/v4/articles/?limit=3";
   const REFRESH_MS = 5 * 60 * 1000;
   const WEATHER_LABELS = {
     0: "快晴", 1: "晴れ", 2: "一部くもり", 3: "くもり", 45: "霧", 48: "霧",
@@ -27,6 +30,10 @@
   const exchangeEl = externalRoot?.querySelector("[data-live=exchange]");
   const airEl = externalRoot?.querySelector("[data-live=air]");
   const sunEl = externalRoot?.querySelector("[data-live=sun]");
+  const holidayEl = externalRoot?.querySelector("[data-live=holiday]");
+  const cryptoEl = externalRoot?.querySelector("[data-live=crypto]");
+  const spaceEl = externalRoot?.querySelector("[data-live=space]");
+  const quakeAlertEl = document.getElementById("quakeAlert");
   const updatedEl = root.querySelector("[data-live=updated]");
   const refreshBtn = root.querySelector("[data-live-refresh]");
   let busy = false;
@@ -47,7 +54,7 @@
     if (weatherEl) weatherEl.textContent = "読み込み中…";
     if (forecastEl) forecastEl.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>";
     if (newsEl) newsEl.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>";
-    [exchangeEl, airEl, sunEl].forEach((el) => { if (el) el.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>"; });
+    [exchangeEl, airEl, sunEl, holidayEl, cryptoEl, spaceEl].forEach((el) => { if (el) el.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>"; });
     if (refreshBtn) refreshBtn.disabled = true;
   }
   function errorText(error) {
@@ -84,6 +91,14 @@
     const magnitude = Number.isFinite(h.magnitude) ? `M${h.magnitude.toFixed(1)}` : "M--";
     const depth = Number.isFinite(h.depth) ? `深さ${h.depth}km` : "深さ不明";
     quakeEl.innerHTML = `<strong>震度${esc(scaleText(e.maxScale))}</strong> ${esc(h.name || "震源地不明")} <span>${esc(magnitude)}・${esc(depth)}</span><small>発表 ${esc(dateText(quake.issue?.time || quake.time || e.time))}</small>`;
+    const scale = Number(e.maxScale);
+    if (quakeAlertEl && Number.isFinite(scale) && scale >= 40) {
+      quakeAlertEl.hidden = false;
+      quakeAlertEl.innerHTML = `⚠️ <b>震度${esc(scaleText(scale))}</b>の地震：${esc(h.name || "震源地不明")} <small>${esc(magnitude)}</small>`;
+    } else if (quakeAlertEl) {
+      quakeAlertEl.hidden = true;
+      quakeAlertEl.textContent = "";
+    }
   }
 
   function renderWeather(data) {
@@ -165,8 +180,24 @@
   }
 
   function renderSun(data) {
-    if (!data || data.status !== "OK") throw new Error("太陽情報の形式が不正");
-    sunEl.innerHTML = `<div class="external-data-row"><b>日の出</b><span>${esc(timeText(data.results?.sunrise))}</span></div><div class="external-data-row"><b>日の入り</b><span>${esc(timeText(data.results?.sunset))}</span></div><div class="external-data-row"><b>昼の長さ</b><span>${esc(Math.floor(Number(data.results?.day_length || 0) / 3600))}時間${esc(Math.floor((Number(data.results?.day_length || 0) % 3600) / 60))}分</span></div>`;
+    if (!data || !data.sunrise || !data.sunset) throw new Error("太陽情報の形式が不正");
+    sunEl.innerHTML = `<div class="external-data-row"><b>日の出</b><span>${esc(timeText(data.sunrise))}</span></div><div class="external-data-row"><b>日の入り</b><span>${esc(timeText(data.sunset))}</span></div><div class="external-data-row"><b>昼の長さ</b><span>${esc(Math.floor(Number(data.day_length || 0) / 3600))}時間${esc(Math.floor((Number(data.day_length || 0) % 3600) / 60))}分</span></div>`;
+  }
+
+  function renderHoliday(items) {
+    const next = Array.isArray(items) && items[0];
+    if (!next) throw new Error("祝日情報がありません");
+    holidayEl.innerHTML = `<div class="external-data-row"><b>${esc(next.localName || next.name)}</b><span>${esc(next.date)}</span></div>`;
+  }
+
+  function renderCrypto(data) {
+    if (!data || !data.bitcoin || !data.ethereum) throw new Error("暗号資産情報の形式が不正");
+    cryptoEl.innerHTML = `<div class="external-data-row"><b>Bitcoin</b><span>¥${esc(Number(data.bitcoin.jpy).toLocaleString("ja-JP"))}</span></div><div class="external-data-row"><b>Ethereum</b><span>¥${esc(Number(data.ethereum.jpy).toLocaleString("ja-JP"))}</span></div>`;
+  }
+
+  function renderSpace(data) {
+    if (!data || !Array.isArray(data.results) || !data.results.length) throw new Error("宇宙ニュースがありません");
+    spaceEl.innerHTML = data.results.slice(0, 3).map((item) => `<a class="news-item" href="${esc(item.url)}" target="_blank" rel="noopener"><strong>${esc(item.title)}</strong><small>${esc(item.news_site || "Spaceflight News")}</small></a>`).join("");
   }
 
   async function refresh() {
@@ -195,6 +226,15 @@
       if (results[5].status === "fulfilled") {
         try { renderSun(results[5].value); } catch (e) { setError(sunEl, "太陽情報", e); errors.push("太陽情報"); }
       } else { setError(sunEl, "太陽情報", results[5].reason); errors.push("太陽情報"); }
+      if (results[6].status === "fulfilled") {
+        try { renderHoliday(results[6].value); } catch (e) { setError(holidayEl, "祝日", e); errors.push("祝日"); }
+      } else { setError(holidayEl, "祝日", results[6].reason); errors.push("祝日"); }
+      if (results[7].status === "fulfilled") {
+        try { renderCrypto(results[7].value); } catch (e) { setError(cryptoEl, "暗号資産", e); errors.push("暗号資産"); }
+      } else { setError(cryptoEl, "暗号資産", results[7].reason); errors.push("暗号資産"); }
+      if (results[8].status === "fulfilled") {
+        try { renderSpace(results[8].value); } catch (e) { setError(spaceEl, "宇宙ニュース", e); errors.push("宇宙ニュース"); }
+      } else { setError(spaceEl, "宇宙ニュース", results[8].reason); errors.push("宇宙ニュース"); }
       const time = new Intl.DateTimeFormat("ja-JP", { hour: "2-digit", minute: "2-digit" }).format(new Date());
       updatedEl.textContent = errors.length ? `${errors.join("・")}の取得に失敗（${time}）` : `最終更新 ${time}`;
     } finally {
@@ -205,8 +245,21 @@
 
   refreshBtn?.addEventListener("click", refresh);
   window.refreshExternalInfo = refresh;
+  async function refreshQuakeOnly() {
+    try {
+      const data = await getJson(QUAKES_URL);
+      renderQuake(data);
+    } catch (error) {
+      if (quakeAlertEl) {
+        quakeAlertEl.hidden = true;
+        quakeAlertEl.textContent = "";
+      }
+    }
+  }
+  refreshQuakeOnly();
   if (!externalRoot || !externalRoot.hidden) refresh();
   setInterval(() => {
     if (!externalRoot || !externalRoot.hidden) refresh();
+    else refreshQuakeOnly();
   }, REFRESH_MS);
 })();

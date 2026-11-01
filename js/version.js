@@ -1238,5 +1238,12 @@ const CHANGELOG = [
     notes: [
       "外部情報タブにFrankfurterの為替レート、Open-Meteoの大気質・UV指数、Sunrise-Sunset.orgの日の出・日の入りを追加した"
     ]
+  },
+  {
+    version: "1.173.0",
+    date: "2026-11-02",
+    notes: [
+      "外部情報タブに日本の次の祝日、Bitcoin/Ethereum価格、宇宙ニュースを追加し、震度4以上の地震は全画面に警告表示するようにした。日の出日の入りAPIのレスポンス形式も修正した"
+    ]
   }
 ];
