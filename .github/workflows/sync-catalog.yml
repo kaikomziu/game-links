@@ -23,7 +23,7 @@ jobs:
         env:
           SUPABASE_URL: https://kifnzvktwbomxthzvvgy.supabase.co
           # anonキーは公開サイトにも含まれる読み取り用キー。Service Roleキーは使用しない。
-          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZm56dmt0d2JvbXh0aHp2dmd5IiwiaWF0IjoxNzc3ODM4MTM4LCJleHAiOjIwOTM0MTQxMzh9.M7nXP-u--6J_6rRpgz1cJj21_7KX6MtfTmZy77Xf_IE
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZm56dmt0d2JvbXh0aHp2dmd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzgxMzgsImV4cCI6MjA5MzQxNDEzOH0.M7nXP-u--6J_6rRpgz1cJj21_7KX6MtfTmZy77Xf_IE
         run: python3 tools/sync-catalog.py
 
       - name: 差分をコミットしてpush
