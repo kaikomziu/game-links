@@ -8,6 +8,7 @@ const GAMES = [
     id: "lite-messages",
     added: "2026-11-01",
     title: "LiteMessages",
+    author: "Codex AI",
     emoji: "💬",
     tags: ["ツール"],
     desc: "友だちとの会話をシンプルに楽しめるWebメッセージアプリ。@lite.m形式のログインIDとパスワードでアカウントを作成し、表示名と友だち追加用IDを設定できる。IDで友だちを追加するとリアルタイムでメッセージをやりとりでき、ブラウザー通知にも対応(通知の許可が必要)。PC・スマホから利用可能。",

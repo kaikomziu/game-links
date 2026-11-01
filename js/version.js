@@ -1203,5 +1203,12 @@ const CHANGELOG = [
     notes: [
       "友だちとメッセージをやりとりできるWebアプリ「LiteMessages」を追加した"
     ]
+  },
+  {
+    version: "1.168.0",
+    date: "2026-11-01",
+    notes: [
+      "「LiteMessages」の作者を「Codex AI」と表示するようにした"
+    ]
   }
 ];
