@@ -1231,5 +1231,12 @@ const CHANGELOG = [
     notes: [
       "地震・気温・週間予報・ITニュースを『外部情報』タブにまとめ、タブを開いたときだけ外部APIから読み込むようにした"
     ]
+  },
+  {
+    version: "1.172.0",
+    date: "2026-11-02",
+    notes: [
+      "外部情報タブにFrankfurterの為替レート、Open-Meteoの大気質・UV指数、Sunrise-Sunset.orgの日の出・日の入りを追加した"
+    ]
   }
 ];

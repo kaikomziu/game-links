@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="css/articles.css?v=2">
 <link rel="stylesheet" href="css/events.css?v=3">
 <link rel="stylesheet" href="css/halloween.css?v=2">
-<link rel="stylesheet" href="css/live-info.css?v=6">
+<link rel="stylesheet" href="css/live-info.css?v=7">
 <link rel="stylesheet" href="css/catalog.css?v=1">
 <link rel="stylesheet" href="css/polish.css?v=1">
 </head>
@@ -84,6 +84,23 @@
       <section class="external-panel news-panel">
         <h2 class="external-title">📰 ITニュース <small>Qiita新着</small></h2>
         <div class="news-list" data-live="news"><p class="external-loading" role="status">読み込み中…</p></div>
+      </section>
+    </div>
+    <div class="external-extra-grid">
+      <section class="external-panel" data-live-panel="exchange">
+        <h2 class="external-title">💱 為替レート <small>対日本円</small></h2>
+        <div class="external-data-list" data-live="exchange"><p class="external-loading" role="status">読み込み中…</p></div>
+        <p class="external-source">情報元: <a href="https://frankfurter.dev/" target="_blank" rel="noopener">Frankfurter</a></p>
+      </section>
+      <section class="external-panel" data-live-panel="air">
+        <h2 class="external-title">🌫️ 大気質・UV <small>市川市付近</small></h2>
+        <div class="external-data-list" data-live="air"><p class="external-loading" role="status">読み込み中…</p></div>
+        <p class="external-source">情報元: <a href="https://open-meteo.com/en/docs/air-quality-api" target="_blank" rel="noopener">Open-Meteo / CAMS</a></p>
+      </section>
+      <section class="external-panel" data-live-panel="sun">
+        <h2 class="external-title">🌅 太陽の時刻 <small>市川市付近</small></h2>
+        <div class="external-data-list" data-live="sun"><p class="external-loading" role="status">読み込み中…</p></div>
+        <p class="external-source">情報元: <a href="https://sunrise-sunset.org/api" target="_blank" rel="noopener">Sunrise-Sunset.org</a></p>
       </section>
     </div>
   </section>
@@ -1356,7 +1373,7 @@
 <script src="data/anniversaries.js"></script>
 <script src="data/trivia.js"></script>
 <script src="js/today.js"></script>
-<script src="js/live-info.js?v=5"></script>
+<script src="js/live-info.js?v=6"></script>
 <script src="js/version.js?v=5"></script>
 <script src="js/votes.js"></script>
 <script src="js/stats.js"></script>

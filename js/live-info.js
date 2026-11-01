@@ -4,6 +4,9 @@
   const QUAKES_URL = "https://api.p2pquake.net/v2/history?codes=551&limit=1";
   const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=35.7148&longitude=139.9341&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=7&timezone=Asia%2FTokyo";
   const NEWS_URL = "https://qiita.com/api/v2/items?per_page=5";
+  const AIR_URL = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=35.7148&longitude=139.9341&current=european_aqi,pm10,pm2_5,uv_index&timezone=Asia%2FTokyo";
+  const FX_URL = "https://api.frankfurter.dev/v2/rates?base=JPY&quotes=USD,EUR,GBP";
+  const SUN_URL = "https://api.sunrise-sunset.org/v2?lat=35.7148&lng=139.9341&tz=Asia%2FTokyo";
   const REFRESH_MS = 5 * 60 * 1000;
   const WEATHER_LABELS = {
     0: "快晴", 1: "晴れ", 2: "一部くもり", 3: "くもり", 45: "霧", 48: "霧",
@@ -21,6 +24,9 @@
   const weatherEl = root.querySelector("[data-live=weather]");
   const forecastEl = externalRoot?.querySelector("[data-live=forecast]");
   const newsEl = externalRoot?.querySelector("[data-live=news]");
+  const exchangeEl = externalRoot?.querySelector("[data-live=exchange]");
+  const airEl = externalRoot?.querySelector("[data-live=air]");
+  const sunEl = externalRoot?.querySelector("[data-live=sun]");
   const updatedEl = root.querySelector("[data-live=updated]");
   const refreshBtn = root.querySelector("[data-live-refresh]");
   let busy = false;
@@ -41,6 +47,7 @@
     if (weatherEl) weatherEl.textContent = "読み込み中…";
     if (forecastEl) forecastEl.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>";
     if (newsEl) newsEl.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>";
+    [exchangeEl, airEl, sunEl].forEach((el) => { if (el) el.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>"; });
     if (refreshBtn) refreshBtn.disabled = true;
   }
   function errorText(error) {
@@ -127,12 +134,47 @@
     }).join("");
   }
 
+  function renderExchange(items) {
+    if (!Array.isArray(items) || !items.length) throw new Error("為替情報がありません");
+    exchangeEl.innerHTML = items.map((item) => {
+      const yen = Number(item.rate) * 1000;
+      if (!Number.isFinite(yen)) return "";
+      return `<div class="external-data-row"><b>1,000円</b><span>≈ ${esc(yen.toFixed(2))} ${esc(item.quote)}</span></div>`;
+    }).join("") + `<small class="external-data-note">基準日: ${esc(items[0].date || "不明")}</small>`;
+  }
+
+  function aqiLabel(value) {
+    if (!Number.isFinite(value)) return "不明";
+    if (value <= 20) return "とても良い";
+    if (value <= 40) return "良い";
+    if (value <= 60) return "普通";
+    if (value <= 80) return "やや悪い";
+    if (value <= 100) return "悪い";
+    return "とても悪い";
+  }
+
+  function renderAir(data) {
+    const c = data && data.current;
+    if (!c || !Number.isFinite(c.european_aqi)) throw new Error("大気質情報の形式が不正");
+    airEl.innerHTML = `<div class="external-data-row"><b>欧州AQI</b><span>${esc(Math.round(c.european_aqi))} (${esc(aqiLabel(c.european_aqi))})</span></div><div class="external-data-row"><b>PM2.5</b><span>${esc(Number(c.pm2_5).toFixed(1))} μg/m³</span></div><div class="external-data-row"><b>UV指数</b><span>${esc(Number(c.uv_index).toFixed(1))}</span></div>`;
+  }
+
+  function timeText(value) {
+    const match = String(value || "").match(/T(\d{2}:\d{2})/);
+    return match ? match[1] : "--:--";
+  }
+
+  function renderSun(data) {
+    if (!data || data.status !== "OK") throw new Error("太陽情報の形式が不正");
+    sunEl.innerHTML = `<div class="external-data-row"><b>日の出</b><span>${esc(timeText(data.results?.sunrise))}</span></div><div class="external-data-row"><b>日の入り</b><span>${esc(timeText(data.results?.sunset))}</span></div><div class="external-data-row"><b>昼の長さ</b><span>${esc(Math.floor(Number(data.results?.day_length || 0) / 3600))}時間${esc(Math.floor((Number(data.results?.day_length || 0) % 3600) / 60))}分</span></div>`;
+  }
+
   async function refresh() {
     if (busy) return;
     busy = true;
     setLoading();
     try {
-      const results = await Promise.allSettled([getJson(QUAKES_URL), getJson(WEATHER_URL), getJson(NEWS_URL)]);
+      const results = await Promise.allSettled([getJson(QUAKES_URL), getJson(WEATHER_URL), getJson(NEWS_URL), getJson(AIR_URL), getJson(FX_URL), getJson(SUN_URL)]);
       const errors = [];
       if (results[0].status === "fulfilled") {
         try { renderQuake(results[0].value); } catch (e) { setError(quakeEl, "地震情報", e); errors.push("地震"); }
@@ -144,6 +186,15 @@
       if (results[2].status === "fulfilled") {
         try { renderNews(results[2].value); } catch (e) { setError(newsEl, "ニュース", e); errors.push("ニュース"); }
       } else { setError(newsEl, "ニュース", results[2].reason); errors.push("ニュース"); }
+      if (results[3].status === "fulfilled") {
+        try { renderAir(results[3].value); } catch (e) { setError(airEl, "大気質", e); errors.push("大気質"); }
+      } else { setError(airEl, "大気質", results[3].reason); errors.push("大気質"); }
+      if (results[4].status === "fulfilled") {
+        try { renderExchange(results[4].value); } catch (e) { setError(exchangeEl, "為替", e); errors.push("為替"); }
+      } else { setError(exchangeEl, "為替", results[4].reason); errors.push("為替"); }
+      if (results[5].status === "fulfilled") {
+        try { renderSun(results[5].value); } catch (e) { setError(sunEl, "太陽情報", e); errors.push("太陽情報"); }
+      } else { setError(sunEl, "太陽情報", results[5].reason); errors.push("太陽情報"); }
       const time = new Intl.DateTimeFormat("ja-JP", { hour: "2-digit", minute: "2-digit" }).format(new Date());
       updatedEl.textContent = errors.length ? `${errors.join("・")}の取得に失敗（${time}）` : `最終更新 ${time}`;
     } finally {
