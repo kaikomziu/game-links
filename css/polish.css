@@ -36,6 +36,8 @@ body { letter-spacing: .005em; }
 .external-title small { margin-left: auto; }
 .site-header { box-shadow: 0 5px 22px rgba(9,4,27,.28); }
 .header-inner { min-height: 58px; }
+.logo { width: 202px; height: 50px; margin: 0; flex: 0 0 202px; }
+.logo-image { display: block; width: 100%; height: 100%; object-fit: contain; }
 .search-input { transition: box-shadow .18s ease,border-color .18s ease; }
 .search-input:focus { border-color: var(--neon-cyan); }
 .view-tabs { padding: 3px; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb,var(--bg-elevated) 82%,transparent); }
@@ -50,6 +52,7 @@ body { letter-spacing: .005em; }
 .info-toggle:focus-visible,.sort-select:focus-visible,.toolbar-right select:focus-visible,.icon-btn:focus-visible,.view-tab:focus-visible,.tag-chip:focus-visible { outline: 3px solid var(--neon-cyan); outline-offset: 2px; }
 
 @media (max-width: 700px) {
+  .logo { width: 168px; height: 42px; flex-basis: 168px; }
   .container { padding: 9px 10px 28px; }
   .external-panel { padding: 10px; }
   .browse-bar { margin-right: -10px; margin-left: -10px; padding: 7px 10px; border-radius: 0 0 12px 12px; }
