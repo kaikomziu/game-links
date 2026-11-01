@@ -16,10 +16,11 @@
 
   const root = document.getElementById("liveInfo");
   if (!root) return;
+  const externalRoot = document.getElementById("externalInfo");
   const quakeEl = root.querySelector("[data-live=quake]");
   const weatherEl = root.querySelector("[data-live=weather]");
-  const forecastEl = root.querySelector("[data-live=forecast]");
-  const newsEl = root.querySelector("[data-live=news]");
+  const forecastEl = externalRoot?.querySelector("[data-live=forecast]");
+  const newsEl = externalRoot?.querySelector("[data-live=news]");
   const updatedEl = root.querySelector("[data-live=updated]");
   const refreshBtn = root.querySelector("[data-live-refresh]");
   let busy = false;
@@ -36,14 +37,24 @@
     return labels[scale] || "不明";
   }
   function setLoading() {
-    quakeEl.textContent = "読み込み中…";
-    weatherEl.textContent = "読み込み中…";
-    forecastEl.innerHTML = "<p class=\"external-loading\">読み込み中…</p>";
-    newsEl.innerHTML = "<p class=\"external-loading\">読み込み中…</p>";
-    refreshBtn.disabled = true;
+    if (quakeEl) quakeEl.textContent = "読み込み中…";
+    if (weatherEl) weatherEl.textContent = "読み込み中…";
+    if (forecastEl) forecastEl.innerHTML = "<p class=\"external-loading\">読み込み中…</p>";
+    if (newsEl) newsEl.innerHTML = "<p class=\"external-loading\">読み込み中…</p>";
+    if (refreshBtn) refreshBtn.disabled = true;
   }
-  function setError(el, label) {
-    el.innerHTML = `<span class="live-error">${esc(label)}を取得できませんでした</span>`;
+  function errorText(error) {
+    if (error?.name === "AbortError") return "応答がタイムアウトしました";
+    if (error instanceof TypeError) return "通信できません（接続またはAPIの制限を確認してください）";
+    const message = String(error?.message || "原因不明");
+    if (/^HTTP 429/.test(message)) return "アクセスが集中しています。少し待って再試行してください";
+    if (/^HTTP 5\d\d/.test(message)) return "情報元で一時的な障害が発生しています";
+    if (/^HTTP 4\d\d/.test(message)) return `情報元からエラーが返されました（${message}）`;
+    return message;
+  }
+  function setError(el, label, error) {
+    if (!el) return;
+    el.innerHTML = `<span class="live-error">${esc(label)}を取得できませんでした：${esc(errorText(error))}</span>`;
   }
 
   async function getJson(url) {
@@ -122,24 +133,26 @@
     setLoading();
     try {
       const results = await Promise.allSettled([getJson(QUAKES_URL), getJson(WEATHER_URL), getJson(NEWS_URL)]);
+      const errors = [];
       if (results[0].status === "fulfilled") {
-        try { renderQuake(results[0].value); } catch (e) { setError(quakeEl, "地震情報"); }
-      } else setError(quakeEl, "地震情報");
+        try { renderQuake(results[0].value); } catch (e) { setError(quakeEl, "地震情報", e); errors.push("地震"); }
+      } else { setError(quakeEl, "地震情報", results[0].reason); errors.push("地震"); }
       if (results[1].status === "fulfilled") {
-        try { renderWeather(results[1].value); renderForecast(results[1].value); } catch (e) { setError(weatherEl, "気温"); setError(forecastEl, "週間予報"); }
-      } else setError(weatherEl, "気温");
-      if (results[1].status !== "fulfilled") setError(forecastEl, "週間予報");
+        try { renderWeather(results[1].value); } catch (e) { setError(weatherEl, "気温", e); errors.push("気温"); }
+        try { renderForecast(results[1].value); } catch (e) { setError(forecastEl, "週間予報", e); errors.push("週間予報"); }
+      } else { setError(weatherEl, "気温", results[1].reason); setError(forecastEl, "週間予報", results[1].reason); errors.push("気温・週間予報"); }
       if (results[2].status === "fulfilled") {
-        try { renderNews(results[2].value); } catch (e) { setError(newsEl, "ニュース"); }
-      } else setError(newsEl, "ニュース");
-      updatedEl.textContent = `最終更新 ${new Intl.DateTimeFormat("ja-JP", { hour: "2-digit", minute: "2-digit" }).format(new Date())}`;
+        try { renderNews(results[2].value); } catch (e) { setError(newsEl, "ニュース", e); errors.push("ニュース"); }
+      } else { setError(newsEl, "ニュース", results[2].reason); errors.push("ニュース"); }
+      const time = new Intl.DateTimeFormat("ja-JP", { hour: "2-digit", minute: "2-digit" }).format(new Date());
+      updatedEl.textContent = errors.length ? `${errors.join("・")}の取得に失敗（${time}）` : `最終更新 ${time}`;
     } finally {
       busy = false;
-      refreshBtn.disabled = false;
+      if (refreshBtn) refreshBtn.disabled = false;
     }
   }
 
-  refreshBtn.addEventListener("click", refresh);
+  refreshBtn?.addEventListener("click", refresh);
   refresh();
   setInterval(refresh, REFRESH_MS);
 })();
