@@ -1,5 +1,7 @@
 /* ===== 地震・気温のライブ情報 ===== */
 .external-view { display: grid; gap: 8px; margin: 10px 0 18px; }
+body:not([data-view="external"]) #externalInfo { display: none !important; }
+body[data-view="external"] #externalInfo { display: grid !important; }
 body[data-view="external"] .tag-filter,
 body[data-view="external"] .toolbar-right,
 body[data-view="external"] .catalog-admin { display: none; }
