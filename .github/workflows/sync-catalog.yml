@@ -1,0 +1,39 @@
+name: Sync public catalog from Supabase
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-public-catalog
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Supabaseの公開作品を取得
+        env:
+          SUPABASE_URL: https://kifnzvktwbomxthzvvgy.supabase.co
+          # anonキーは公開サイトにも含まれる読み取り用キー。Service Roleキーは使用しない。
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZm56dmt0d2JvbXh0aHp2dmd5IiwiaWF0IjoxNzc3ODM4MTM4LCJleHAiOjIwOTM0MTQxMzh9.M7nXP-u--6J_6rRpgz1cJj21_7KX6MtfTmZy77Xf_IE
+        run: python3 tools/sync-catalog.py
+
+      - name: 差分をコミットしてpush
+        run: |
+          if git diff --quiet -- data/catalog.json; then
+            echo "カタログに変更はありません"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/catalog.json
+          git commit -m "Supabaseの公開作品カタログを同期"
+          git push

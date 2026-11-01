@@ -598,16 +598,11 @@ const Articles = (() => {
 
   // ---------- イベント ----------
   async function getPublicGames() {
-    const c = sb();
-    if (!c) throw new Error("no client");
-    const { data, error } = await c
-      .from("gl_games")
-      .select("id,added,kind,platform,action,title,emoji,tags,description,url,author")
-      .eq("published", true)
-      .order("added", { ascending: false })
-      .limit(200);
-    if (error) throw error;
-    return data || [];
+    const response = await fetch("data/catalog.json?v=1", { cache: "no-store" });
+    if (!response.ok) throw new Error(`catalog.json: ${response.status}`);
+    const data = await response.json();
+    if (!Array.isArray(data)) throw new Error("catalog.json is not an array");
+    return data;
   }
 
   function init() {

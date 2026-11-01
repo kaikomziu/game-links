@@ -103,8 +103,22 @@
       }
       A.closeModal(m);
       toast(`「${result.title}」を追加しました`);
-      loaded = false;
-      await load();
+      if (typeof window.refreshGameCatalog === "function") {
+        window.refreshGameCatalog([{
+          id: result.id,
+          added: new Date().toISOString().slice(0, 10),
+          kind: form.kind.value,
+          platform: form.platform.value,
+          action: form.action.value,
+          title: form.title.value,
+          emoji: form.emoji.value,
+          tags,
+          description: form.desc.value,
+          url: form.url.value,
+          author: form.author.value || A.getAdmin().name,
+        }].map(toGame));
+      }
+      loaded = true;
       renderBar();
     });
   }

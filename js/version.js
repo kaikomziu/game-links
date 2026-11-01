@@ -1189,5 +1189,12 @@ const CHANGELOG = [
     notes: [
       "ソフトの「Hizashi(日差し)」にAndroid版(試験版)ができたので、説明に書き足した。公式サイトからAPKをダウンロードして入れるだけで使える(Android 10以降)"
     ]
+  },
+  {
+    version: "1.166.0",
+    date: "2026-11-01",
+    notes: [
+      "Supabaseの公開作品カタログをGitHub Actionsで6時間ごとにdata/catalog.jsonへ同期し、公開側はGitHubのJSONを読むようにしてSupabaseの読み取り回数を節約した"
+    ]
   }
 ];
