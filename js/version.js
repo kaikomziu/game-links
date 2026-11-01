@@ -1196,5 +1196,12 @@ const CHANGELOG = [
     notes: [
       "Supabaseの公開作品カタログをGitHub Actionsで6時間ごとにdata/catalog.jsonへ同期し、公開側はGitHubのJSONを読むようにしてSupabaseの読み取り回数を節約した"
     ]
+  },
+  {
+    version: "1.167.0",
+    date: "2026-11-01",
+    notes: [
+      "友だちとメッセージをやりとりできるWebアプリ「LiteMessages」を追加した"
+    ]
   }
 ];
