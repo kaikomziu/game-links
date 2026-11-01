@@ -139,7 +139,7 @@ const EventsTab = (() => {
       bar.hidden = true;
       bar.innerHTML = "";
     }
-    if (!loaded && !loadError) { wrap.innerHTML = `<p class="ar-empty">読み込み中…</p>`; return; }
+    if (!loaded && !loadError) { wrap.innerHTML = `<p class="ar-empty ar-loading" role="status">読み込み中…</p>`; return; }
     if (loadError) { wrap.innerHTML = `<p class="ar-empty">イベントを読み込めませんでした。<button type="button" class="empty-switch" data-ev="reload">もう一度読み込む</button></p>`; return; }
 
     const q = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();

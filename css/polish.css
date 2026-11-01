@@ -1,0 +1,61 @@
+/* サイト全体の仕上げ */
+:root {
+  --radius: 14px;
+  --shadow: 0 8px 24px rgba(23, 10, 55, .11);
+}
+
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 11px;
+  color: #f8f4ff;
+  background: radial-gradient(ellipse at 50% 42%, #29155c 0, #10072d 48%, #09041b 100%);
+  transition: opacity .38s ease, visibility .38s ease;
+}
+.site-loader.is-hidden { opacity: 0; visibility: hidden; }
+.site-loader p { margin: 4px 0 0; font-family: var(--font-pixel); font-size: 1.2rem; letter-spacing: .12em; }
+.site-loader p strong { color: var(--neon-cyan); text-shadow: 0 0 15px rgba(24,213,255,.65); }
+.site-loader small { color: #aa9bcf; font: 600 .62rem/1 system-ui,sans-serif; letter-spacing: .24em; }
+.loader-machine { position: relative; display: grid; width: 80px; height: 80px; place-items: center; border: 2px solid rgba(24,213,255,.65); border-radius: 24px; background: linear-gradient(145deg,#23144c,#100827); box-shadow: 0 0 32px rgba(24,213,255,.2), inset 0 0 20px rgba(255,62,165,.18); }
+.loader-machine span { font-size: 2rem; animation: loader-bob 1.2s ease-in-out infinite; }
+.loader-machine i { position: absolute; inset: -7px; border: 2px solid transparent; border-top-color: var(--neon-pink); border-radius: 29px; animation: load-spin .9s linear infinite; }
+.loader-track { width: min(190px,55vw); height: 4px; margin-top: 8px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.12); }
+.loader-track i { display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg,var(--neon-pink),var(--neon-yellow),var(--neon-cyan)); animation: loader-progress 1.25s ease-in-out infinite; }
+@keyframes loader-progress { from { transform: translateX(-110%); } to { transform: translateX(250%); } }
+@keyframes loader-bob { 50% { transform: translateY(-4px) rotate(-5deg); } }
+
+body { letter-spacing: .005em; }
+.container { padding-top: 14px; }
+.live-info,.external-panel,.info-bar { border-radius: 14px; }
+.external-panel { padding: 12px; border-color: color-mix(in srgb,var(--neon-cyan) 27%,var(--cab-edge)); box-shadow: 0 5px 16px rgba(18,10,46,.12),inset 0 0 18px rgba(24,213,255,.07); }
+.external-title { display: flex; align-items: center; gap: 7px; min-height: 28px; padding-bottom: 7px; border-bottom: 1px solid rgba(145,205,227,.16); }
+.external-title small { margin-left: auto; }
+.site-header { box-shadow: 0 5px 22px rgba(9,4,27,.28); }
+.header-inner { min-height: 58px; }
+.search-input { transition: box-shadow .18s ease,border-color .18s ease; }
+.search-input:focus { border-color: var(--neon-cyan); }
+.view-tabs { padding: 3px; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb,var(--bg-elevated) 82%,transparent); }
+.view-tab { border-color: transparent; box-shadow: none; }
+.view-tab.active { box-shadow: 0 3px 12px rgba(255,62,165,.26); }
+.tag-chip { border-radius: 999px; transition: transform .15s ease,filter .15s ease; }
+.tag-chip:hover { transform: translateY(-1px); }
+.game-card.tile { backdrop-filter: blur(8px); }
+.tile .tile-emoji { filter: drop-shadow(0 2px 3px rgba(20,8,48,.18)); }
+.result-count { padding: 5px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg-elevated); }
+.info-toggle,.sort-select,.toolbar-right select { transition: border-color .15s ease,box-shadow .15s ease; }
+.info-toggle:focus-visible,.sort-select:focus-visible,.toolbar-right select:focus-visible,.icon-btn:focus-visible,.view-tab:focus-visible,.tag-chip:focus-visible { outline: 3px solid var(--neon-cyan); outline-offset: 2px; }
+
+@media (max-width: 700px) {
+  .container { padding: 9px 10px 28px; }
+  .external-panel { padding: 10px; }
+  .browse-bar { margin-right: -10px; margin-left: -10px; padding: 7px 10px; border-radius: 0 0 12px 12px; }
+  .game-card.tile { border-radius: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loader-machine span,.loader-machine i,.loader-track i { animation: none; }
+  .site-loader { transition: none; }
+}

@@ -39,8 +39,8 @@
   function setLoading() {
     if (quakeEl) quakeEl.textContent = "読み込み中…";
     if (weatherEl) weatherEl.textContent = "読み込み中…";
-    if (forecastEl) forecastEl.innerHTML = "<p class=\"external-loading\">読み込み中…</p>";
-    if (newsEl) newsEl.innerHTML = "<p class=\"external-loading\">読み込み中…</p>";
+    if (forecastEl) forecastEl.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>";
+    if (newsEl) newsEl.innerHTML = "<p class=\"external-loading\" role=\"status\">読み込み中…</p>";
     if (refreshBtn) refreshBtn.disabled = true;
   }
   function errorText(error) {

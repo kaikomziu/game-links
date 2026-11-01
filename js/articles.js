@@ -178,7 +178,7 @@ const Articles = (() => {
     }
     const q = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
     const items = list.filter((a) => !q || a.title.toLowerCase().includes(q) || (a.summary || "").toLowerCase().includes(q) || (a.body || "").toLowerCase().includes(q));
-    if (!loaded && !loadError) { wrap.innerHTML = `<p class="ar-empty">読み込み中…</p>`; return; }
+    if (!loaded && !loadError) { wrap.innerHTML = `<p class="ar-empty ar-loading" role="status">読み込み中…</p>`; return; }
     if (loadError) { wrap.innerHTML = `<p class="ar-empty">記事を読み込めませんでした。通信環境を確認して、<button type="button" class="empty-switch" data-ad="reload">もう一度読み込む</button></p>`; return; }
     if (!items.length) {
       wrap.innerHTML = `<p class="ar-empty">${list.length ? "該当する記事がありません。" : "まだ記事はありません。"}</p>`;
@@ -236,7 +236,7 @@ const Articles = (() => {
         </article>
         ${a.published === false ? "" : `<section class="cm" aria-label="コメント">
           <h3 class="cm-h">💬 コメント <span class="cm-count"></span></h3>
-          <ul class="cm-list"><li class="cm-empty">読み込み中…</li></ul>
+          <ul class="cm-list"><li class="cm-empty cm-loading" role="status">読み込み中…</li></ul>
           <form class="cm-form" autocomplete="off">
             <input class="ad-input" name="cname" maxlength="20" placeholder="名前(ニックネーム)" ${admin ? `value="${esc(admin.name)}" readonly` : ""} required>
             <textarea class="ad-input" name="cbody" rows="3" maxlength="500" placeholder="コメントを書く(500字まで)" required></textarea>
@@ -531,7 +531,7 @@ const Articles = (() => {
       <div class="rp-dialog ar-dialog ad-dialog" role="dialog" aria-modal="true" aria-label="管理者の管理">
         <button class="rp-close" data-ar-close aria-label="閉じる">×</button>
         <p class="ar-kicker">👥 管理者の管理</p>
-        <ul class="ad-list" id="adList"><li>読み込み中…</li></ul>
+        <ul class="ad-list" id="adList"><li class="ad-loading" role="status">読み込み中…</li></ul>
         <h3 class="ad-h">管理者を追加する</h3>
         <p class="ad-note">追加した人は、サイトを開いてキーボードで「admin」と入力し、渡されたパスワードでログインできます。</p>
         <form class="ad-form" id="adAddForm" autocomplete="off">
