@@ -153,6 +153,9 @@
   }
 
   refreshBtn?.addEventListener("click", refresh);
-  refresh();
-  setInterval(refresh, REFRESH_MS);
+  window.refreshExternalInfo = refresh;
+  if (!externalRoot || !externalRoot.hidden) refresh();
+  setInterval(() => {
+    if (!externalRoot || !externalRoot.hidden) refresh();
+  }, REFRESH_MS);
 })();

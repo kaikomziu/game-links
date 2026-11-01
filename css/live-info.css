@@ -1,4 +1,8 @@
 /* ===== 地震・気温のライブ情報 ===== */
+.external-view { display: grid; gap: 8px; margin: 10px 0 18px; }
+body[data-view="external"] .tag-filter,
+body[data-view="external"] .toolbar-right,
+body[data-view="external"] .catalog-admin { display: none; }
 .live-info {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;

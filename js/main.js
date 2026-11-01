@@ -1180,9 +1180,10 @@ favoriteOnlyCheck.addEventListener("change", () => {
 const grid = document.getElementById("gameGrid");
 const softGrid = document.getElementById("softGrid");
 const emptyMsg = document.getElementById("emptyMsg");
+const externalRoot = document.getElementById("externalInfo");
 
 // ===== 表示する区画(タブ): games = ゲーム / soft = ソフト・MOD =====
-const VIEWS = ["games", "soft", "events", "articles"];
+const VIEWS = ["games", "soft", "events", "articles", "external"];
 let currentView = VIEWS.includes(getCookie("view")) ? getCookie("view") : "games";
 const viewTabs = document.getElementById("viewTabs");
 function syncViewTabs() {
@@ -1311,6 +1312,7 @@ function render() {
   document.body.dataset.view = currentView; // 記事タブではジャンル・並び順などを隠す(CSS)
   grid.hidden = currentView !== "games";
   softGrid.hidden = currentView !== "soft";
+  externalRoot.hidden = currentView !== "external";
   document.getElementById("viewNote").hidden = currentView !== "soft";
 
   grid.innerHTML = "";
@@ -1331,7 +1333,7 @@ function render() {
     hideEventsView();
   }
 
-  if (currentView === "articles" || currentView === "events") {
+  if (currentView === "articles" || currentView === "events" || currentView === "external") {
     // 記事・イベントタブの空表示はそれぞれ側で出す
   } else if (viewList.length === 0) {
     const otherName = currentView === "soft" ? "ゲーム" : "ソフト・MOD";
@@ -1342,6 +1344,9 @@ function render() {
     emptyMsg.hidden = false;
   } else {
     emptyMsg.hidden = true;
+  }
+  if (currentView === "external" && typeof window.refreshExternalInfo === "function") {
+    window.refreshExternalInfo();
   }
   if (typeof refreshDetailIfOpen === "function") refreshDetailIfOpen();
 }
