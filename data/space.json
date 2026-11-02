@@ -1,0 +1,69 @@
+{
+  "count": 36740,
+  "next": "https://api.spaceflightnewsapi.net/v4/articles/?limit=3&offset=3",
+  "previous": null,
+  "results": [
+    {
+      "id": 40677,
+      "title": "ESA to Support Industry-Led Reusable Booster Flight Demonstrations",
+      "authors": [
+        {
+          "name": "European Spaceflight",
+          "socials": null
+        }
+      ],
+      "url": "https://europeanspaceflight.com/esa-to-support-industry-led-reusable-booster-flight-demonstrations/",
+      "image_url": "https://europeanspaceflight.com/wp-content/uploads/2026/11/ESA-to-Support-Industry-Led-Reusable-Booster-Flight-Demonstrations.webp",
+      "news_site": "European Spaceflight",
+      "summary": "The European Space Agency has announced plans to support industry-led flight demonstrations of reusable rocket first stages and boosters as part of a new phase of its Boosters for European Space Transportation (BEST!) initiative. On 27 October, ESA published a call for its BEST!2 Flight Demonstrations initiative, which is intended to “accelerate the development and […]\nThe post ESA to Support Industry-Led Reusable Booster Flight Demonstrations appeared first on European Spaceflight.",
+      "published_at": "2026-11-02T14:13:02Z",
+      "updated_at": "2026-11-02T14:20:16.150334Z",
+      "featured": false,
+      "launches": [],
+      "events": []
+    },
+    {
+      "id": 40676,
+      "title": "How to Expand Reliable, Flexible Access to Space",
+      "authors": [
+        {
+          "name": "Exolaunch",
+          "socials": null
+        }
+      ],
+      "url": "https://spacenews.com/how-to-expand-reliable-flexible-access-to-space/",
+      "image_url": "https://i0.wp.com/spacenews.com/wp-content/uploads/2026/10/SpaceNews_AD-1-1.png?fit=1024%2C794&ssl=1",
+      "news_site": "SpaceNews",
+      "summary": "\nThe space industry launched more rockets into orbit last year than ever before, yet satellite operators are confronting an unexpected problem: There still aren’t enough rides to go around. And […]\nThe post How to Expand Reliable, Flexible Access to Space appeared first on SpaceNews.",
+      "published_at": "2026-11-02T14:00:00Z",
+      "updated_at": "2026-11-02T14:10:37.299126Z",
+      "featured": false,
+      "launches": [],
+      "events": []
+    },
+    {
+      "id": 40675,
+      "title": "CubeSat achieves challenging laser link to ground",
+      "authors": [
+        {
+          "name": "ESA",
+          "socials": null
+        }
+      ],
+      "url": "https://www.esa.int/Applications/Connectivity_and_Secure_Communications/CubeSat_achieves_challenging_laser_link_to_ground",
+      "image_url": "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2026/11/illustration_of_three_ermis_technology_demonstration_cubesats_in_orbit/27596682-1-eng-GB/Illustration_of_three_ERMIS_technology_demonstration_CubeSats_in_orbit_card_full.jpg",
+      "news_site": "ESA",
+      "summary": "Despite it being a complex operation, ERMIS-3, an 8U CubeSat developed by the National and Kapodistrian University of Athens, has established a link with an optical ground station marking an important step in validating optical communications on small satellites. The demonstration, supported by the European Space Agency (ESA) and achieved using optical terminals developed by Lithuanian company Astrolight, happened only weeks after the satellite’s commissioning.",
+      "published_at": "2026-11-02T08:55:00Z",
+      "updated_at": "2026-11-02T14:29:17.502285Z",
+      "featured": false,
+      "launches": [
+        {
+          "launch_id": "fd4ba54a-df30-4318-a79b-2f9d6a38acc5",
+          "provider": "Launch Library 2"
+        }
+      ],
+      "events": []
+    }
+  ]
+}

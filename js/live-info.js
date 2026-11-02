@@ -10,6 +10,8 @@
   const HOLIDAY_URL = "https://date.nager.at/api/v3/NextPublicHolidays/JP";
   const CRYPTO_URL = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=jpy";
   const SPACE_URL = "https://api.spaceflightnewsapi.net/v4/articles/?limit=3";
+  const HOLIDAY_BACKUP_URL = "data/holiday.json";
+  const SPACE_BACKUP_URL = "data/space.json";
   const REFRESH_MS = 5 * 60 * 1000;
   const WEATHER_LABELS = {
     0: "快晴", 1: "晴れ", 2: "一部くもり", 3: "くもり", 45: "霧", 48: "霧",
@@ -80,6 +82,15 @@
       return await response.json();
     } finally {
       clearTimeout(timer);
+    }
+  }
+
+  async function getJsonWithFallback(url, fallbackUrl) {
+    try {
+      return await getJson(url);
+    } catch (primaryError) {
+      if (!fallbackUrl) throw primaryError;
+      return getJson(fallbackUrl);
     }
   }
 
@@ -205,7 +216,17 @@
     busy = true;
     setLoading();
     try {
-      const results = await Promise.allSettled([getJson(QUAKES_URL), getJson(WEATHER_URL), getJson(NEWS_URL), getJson(AIR_URL), getJson(FX_URL), getJson(SUN_URL)]);
+      const results = await Promise.allSettled([
+        getJson(QUAKES_URL),
+        getJson(WEATHER_URL),
+        getJson(NEWS_URL),
+        getJson(AIR_URL),
+        getJson(FX_URL),
+        getJson(SUN_URL),
+        getJsonWithFallback(HOLIDAY_URL, HOLIDAY_BACKUP_URL),
+        getJson(CRYPTO_URL),
+        getJsonWithFallback(SPACE_URL, SPACE_BACKUP_URL),
+      ]);
       const errors = [];
       if (results[0].status === "fulfilled") {
         try { renderQuake(results[0].value); } catch (e) { setError(quakeEl, "地震情報", e); errors.push("地震"); }
