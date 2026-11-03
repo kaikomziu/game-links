@@ -47,6 +47,16 @@
     }
     return v;
   }
+  // このブラウザ(端末)の識別子。クラウドセーブを最後に書いたのが自分かどうかの判定に使う
+  function deviceId() {
+    let v = store.get("ka_device");
+    if (!v || v.length < 16) {
+      try { v = Array.from(crypto.getRandomValues(new Uint8Array(12)), (x) => x.toString(16).padStart(2, "0")).join(""); }
+      catch (e) { v = (Math.random().toString(16).slice(2) + Date.now().toString(16)).padEnd(24, "0"); }
+      store.set("ka_device", v);
+    }
+    return v;
+  }
   // 文字列の軽いハッシュ(cyrb53)。改ざん防止ではなく「中身が変わったか」の比較用
   function hashStr(str) {
     let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
@@ -418,7 +428,7 @@
     if (!force && h === lastPushedHash) return;
     pushing = true; setStatus("syncing");
     try {
-      const r = await call("ka_save_put", { p_game: syncGame, p_data: snap, p_hash: h, p_base_hash: store.get(syncKey("base")), p_force: !!force }, { keepalive: JSON.stringify(snap).length < 60000 });
+      const r = await call("ka_save_put", { p_game: syncGame, p_data: snap, p_hash: h, p_base_hash: store.get(syncKey("base")), p_device: deviceId(), p_force: !!force }, { keepalive: JSON.stringify(snap).length < 60000 });
       if (r && r.ok) { store.set(syncKey("base"), h); lastPushedHash = h; conflictCloud = null; setStatus("ok"); }
       else if (r && r.reason === "conflict") { conflictCloud = { hash: r.cloud_hash, updated_at: r.cloud_updated_at }; setStatus("conflict"); }
       else if (r && r.reason === "toolarge") { setStatus("error"); toast("セーブデータが大きすぎて、クラウドに保存できません"); }
@@ -490,8 +500,10 @@
       store.set(syncKey("base"), r.hash); lastPushedHash = lh; setStatus("ok");
     } else if (localEmpty || (base && lh === base)) {
       applyCloud(r.data, r.hash);                    // クラウドだけが進んでいる(または端末が空) → 取り込む
-    } else if (base && r.hash === base) {
-      await pushNow(false);                          // 端末だけが進んでいる → クラウドへ
+    } else if (r.device === deviceId() || (base && r.hash === base)) {
+      // クラウドを最後に書いたのがこの端末(画面を閉じる瞬間の保存は応答を受け取れず、基準がずれることがある)、
+      // またはクラウドが前回のまま → 端末だけが進んでいるので、クラウドへ
+      await pushNow(false);
     } else {
       setStatus("conflict");                         // どちらも変わっている/初めての接続 → ユーザーに聞く
       if (!document.querySelector(".ka-overlay")) resolveConflict();
