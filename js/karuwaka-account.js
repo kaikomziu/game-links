@@ -120,9 +120,30 @@
 .ka-x{position:absolute;top:8px;right:10px;width:30px;height:30px;font-size:20px;color:#ccd;background:none;border:none;cursor:pointer}
 .ka-h{margin:0 0 4px;font-size:17px}
 .ka-sub{margin:0 0 10px;font-size:12px;color:#aab}
-.ka-tabs{display:flex;gap:6px;margin:8px 0 12px}
-.ka-tab{flex:1;padding:7px;font:700 13px system-ui,sans-serif;color:#eef;background:#120e33;border:2px solid #3a2f80;border-radius:8px;cursor:pointer}
+.ka-tabs{display:flex;gap:8px;margin:10px 0 12px}
+.ka-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 6px;font:700 13px system-ui,"Yu Gothic UI",sans-serif;color:#cfd0ff;background:#120e33;border:2px solid #3a2f80;border-radius:10px;cursor:pointer}
+.ka-tab small{font-weight:400;font-size:11px;opacity:.85}
 .ka-tab.on{background:#ff3ea5;border-color:#ffd0ea;color:#fff}
+.ka-benefits{margin:6px 0 4px;padding:8px 12px 8px 12px;list-style:none;font-size:13px;background:#120e33;border-radius:10px;border:1px solid #3a2f80}
+.ka-benefits li{margin:3px 0}
+.ka-benefits b{color:#ffd23f}
+.ka-step{display:flex;align-items:center;gap:8px;margin:6px 0 0;font-weight:700;font-size:14px}
+.ka-step span{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;font-size:12px;color:#fff;background:#ff3ea5;border-radius:50%}
+.ka-help{display:block;margin:0 0 4px;font-size:12px;font-weight:400;color:#aab;line-height:1.55}
+.ka-help b{color:#ffd23f}
+.ka-live{margin:0;min-height:1.2em;font-size:12px;font-weight:700;color:#99a}
+.ka-live.ok{color:#7dffb0}
+.ka-live.ng{color:#ff9a9a}
+.ka-warn{margin:2px 0;padding:7px 10px;font-size:12px;line-height:1.6;color:#ffe9a8;background:#3a2f10;border:1px solid #7a6020;border-radius:8px}
+.ka-pw{display:flex;gap:6px}
+.ka-pw .ka-input{flex:1;min-width:0}
+.ka-eye{flex:0 0 auto;padding:0 12px;font:700 12px system-ui,"Yu Gothic UI",sans-serif;color:#eef;background:#2a2070;border:2px solid #5a48c0;border-radius:8px;cursor:pointer}
+.ka-trouble{margin-top:10px;font-size:12px;color:#aab}
+.ka-trouble summary{cursor:pointer;font-weight:700;color:#8fd0ff}
+.ka-trouble ul{margin:6px 0 0;padding-left:18px;line-height:1.7}
+.ka-btn.big{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:10px 14px;border-radius:12px;text-align:left}
+.ka-btn.big small{font-weight:400;font-size:11px;opacity:.9;line-height:1.5}
+.ka-login-pill{width:auto!important;padding:0 12px!important;font-size:.78rem!important;font-weight:700;border-radius:999px!important;white-space:nowrap}
 .ka-form{display:flex;flex-direction:column;gap:9px}
 .ka-label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:700;color:#aab}
 .ka-input{width:100%;padding:9px 11px;font:15px system-ui,"Yu Gothic UI",sans-serif;color:#fff;background:#0d0a26;border:2px solid #3a2f80;border-radius:8px}
@@ -155,13 +176,13 @@
 `;
     (document.head || document.documentElement).appendChild(st);
   }
-  function toast(msg) {
+  function toast(msg, ms = 3200) {
     injectCss();
     const t = document.createElement("div");
     t.className = "ka-toast";
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3200);
+    setTimeout(() => t.remove(), ms);
   }
   function overlay(html, onClose) {
     injectCss();
@@ -180,50 +201,121 @@
   }
 
   const REASONS = {
-    username: "ユーザー名は半角の英小文字・数字・「_」「-」で3〜16文字にしてください。",
-    password: "パスワードは8〜72文字にしてください。",
+    username: "ユーザー名は、半角の英小文字・数字・「_」「-」で、3〜16文字にしてください。(例: karuwaka_123)",
+    password: "パスワードは、8文字以上にしてください。",
     display: "表示名は1〜20文字にしてください。",
     avatar: "アイコンは絵文字1つを選んでください。",
-    taken: "そのユーザー名はすでに使われています。",
-    rate: "短い間に作りすぎです。しばらくしてからお試しください。",
-    invalid: "ユーザー名かパスワードが違います。",
-    locked: "失敗が続いたため、しばらくしてからもう一度お試しください。",
+    taken: "そのユーザー名は、すでに使われています。別の名前にしてください。",
+    rate: "短い時間にたくさん作りすぎです。しばらくしてからもう一度どうぞ。",
+    invalid: "ユーザー名かパスワードが違います。ユーザー名は、表示名ではなく、登録のときに決めた半角の名前です。",
+    locked: "ログインの失敗が続いたため、いったん止めています。10分ほどしてから、もう一度お試しください。",
     client: "登録できませんでした。ページを読み込み直してください。",
   };
   const NETERR = "通信に失敗しました。もう一度お試しください。";
 
   // ---------- パネル: ログイン / 新規登録 ----------
+  // はじめての人にも迷わないよう、「はじめての人(作る)」と「持っている人(ログイン)」に分け、
+  // 入力欄ごとに何を書くかを説明し、入力しながらその場で使えるかどうかを知らせる。
+  const USER_RE = /^[a-z0-9_-]{3,16}$/;
   function openAuth(tab, onClose) {
     const o = overlay(`
       <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
       <h2 class="ka-h">かるわかGAMES アカウント</h2>
-      <p class="ka-sub">1つ作れば、かるわかGAMESのいろんなゲームで使えます。セーブデータを保存して、別の端末でも続きから遊べます。</p>
-      <div class="ka-tabs"><button type="button" class="ka-tab" data-t="login">ログイン</button><button type="button" class="ka-tab" data-t="register">新規登録</button></div>
+      <ul class="ka-benefits">
+        <li>🎮 1つ作れば、かるわかGAMESの<b>たくさんのゲーム</b>で使える</li>
+        <li>☁ セーブデータが保存されて、<b>別の端末でも続き</b>から遊べる</li>
+        <li>🆓 無料で、<b>メールアドレスは不要</b></li>
+      </ul>
+      <div class="ka-tabs">
+        <button type="button" class="ka-tab" data-t="register"><b>🆕 はじめての人</b><small>アカウントを作る</small></button>
+        <button type="button" class="ka-tab" data-t="login"><b>🔑 持っている人</b><small>ログインする</small></button>
+      </div>
       <form class="ka-form" autocomplete="on">
-        <label class="ka-label">ユーザー名<input class="ka-input" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="16" required></label>
-        <label class="ka-label ka-reg">表示名(ゲームで見える名前・あとで変えられます)<input class="ka-input" name="display" maxlength="20" autocomplete="nickname" placeholder="空ならユーザー名"></label>
-        <label class="ka-label">パスワード<input class="ka-input" name="password" type="password" maxlength="72" required></label>
-        <p class="ka-note ka-reg">ユーザー名は半角の英小文字・数字・「_」「-」で3〜16文字、パスワードは8文字以上。パスワードを忘れると自分では復旧できません(ブラウザのパスワード保存を使うのがおすすめです)。</p>
+        <div class="ka-step ka-reg"><span>1</span>ユーザー名を決める</div>
+        <label class="ka-label"><span class="ka-lab-login">ユーザー名</span>
+          <small class="ka-help ka-reg">ログインに使う名前です。半角の英小文字・数字・ _ - で3〜16文字。<b>あとから変更できません。</b></small>
+          <small class="ka-help ka-log">登録のときに決めた名前です。(ゲームの中で見える「表示名」ではありません)</small>
+          <input class="ka-input" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="16" placeholder="例: karuwaka_123" required></label>
+        <p class="ka-live ka-reg" data-live="user"></p>
+        <div class="ka-step ka-reg"><span>2</span>表示名を決める</div>
+        <label class="ka-label ka-reg">
+          <small class="ka-help">ゲームの中で、ほかの人に見える名前です。日本語もOK。あとで変えられます。</small>
+          <input class="ka-input" name="display" maxlength="20" autocomplete="nickname" placeholder="例: かるわか(空なら、ユーザー名と同じ)"></label>
+        <div class="ka-step ka-reg"><span>3</span>パスワードを決める</div>
+        <label class="ka-label"><span class="ka-lab-login">パスワード</span>
+          <small class="ka-help ka-reg">8文字以上。ほかのサイトと同じものは避けましょう。</small>
+          <span class="ka-pw"><input class="ka-input" name="password" type="password" maxlength="72" placeholder="8文字以上" required><button type="button" class="ka-eye" data-eye aria-label="パスワードを表示する">表示</button></span></label>
+        <p class="ka-live ka-reg" data-live="pw"></p>
+        <p class="ka-warn ka-reg">⚠ パスワードを忘れると、自分では元に戻せません。ブラウザの「パスワードを保存」を使うか、メモしておいてください。</p>
         <p class="ka-err" role="alert"></p>
         <div class="ka-row"><button type="button" class="ka-btn" data-ka-close>キャンセル</button><button type="submit" class="ka-btn pri"></button></div>
+        <details class="ka-trouble ka-log"><summary>ログインできないとき</summary>
+          <ul>
+            <li>「ユーザー名」は、表示名ではなく、登録のときに決めた半角の名前です。</li>
+            <li>まだアカウントがないなら、上の「はじめての人」から作れます。</li>
+            <li>パスワードを忘れたときは、自分では戻せません。かるわかに連絡してもらえれば、再設定できます。</li>
+          </ul></details>
       </form>`, onClose);
     const form = o.querySelector("form");
     const err = o.querySelector(".ka-err");
+    const liveUser = o.querySelector('[data-live="user"]'), livePw = o.querySelector('[data-live="pw"]');
     let mode = tab === "register" ? "register" : "login";
     const apply = () => {
       o.querySelectorAll(".ka-tab").forEach((b) => b.classList.toggle("on", b.dataset.t === mode));
       o.querySelectorAll(".ka-reg").forEach((e) => { e.style.display = mode === "register" ? "" : "none"; });
+      o.querySelectorAll(".ka-log").forEach((e) => { e.style.display = mode === "login" ? "" : "none"; });
+      o.querySelectorAll(".ka-lab-login").forEach((e) => { e.style.display = mode === "login" ? "" : "none"; });
+      o.querySelector(".ka-benefits").style.display = mode === "register" ? "" : "none";
       form.password.autocomplete = mode === "register" ? "new-password" : "current-password";
-      form.querySelector("button[type=submit]").textContent = mode === "register" ? "アカウントを作る" : "ログイン";
+      form.querySelector("button[type=submit]").textContent = mode === "register" ? "アカウントを作る" : "ログインする";
       err.textContent = "";
     };
-    o.querySelectorAll(".ka-tab").forEach((b) => b.addEventListener("click", () => { mode = b.dataset.t; apply(); }));
+    o.querySelectorAll(".ka-tab").forEach((b) => b.addEventListener("click", () => { mode = b.dataset.t; apply(); form.username.focus(); }));
     apply();
     setTimeout(() => form.username.focus(), 50);
+
+    // パスワードの表示/非表示
+    o.querySelector("[data-eye]").addEventListener("click", (e) => {
+      const show = form.password.type === "password";
+      form.password.type = show ? "text" : "password";
+      e.target.textContent = show ? "隠す" : "表示";
+      e.target.setAttribute("aria-label", show ? "パスワードを隠す" : "パスワードを表示する");
+    });
+    // 入力しながら、その場で知らせる
+    let userTimer = null, userSeq = 0;
+    const setLive = (el, ok, text) => { el.textContent = text; el.className = "ka-live ka-reg " + (ok === null ? "" : ok ? "ok" : "ng"); el.style.display = mode === "register" ? "" : "none"; };
+    form.username.addEventListener("input", () => {
+      clearTimeout(userTimer);
+      const v = form.username.value.trim();
+      if (!v) { setLive(liveUser, null, ""); return; }
+      if (/[A-Z]/.test(v)) { setLive(liveUser, false, "✗ 大文字は使えません(小文字にしてください)"); return; }
+      if (/[^a-z0-9_-]/.test(v)) { setLive(liveUser, false, "✗ 使えない文字があります(半角の英小文字・数字・ _ - だけ)"); return; }
+      if (v.length < 3) { setLive(liveUser, false, `✗ あと${3 - v.length}文字以上、入れてください(3〜16文字)`); return; }
+      setLive(liveUser, null, "確認中…");
+      const seq = ++userSeq;
+      userTimer = setTimeout(async () => {
+        try {
+          const r = await rpc("ka_username_available", { p_username: v });
+          if (seq !== userSeq) return;
+          setLive(liveUser, !!r, r ? "✓ このユーザー名は使えます" : "✗ このユーザー名は、すでに使われています");
+        } catch (e) { if (seq === userSeq) setLive(liveUser, null, ""); }
+      }, 400);
+    });
+    form.password.addEventListener("input", () => {
+      const n = form.password.value.length;
+      if (!n) { setLive(livePw, null, ""); return; }
+      setLive(livePw, n >= 8, n >= 8 ? "✓ OK" : `✗ あと${8 - n}文字以上、入れてください`);
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = form.querySelector("button[type=submit]");
-      btn.disabled = true; err.textContent = "";
+      err.textContent = "";
+      if (mode === "register") {
+        if (!USER_RE.test(form.username.value.trim())) { err.textContent = REASONS.username; form.username.focus(); return; }
+        if (form.password.value.length < 8) { err.textContent = REASONS.password; form.password.focus(); return; }
+      }
+      btn.disabled = true;
       let r;
       try {
         r = mode === "register"
@@ -234,7 +326,7 @@
       if (!r || !r.ok) { err.textContent = REASONS[r && r.reason] || "うまくいきませんでした。"; return; }
       setSession({ token: r.token, profile: r.profile });
       o._close(); // フォームをDOMから消す(パスワードマネージャーが保存を提案しやすくなる)
-      toast(mode === "register" ? "アカウントを作りました" : "ログインしました");
+      toast(mode === "register" ? `🎉 アカウントを作りました！ ユーザー名は「${r.profile.username}」です` : `ログインしました(${r.profile.display_name})`, mode === "register" ? 7000 : 3200);
       startSync(true);
     });
   }
@@ -357,13 +449,15 @@
   function renderButtons() {
     if (badge) { badge.textContent = badgeText(); badge.classList.toggle("warn", session && syncStatus === "conflict"); }
     if (portalBtn) {
-      portalBtn.textContent = session ? session.profile.avatar : "👤";
+      portalBtn.textContent = session ? session.profile.avatar : "👤 ログイン";
+      portalBtn.classList.toggle("ka-login-pill", !session);
       portalBtn.title = session ? `${session.profile.display_name} (@${session.profile.username}) のアカウント` : "かるわかGAMESアカウントでログイン";
     }
   }
   function mountButtons() {
     if (!script) return;
     if (script.hasAttribute("data-portal")) {
+      injectCss(); // ヘッダーのボタンの見た目(ログインのときは文字つき)を先に読み込む
       const anchor = document.getElementById("randomPickBtn");
       if (anchor && !document.getElementById("kaAccountBtn")) {
         portalBtn = document.createElement("button");
@@ -593,14 +687,15 @@
       const finish = (v) => { if (!done) { done = true; resolve(v); } };
       const o = overlay(`
         <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
-        <h2 class="ka-h">はじめてのログインです</h2>
-        <p class="ka-sub">「${esc(r.display || (session && session.profile.display_name) || "")}」でログインしました。このゲームを遊ぶのは初めてですか？</p>
+        <h2 class="ka-h">このゲームは、はじめてですか？</h2>
+        <p class="ka-sub">「${esc(r.display || (session && session.profile.display_name) || "")}」でログインしました。次のどれかを選んでください。</p>
         <div class="ka-form" data-step="choice">
-          <button type="button" class="ka-btn pri" data-pick="new">はじめて遊ぶ(新しく始める)</button>
-          ${hasSession ? `<button type="button" class="ka-btn" data-pick="current">いまのデータを引き継ぐ(ゲスト・ログイン中のアカウント)</button>` : ""}
-          <button type="button" class="ka-btn" data-pick="legacy">以前のアカウントを引き継ぐ(${esc(opts.idLabel || "ID")}とパスワード)</button>
+          <button type="button" class="ka-btn big pri" data-pick="new"><b>🆕 はじめて遊ぶ</b><small>新しく始めます</small></button>
+          ${hasSession ? `<button type="button" class="ka-btn big" data-pick="current"><b>📱 いま使っているデータを引き継ぐ</b><small>ゲストや、いまログイン中のアカウントのデータを、そのまま使います</small></button>` : ""}
+          <button type="button" class="ka-btn big" data-pick="legacy"><b>🔁 以前作ったアカウントを引き継ぐ</b><small>このゲーム専用に作った${esc(opts.idLabel || "ID")}とパスワードを入れると、データをそのまま使えます</small></button>
         </div>
         <form class="ka-form" data-step="legacy" style="display:none" autocomplete="off">
+          <p class="ka-help">以前このゲームで使っていた、${esc(opts.idLabel || "ID")}とパスワードです。</p>
           <label class="ka-label">${esc(opts.idLabel || "ID")}<input class="ka-input" name="lid" autocomplete="off" required></label>
           <label class="ka-label">パスワード<input class="ka-input" name="lpw" type="password" autocomplete="off" required></label>
           <div class="ka-row"><button type="button" class="ka-btn" data-pick="back">戻る</button><button type="submit" class="ka-btn pri">引き継ぐ</button></div>
