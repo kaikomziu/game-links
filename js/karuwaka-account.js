@@ -556,6 +556,8 @@
     onChange: (f) => { listeners.add(f); return () => listeners.delete(f); },
     openPanel,
     login: (tab) => openAuth(tab === "register" ? "register" : "login"),
+    // ログアウト(サーバーのセッションも消す)
+    logout: async () => { try { await call("ka_logout", {}); } catch (e) {} setSession(null); },
     // ログイン中のトークン。ゲーム自身のサーバー(RPCやSocket.io)に渡して、サーバー側で ka_whoami で確かめてもらう用
     token: () => (session ? session.token : null),
     // ログインしていなければログイン画面を出し、ログインできたら(閉じたらnull)プロフィールを返す
