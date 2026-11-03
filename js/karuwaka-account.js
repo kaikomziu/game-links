@@ -549,7 +549,110 @@
   const boot = () => { mountButtons(); ready.then(() => { if (syncGame) startSync(false); }); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 
+  // ---------- Supabase Auth を使うゲーム向け: かるわかGAMESアカウントでログインして、そのゲームのSupabaseセッションを得る ----------
+  // 橋渡し(Edge Function ka-auth-bridge)が、かるわかGAMESアカウントに紐づいたSupabaseユーザーのセッションを発行する。
+  // ゲーム側のデータ(auth.uid() で守られたテーブル)はそのまま使える。ゲームごとに別ユーザー(アプリ名 app で区別)。
+  const BRIDGE_ERR = {
+    KA_USED: "このかるわかGAMESアカウントは、すでにこのゲームの別のアカウントと紐づいています。",
+    ALREADY_LINKED: "そのアカウントは、すでに別のかるわかGAMESアカウントに引き継がれています。",
+    LOCKED: "失敗が続いたため、しばらくしてからお試しください。",
+    BAD_LOGIN: "IDかパスワードが違います。",
+    AUTH: "かるわかGAMESのログインの有効期限が切れました。もう一度ログインしてください。",
+  };
+  async function bridge(app, action, legacy) {
+    const res = await fetch(`${URL_BASE}/functions/v1/ka-auth-bridge`, {
+      method: "POST",
+      headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ action, app, ka_token: session ? session.token : null, legacy }),
+    });
+    let j = null;
+    try { j = await res.json(); } catch (e) {}
+    if (!j) throw new Error("bridge " + res.status);
+    if (j.error === "AUTH" && session) setSession(null);
+    return j;
+  }
+  async function applySupabaseSession(client, s) {
+    const { error } = await client.auth.setSession({ access_token: s.access_token, refresh_token: s.refresh_token });
+    return !error;
+  }
+  // opts: { app, supabase(クライアント), idLabel('メールアドレス'など), toEmail(入力→メール。省略時はそのまま) }
+  // 戻り値: true(ログインできた) / false(閉じた・失敗)
+  async function supabaseLogin(opts) {
+    const { app, supabase: client } = opts;
+    const toEmail = opts.toEmail || ((s) => s);
+    if (!(await requireLogin())) return false;
+    let r;
+    try { r = await bridge(app, "status"); } catch (e) { toast("通信に失敗しました。もう一度お試しください"); return false; }
+    if (!r.ok) { toast(BRIDGE_ERR[r.error] || "ログインできませんでした"); return false; }
+    if (r.linked) return applySupabaseSession(client, r.session);
+    // 初めて: 新しく始めるか、以前のアカウントを引き継ぐか
+    let hasSession = false;
+    try { hasSession = !!(await client.auth.getSession()).data.session; } catch (e) {}
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = (v) => { if (!done) { done = true; resolve(v); } };
+      const o = overlay(`
+        <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
+        <h2 class="ka-h">はじめてのログインです</h2>
+        <p class="ka-sub">「${esc(r.display || (session && session.profile.display_name) || "")}」でログインしました。このゲームを遊ぶのは初めてですか？</p>
+        <div class="ka-form" data-step="choice">
+          <button type="button" class="ka-btn pri" data-pick="new">はじめて遊ぶ(新しく始める)</button>
+          ${hasSession ? `<button type="button" class="ka-btn" data-pick="current">いまのデータを引き継ぐ(ゲスト・ログイン中のアカウント)</button>` : ""}
+          <button type="button" class="ka-btn" data-pick="legacy">以前のアカウントを引き継ぐ(${esc(opts.idLabel || "ID")}とパスワード)</button>
+        </div>
+        <form class="ka-form" data-step="legacy" style="display:none" autocomplete="off">
+          <label class="ka-label">${esc(opts.idLabel || "ID")}<input class="ka-input" name="lid" autocomplete="off" required></label>
+          <label class="ka-label">パスワード<input class="ka-input" name="lpw" type="password" autocomplete="off" required></label>
+          <div class="ka-row"><button type="button" class="ka-btn" data-pick="back">戻る</button><button type="submit" class="ka-btn pri">引き継ぐ</button></div>
+        </form>
+        <p class="ka-err" role="alert"></p>`, () => finish(false));
+      const err = o.querySelector(".ka-err");
+      const choice = o.querySelector('[data-step="choice"]'), legacyForm = o.querySelector('[data-step="legacy"]');
+      const run = async (action, legacy) => {
+        err.textContent = "";
+        o.querySelectorAll("button").forEach((b) => { b.disabled = true; });
+        let res;
+        try { res = await bridge(app, action, legacy); } catch (e) { res = { ok: false, error: "NET" }; }
+        o.querySelectorAll("button").forEach((b) => { b.disabled = false; });
+        if (!res.ok) { err.textContent = BRIDGE_ERR[res.error] || NETERR; return; }
+        if (!(await applySupabaseSession(client, res.session))) { err.textContent = "ログインに失敗しました。もう一度お試しください。"; return; }
+        finish(true); o._close();
+      };
+      o.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-pick]");
+        if (!b) return;
+        const p = b.dataset.pick;
+        if (p === "new") run("create");
+        else if (p === "legacy") { choice.style.display = "none"; legacyForm.style.display = ""; legacyForm.lid.focus(); }
+        else if (p === "back") { legacyForm.style.display = "none"; choice.style.display = ""; err.textContent = ""; }
+        else if (p === "current") {
+          client.auth.getSession().then(({ data }) => { if (data.session) run("link", { jwt: data.session.access_token }); });
+        }
+      });
+      legacyForm.addEventListener("submit", (e) => { e.preventDefault(); run("link", { email: toEmail(legacyForm.lid.value.trim()), password: legacyForm.lpw.value }); });
+    });
+  }
+  // かるわかGAMESにログイン済み(ほかのゲームで)で、このゲームのSupabaseセッションがなければ、紐づけ済みの場合だけ自動でログインする
+  async function supabaseAuto(opts) {
+    try {
+      await ready;
+      if (!session) return false;
+      if ((await opts.supabase.auth.getSession()).data.session) return false;
+      const r = await bridge(opts.app, "status");
+      return !!(r.ok && r.linked && (await applySupabaseSession(opts.supabase, r.session)));
+    } catch (e) { return false; }
+  }
+  function requireLogin(tab) {
+    return new Promise((resolve) => {
+      if (session) { resolve(session.profile); return; }
+      const off = (() => { const f = (p) => { if (p) { listeners.delete(f); resolve(p); } }; listeners.add(f); return () => listeners.delete(f); })();
+      openAuth(tab === "register" ? "register" : "login", () => { off(); resolve(session ? session.profile : null); });
+    });
+  }
+
   window.KaAccount = {
+    supabaseLogin,
+    supabaseAuto,
     ready,
     user: () => (session ? session.profile : null),
     isLoggedIn: () => !!session,
@@ -561,11 +664,7 @@
     // ログイン中のトークン。ゲーム自身のサーバー(RPCやSocket.io)に渡して、サーバー側で ka_whoami で確かめてもらう用
     token: () => (session ? session.token : null),
     // ログインしていなければログイン画面を出し、ログインできたら(閉じたらnull)プロフィールを返す
-    requireLogin: (tab) => new Promise((resolve) => {
-      if (session) { resolve(session.profile); return; }
-      const off = (() => { const f = (p) => { if (p) { listeners.delete(f); resolve(p); } }; listeners.add(f); return () => listeners.delete(f); })();
-      openAuth(tab === "register" ? "register" : "login", () => { off(); resolve(session ? session.profile : null); });
-    }),
+    requireLogin,
     // ゲーム側から「いまセーブした」と知らせると、すぐクラウドへ(省略しても20秒ごとに自動で保存される)
     saveNow: () => pushNow(false),
     status: () => syncStatus,
