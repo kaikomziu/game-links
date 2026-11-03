@@ -605,6 +605,32 @@ const Articles = (() => {
     return data;
   }
 
+  // かるわかGAMESアカウントが「管理者」なら、パスワードなしで管理者としてログインする。
+  // かるわかGAMESアカウントからログアウトしたら、そのログイン(via:"ka")も外す。変化があれば true
+  async function kaAdminSync() {
+    const KA = window.KaAccount;
+    if (!KA) return false;
+    try { await KA.ready; } catch (e) {}
+    const prof = KA.user();
+    if (prof && prof.is_admin) {
+      if (admin) return false;
+      const c = sb();
+      let r = null;
+      try { r = c ? (await c.rpc("gl_admin_login_ka", { p_ka_token: KA.token() })).data : null; } catch (e) {}
+      if (!r || !r.ok) return false;
+      admin = { token: r.token, name: r.name, via: "ka" };
+      writeSession(admin);
+      toast(`管理者としてログインしました(${admin.name})`);
+      return true;
+    }
+    if (admin && admin.via === "ka") {
+      admin = null;
+      writeSession(null);
+      return true;
+    }
+    return false;
+  }
+
   function init() {
     admin = readSession();
     const list0 = document.getElementById("articleList");
@@ -669,7 +695,14 @@ const Articles = (() => {
           else admin.name = data.name;
         } catch (e) { /* 通信エラー時はそのまま試す */ }
       }
+      await kaAdminSync();
       load();
+      // その後のログイン・ログアウトにも追従する
+      if (window.KaAccount) {
+        window.KaAccount.onChange(async () => {
+          if (await kaAdminSync()) { loaded = false; list = []; await load(); renderArticlesView(); }
+        });
+      }
     })();
   }
 
