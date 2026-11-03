@@ -51,7 +51,7 @@ function buildTile(g) {
     <div class="tile-main">
       <h2 class="card-title">${escapeTileHtml(g.title)}</h2>
       <div class="tile-meta">
-        ${isNew ? `<span class="tile-chip new">NEW</span>` : ""}${maint ? `<span class="tile-chip maint">🔧 メンテ中</span>` : ""}${tileMeta(g)}${likes > 0 ? `<span class="tile-like">👍${likes}</span>` : ""}
+        ${isNew ? `<span class="tile-chip new">NEW</span>` : ""}${g.beta ? `<span class="tile-chip beta">β版</span>` : ""}${maint ? `<span class="tile-chip maint">🔧 メンテ中</span>` : ""}${tileMeta(g)}${likes > 0 ? `<span class="tile-like">👍${likes}</span>` : ""}
       </div>
     </div>
     <div class="tile-side">
@@ -162,6 +162,7 @@ function renderDetail() {
 
   const badges = [
     isNew ? `<span class="tile-chip new">NEW</span>` : "",
+    g.beta ? `<span class="tile-chip beta">β版</span>` : "",
     maint ? `<span class="tile-chip maint">🔧 メンテナンス中</span>` : "",
     tileMeta(g),
   ].join("");

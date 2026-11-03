@@ -261,6 +261,7 @@ body { font-family: "Yu Gothic UI", "Hiragino Sans", "Meiryo", system-ui, sans-s
 .tile-chip.soft { color: #1d1240; background: var(--neon-yellow); }
 .tile-chip.new { color: #1d1240; background: var(--neon-yellow); animation: neonFlicker 2.4s steps(1) infinite; }
 .tile-chip.maint { color: #1d1240; background: #ffd23f; }
+.tile-chip.beta { color: #fff; background: #3b82f6; }
 .tile-like { color: var(--text-muted); font-weight: 700; }
 @keyframes neonFlicker {
   0%, 86%, 90%, 94%, 100% { opacity: 1; }

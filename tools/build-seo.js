@@ -109,7 +109,7 @@ function renderCard(game) {
     `        <div class="card-emoji tile-emoji">${escapeHtml(game.emoji || "🎮")}</div>`,
     `        <div class="tile-main">`,
     `          <h2 class="card-title">${escapeHtml(game.title)}</h2>`,
-    `          <div class="tile-meta">${softChip}<span class="tile-chip genre">${escapeHtml((game.tags || [])[0] || "")}</span></div>`,
+    `          <div class="tile-meta">${softChip}${game.beta ? `<span class="tile-chip beta">β版</span>` : ""}<span class="tile-chip genre">${escapeHtml((game.tags || [])[0] || "")}</span></div>`,
     // 検索エンジンや非JS環境向けに説明文を残す(画面には出さない。JSが描画すると置き換わる)
     `          <p class="sr-only">${escapeHtml(game.desc)}</p>`,
     `        </div>`,
