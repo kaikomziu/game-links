@@ -163,12 +163,13 @@
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3200);
   }
-  function overlay(html) {
+  function overlay(html, onClose) {
     injectCss();
     const o = document.createElement("div");
     o.className = "ka-overlay";
     o.innerHTML = `<div class="ka-dialog" role="dialog" aria-modal="true">${html}</div>`;
-    const close = () => { o.remove(); document.removeEventListener("keydown", onKey, true); };
+    let closed = false;
+    const close = () => { if (closed) return; closed = true; o.remove(); document.removeEventListener("keydown", onKey, true); if (onClose) onClose(); };
     const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
     document.addEventListener("keydown", onKey, true);
     o.addEventListener("mousedown", (e) => { if (e.target === o) close(); });
@@ -192,7 +193,7 @@
   const NETERR = "通信に失敗しました。もう一度お試しください。";
 
   // ---------- パネル: ログイン / 新規登録 ----------
-  function openAuth(tab) {
+  function openAuth(tab, onClose) {
     const o = overlay(`
       <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
       <h2 class="ka-h">かるわかGAMES アカウント</h2>
@@ -205,7 +206,7 @@
         <p class="ka-note ka-reg">ユーザー名は半角の英小文字・数字・「_」「-」で3〜16文字、パスワードは8文字以上。パスワードを忘れると自分では復旧できません(ブラウザのパスワード保存を使うのがおすすめです)。</p>
         <p class="ka-err" role="alert"></p>
         <div class="ka-row"><button type="button" class="ka-btn" data-ka-close>キャンセル</button><button type="submit" class="ka-btn pri"></button></div>
-      </form>`);
+      </form>`, onClose);
     const form = o.querySelector("form");
     const err = o.querySelector(".ka-err");
     let mode = tab === "register" ? "register" : "login";
@@ -231,8 +232,8 @@
       } catch (x) { err.textContent = NETERR; btn.disabled = false; return; }
       btn.disabled = false;
       if (!r || !r.ok) { err.textContent = REASONS[r && r.reason] || "うまくいきませんでした。"; return; }
-      o._close(); // フォームをDOMから消す(パスワードマネージャーが保存を提案しやすくなる)
       setSession({ token: r.token, profile: r.profile });
+      o._close(); // フォームをDOMから消す(パスワードマネージャーが保存を提案しやすくなる)
       toast(mode === "register" ? "アカウントを作りました" : "ログインしました");
       startSync(true);
     });
@@ -554,7 +555,15 @@
     isLoggedIn: () => !!session,
     onChange: (f) => { listeners.add(f); return () => listeners.delete(f); },
     openPanel,
-    login: () => openAuth("login"),
+    login: (tab) => openAuth(tab === "register" ? "register" : "login"),
+    // ログイン中のトークン。ゲーム自身のサーバー(RPCやSocket.io)に渡して、サーバー側で ka_whoami で確かめてもらう用
+    token: () => (session ? session.token : null),
+    // ログインしていなければログイン画面を出し、ログインできたら(閉じたらnull)プロフィールを返す
+    requireLogin: (tab) => new Promise((resolve) => {
+      if (session) { resolve(session.profile); return; }
+      const off = (() => { const f = (p) => { if (p) { listeners.delete(f); resolve(p); } }; listeners.add(f); return () => listeners.delete(f); })();
+      openAuth(tab === "register" ? "register" : "login", () => { off(); resolve(session ? session.profile : null); });
+    }),
     // ゲーム側から「いまセーブした」と知らせると、すぐクラウドへ(省略しても20秒ごとに自動で保存される)
     saveNow: () => pushNow(false),
     status: () => syncStatus,
