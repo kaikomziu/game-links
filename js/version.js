@@ -1324,5 +1324,12 @@ const CHANGELOG = [
     notes: [
       "「Time Deleted Game.」がスマホでも遊べるようになり、セーブデータを3つまで分けられるようになった"
     ]
+  },
+  {
+    version: "1.185.0",
+    date: "2026-11-05",
+    notes: [
+      "「Time Deleted Game.」に新しい資源「ai」と変換装置のアップグレード(最大Lv5)、Shiftで走る操作(スマホは走るボタン)を追加した"
+    ]
   }
 ];
