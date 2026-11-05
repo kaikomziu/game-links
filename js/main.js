@@ -6,6 +6,16 @@
 // 不具合のあるゲームは maintenance: "理由メモ" を付けると「メンテナンス中」表示になり、一覧からプレイできなくなる(直ったら削除する)。
 const GAMES = [
   {
+    id: "time-deleted-game",
+    added: "2026-11-05",
+    beta: true,
+    title: "Time Deleted Game.",
+    emoji: "⏳",
+    tags: ["クリッカー・放置"],
+    desc: "目が覚めると、知らない真っ白な部屋にいた。時間を消していく3Dの放置ゲーム(Robloxの「時間を無駄にする」というゲームにインスパイアされた作品)。部屋の中では1秒ごとに「ti」が貯まり、中央の装置で10 tiを1 deに変換できる。deを持っているほど、1秒に貯まるtiが(1+deの数)倍に増えていく。はじめにWASDの移動・マウスの視点・変換のしかたを教えるチュートリアルつき。壁には逆向きに回る時計、タイトル画面にはこれまでに消した時間のカウンター。かるわかGAMESアカウントでログインすると、セーブがクラウドに保存される。PC向け(WASD+マウス)。開発中のβ版。",
+    url: "https://kaikomziu.github.io/time-deleted-game/"
+  },
+  {
     id: "launch-lucky-block",
     added: "2026-11-03",
     beta: true,
