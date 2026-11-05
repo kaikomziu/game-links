@@ -1331,5 +1331,12 @@ const CHANGELOG = [
     notes: [
       "「Time Deleted Game.」に新しい資源「ai」と変換装置のアップグレード(最大Lv5)、Shiftで走る操作(スマホは走るボタン)を追加した"
     ]
+  },
+  {
+    version: "1.186.0",
+    date: "2026-11-05",
+    notes: [
+      "「Time Deleted Game.」に、10,000 aiで解放できる「変換装置2」(aiづくり専用・最大Lv5まで強化できる)を追加した"
+    ]
   }
 ];
