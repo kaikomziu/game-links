@@ -78,7 +78,7 @@
   async function rpc(fn, args, opts) {
     const res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, {
       method: "POST",
-      headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+      headers: { apikey: KEY, Authorization: "Bearer " + ((opts && opts.jwt) || KEY), "Content-Type": "application/json" },
       body: JSON.stringify(args || {}),
       keepalive: !!(opts && opts.keepalive),
     });
@@ -103,6 +103,63 @@
     const r = await rpc(fn, Object.assign({ p_token: session ? session.token : null }, args), opts);
     if (r && r.ok === false && r.reason === "auth" && session) { setSession(null); }
     return r;
+  }
+
+  // ---------- OAuth(Google / Discord / GitHub)でログイン・アカウント作成 ----------
+  // しくみ: Supabase Auth のOAuthでログイン → 戻り先ページ(oauth.html)が「#ka_oauth=…」に名前を変えて元のページへ返す →
+  //   ここで受け取って、RPC(ka_oauth_*)で「かるわかGAMESのセッション」に変換する。Supabaseのログイン自体はすぐ破棄する。
+  //   どのサービスが使えるかは、Supabase側の設定(/auth/v1/settings)を見て決める。設定されていないサービスのボタンは出ない。
+  const OAUTH_URL = PORTAL_URL + "oauth.html";
+  const PROVIDER_LABEL = { google: "Google", discord: "Discord", github: "GitHub" };
+  let oauthReturn = null; // 戻ってきたとき: { jwt, mode } または { error }
+  {
+    const h = location.hash || "";
+    if (h.indexOf("ka_oauth") >= 0) {
+      const p = new URLSearchParams(h.replace(/^#/, ""));
+      if (p.get("ka_oauth")) oauthReturn = { jwt: p.get("ka_oauth"), mode: p.get("ka_mode") === "link" ? "link" : "login" };
+      else if (p.get("ka_oauth_error")) oauthReturn = { error: p.get("ka_oauth_error") };
+      // ゲーム側のページ(ハッシュで画面を切り替えるものなど)に見せないよう、すぐ消す
+      if (oauthReturn) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+    }
+  }
+  let providersPromise = null;
+  function oauthProviders() {
+    if (!providersPromise) {
+      providersPromise = fetch(`${URL_BASE}/auth/v1/settings`, { headers: { apikey: KEY } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => Object.keys(PROVIDER_LABEL).filter((p) => d && d.external && d.external[p]))
+        .catch(() => []);
+    }
+    return providersPromise;
+  }
+  function startOAuth(provider) {
+    const mode = session ? "link" : "login"; // ログイン中なら「いまのアカウントに連携」
+    const ret = location.href.split("#")[0];
+    const redirect = `${OAUTH_URL}?mode=${mode}&return=${encodeURIComponent(ret)}`;
+    let url = `${URL_BASE}/auth/v1/authorize?provider=${encodeURIComponent(provider)}&redirect_to=${encodeURIComponent(redirect)}`;
+    if (provider === "google") url += "&prompt=select_account"; // 複数のGoogleアカウントがあるとき、選べるように
+    location.href = url;
+  }
+  const OAUTH_REASONS = {
+    auth: "ログインの確認が切れました。もう一度、サービスのボタンからやり直してください。",
+    oauth: "サービスでのログインを確認できませんでした。もう一度やり直してください。",
+    taken: "そのサービスのアカウントは、すでに別のかるわかGAMESアカウントに連携されています。",
+    already: "このアカウントには、すでに同じサービスが連携されています。",
+    linked: "そのサービスは、すでに連携されています。ページを読み込み直して、もう一度ログインしてください。",
+    last: "パスワードがなく、ほかの連携もないため、解除するとログインできなくなります。先に「パスワードを設定」してください。",
+    notfound: "連携が見つかりませんでした。",
+    exists: "すでにパスワードが設定されています。",
+  };
+  // 「ログイン画面で押す」サービスのボタンを、いま使えるサービスの分だけ作る
+  function fillOAuthButtons(o) {
+    const box = o.querySelector(".ka-oauth");
+    if (!box) return;
+    oauthProviders().then((list) => {
+      if (!list.length || !o.isConnected) return;
+      box.querySelector(".ka-oauth-btns").innerHTML = list.map((p) => `<button type="button" class="ka-ob ka-ob-${p}" data-p="${p}">${PROVIDER_LABEL[p]}で続ける</button>`).join("");
+      box.hidden = false;
+      box.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => startOAuth(b.dataset.p)));
+    });
   }
 
   // ---------- 画面(モーダル)の見た目: ホストのページに影響しないよう、すべて ka- 接頭辞 ----------
@@ -173,6 +230,19 @@
 .ka-link{color:#8fd0ff}
 .ka-toast{position:fixed;left:50%;bottom:56px;z-index:2147483700;max-width:90vw;transform:translateX(-50%);padding:8px 16px;font:700 13px system-ui,"Yu Gothic UI",sans-serif;color:#fff;background:rgba(20,16,50,.95);border:2px solid #7a5cff;border-radius:999px}
 .ka-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ka-dialog [hidden]{display:none!important}
+.ka-oauth{margin:4px 0 10px}
+.ka-oauth-btns{display:flex;flex-direction:column;gap:8px}
+.ka-ob{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;font:700 14px system-ui,"Yu Gothic UI",sans-serif;color:#fff;background:#120e33;border:2px solid #3a2f80;border-left-width:6px;border-radius:10px;cursor:pointer}
+.ka-ob:hover{border-color:#ff3ea5}
+.ka-ob-google{border-left-color:#4285f4}
+.ka-ob-discord{border-left-color:#5865f2}
+.ka-ob-github{border-left-color:#8b949e}
+.ka-or{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:11px;color:#99a}
+.ka-or::before,.ka-or::after{content:"";flex:1;height:1px;background:#3a2f80}
+.ka-prov{margin:0;padding:0;list-style:none}
+.ka-prov li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid #2a2260;font-size:13px}
+.ka-prov small{color:#7dffb0}
 `;
     (document.head || document.documentElement).appendChild(st);
   }
@@ -230,6 +300,7 @@
         <button type="button" class="ka-tab" data-t="register"><b>🆕 はじめての人</b><small>アカウントを作る</small></button>
         <button type="button" class="ka-tab" data-t="login"><b>🔑 持っている人</b><small>ログインする</small></button>
       </div>
+      <div class="ka-oauth" hidden><div class="ka-oauth-btns"></div><p class="ka-or"><span>または、ユーザー名とパスワードで</span></p></div>
       <form class="ka-form" autocomplete="on">
         <div class="ka-step ka-reg"><span>1</span>ユーザー名を決める</div>
         <label class="ka-label"><span class="ka-lab-login">ユーザー名</span>
@@ -257,6 +328,7 @@
           </ul></details>
       </form>`, onClose);
     const form = o.querySelector("form");
+    fillOAuthButtons(o);
     const err = o.querySelector(".ka-err");
     const liveUser = o.querySelector('[data-live="user"]'), livePw = o.querySelector('[data-live="pw"]');
     let mode = tab === "register" ? "register" : "login";
@@ -331,9 +403,145 @@
     });
   }
 
+  // ---------- OAuthから戻ってきたとき ----------
+  async function handleOAuthReturn() {
+    const r = oauthReturn;
+    oauthReturn = null;
+    if (!r) return;
+    if (r.error) { toast(/denied|cancel/i.test(r.error) ? "ログインをやめました" : "サービスでのログインに失敗しました。もう一度お試しください", 5000); return; }
+    const jwt = r.jwt;
+    // サービス側のログイン(Supabaseのセッション)は、変換が終わったらすぐ破棄する
+    const done = () => { try { fetch(`${URL_BASE}/auth/v1/logout?scope=local`, { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + jwt }, keepalive: true }).catch(() => {}); } catch (e) {} };
+    let keepOpen = false;
+    try {
+      if (r.mode === "link" && session) {
+        const x = await rpc("ka_oauth_link", { p_token: session.token }, { jwt });
+        if (x && x.ok) {
+          setSession({ token: session.token, profile: x.profile });
+          const label = PROVIDER_LABEL[x.provider] || "サービス";
+          toast(`${label}を連携しました。次からは、${label}でもログインできます`, 5000);
+          if (!document.querySelector(".ka-overlay")) openProfile();
+        } else toast(OAUTH_REASONS[x && x.reason] || "連携できませんでした。", 6000);
+        return;
+      }
+      const x = await rpc("ka_oauth_login", {}, { jwt });
+      if (!x || !x.ok) { toast(OAUTH_REASONS[x && x.reason] || OAUTH_REASONS.oauth, 6000); return; }
+      if (x.linked) {
+        setSession({ token: x.token, profile: x.profile });
+        toast(`${PROVIDER_LABEL[x.provider] || "サービス"}でログインしました(${x.profile.display_name})`);
+        startSync(true);
+        return;
+      }
+      keepOpen = true; // 未連携: 新しく作るか、持っているアカウントに結びつけるかを選んでもらう(閉じるまでjwtを使う)
+      openOAuthChoice(x, jwt, done);
+    } catch (e) {
+      toast("ログインの確認に失敗しました。もう一度お試しください。", 5000);
+    } finally {
+      if (!keepOpen) done();
+    }
+  }
+
+  // ユーザー名の入力欄に、入力しながら「使えるか」を知らせる
+  function bindUsernameLive(input, live) {
+    let timer = null, seq = 0;
+    const set = (ok, text) => { live.textContent = text; live.className = "ka-live " + (ok === null ? "" : ok ? "ok" : "ng"); };
+    const check = () => {
+      clearTimeout(timer);
+      const v = input.value.trim();
+      if (!v) { set(null, ""); return; }
+      if (/[A-Z]/.test(v)) { set(false, "✗ 大文字は使えません(小文字にしてください)"); return; }
+      if (/[^a-z0-9_-]/.test(v)) { set(false, "✗ 使えない文字があります(半角の英小文字・数字・ _ - だけ)"); return; }
+      if (v.length < 3) { set(false, `✗ あと${3 - v.length}文字以上、入れてください(3〜16文字)`); return; }
+      set(null, "確認中…");
+      const my = ++seq;
+      timer = setTimeout(async () => {
+        try {
+          const r = await rpc("ka_username_available", { p_username: v });
+          if (my !== seq) return;
+          set(!!r, r ? "✓ このユーザー名は使えます" : "✗ このユーザー名は、すでに使われています");
+        } catch (e) { if (my === seq) set(null, ""); }
+      }, 400);
+    };
+    input.addEventListener("input", check);
+    return check;
+  }
+
+  // 未連携のサービスでログインした人に、「新しく作る」か「持っているアカウントに結びつける」かを選んでもらう
+  function openOAuthChoice(info, jwt, done) {
+    const label = PROVIDER_LABEL[info.provider] || "このサービス";
+    const o = overlay(`
+      <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
+      <h2 class="ka-h">${esc(label)}でログインしました</h2>
+      <p class="ka-sub">この${esc(label)}は、まだ「かるわかGAMESアカウント」と結びついていません。どちらにしますか？</p>
+      <div class="ka-form" data-step="choice">
+        <button type="button" class="ka-btn big pri" data-pick="new"><b>🆕 はじめて(アカウントを作る)</b><small>かるわかGAMESアカウントを新しく作ります。パスワードは要りません。次からは${esc(label)}でログインできます</small></button>
+        <button type="button" class="ka-btn big" data-pick="claim"><b>🔑 もうアカウントを持っている</b><small>持っているアカウントのユーザー名とパスワードで、${esc(label)}と結びつけます。セーブデータはそのまま使えます</small></button>
+      </div>
+      <form class="ka-form" data-step="new" hidden>
+        <label class="ka-label">ユーザー名
+          <small class="ka-help">アカウントを区別するための名前です。半角の英小文字・数字・ _ - で3〜16文字。<b>あとから変更できません。</b></small>
+          <input class="ka-input" name="username" autocapitalize="none" spellcheck="false" maxlength="16" required></label>
+        <p class="ka-live" data-live="user"></p>
+        <label class="ka-label">表示名
+          <small class="ka-help">ゲームの中で、ほかの人に見える名前です。日本語もOK。あとで変えられます。</small>
+          <input class="ka-input" name="display" maxlength="20"></label>
+        <p class="ka-err" data-e="new" role="alert"></p>
+        <div class="ka-row"><button type="button" class="ka-btn" data-back>← 戻る</button><button type="submit" class="ka-btn pri">アカウントを作る</button></div>
+      </form>
+      <form class="ka-form" data-step="claim" hidden autocomplete="on">
+        <p class="ka-help">持っているアカウントの「ユーザー名」と「パスワード」を入れてください。(ゲームの中の表示名ではありません)</p>
+        <label class="ka-label">ユーザー名<input class="ka-input" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="16" required></label>
+        <label class="ka-label">パスワード<input class="ka-input" name="password" type="password" autocomplete="current-password" maxlength="72" required></label>
+        <p class="ka-err" data-e="claim" role="alert"></p>
+        <div class="ka-row"><button type="button" class="ka-btn" data-back>← 戻る</button><button type="submit" class="ka-btn pri">結びつける</button></div>
+      </form>`, done);
+    const show = (s) => o.querySelectorAll("[data-step]").forEach((e) => { e.hidden = e.dataset.step !== s; });
+    const fNew = o.querySelector('[data-step="new"]'), fClaim = o.querySelector('[data-step="claim"]');
+    const check = bindUsernameLive(fNew.username, o.querySelector('[data-live="user"]'));
+    // 名前の候補(サービスの名前から、使える文字だけ取り出す)
+    let u = String(info.suggest || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 12);
+    if (u.length < 3) u = "user" + Math.floor(1000 + Math.random() * 9000);
+    fNew.username.value = u;
+    fNew.display.value = String(info.suggest || "").slice(0, 20);
+    o.querySelectorAll("[data-pick]").forEach((b) => b.addEventListener("click", () => {
+      show(b.dataset.pick);
+      if (b.dataset.pick === "new") { check(); fNew.username.focus(); } else fClaim.username.focus();
+    }));
+    o.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => show("choice")));
+
+    const finish = (r, msg) => { setSession({ token: r.token, profile: r.profile }); o._close(); toast(msg, 7000); startSync(true); };
+    const reason = (r) => REASONS[r && r.reason] || OAUTH_REASONS[r && r.reason] || "うまくいきませんでした。";
+    fNew.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = o.querySelector('[data-e="new"]'), btn = fNew.querySelector("button[type=submit]");
+      err.textContent = "";
+      if (!USER_RE.test(fNew.username.value.trim())) { err.textContent = REASONS.username; fNew.username.focus(); return; }
+      btn.disabled = true;
+      try {
+        const r = await rpc("ka_oauth_register", { p_username: fNew.username.value, p_display: fNew.display.value, p_client: clientId() }, { jwt });
+        if (r && r.ok) finish(r, `🎉 アカウントを作りました！ ユーザー名は「${r.profile.username}」です`);
+        else err.textContent = reason(r);
+      } catch (x) { err.textContent = NETERR; }
+      btn.disabled = false;
+    });
+    fClaim.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = o.querySelector('[data-e="claim"]'), btn = fClaim.querySelector("button[type=submit]");
+      err.textContent = "";
+      btn.disabled = true;
+      try {
+        const r = await rpc("ka_oauth_claim", { p_username: fClaim.username.value, p_password: fClaim.password.value }, { jwt });
+        if (r && r.ok) finish(r, `${label}を結びつけました(${r.profile.display_name})。次からは${label}でもログインできます`);
+        else err.textContent = reason(r);
+      } catch (x) { err.textContent = NETERR; }
+      btn.disabled = false;
+    });
+  }
+
   // ---------- パネル: マイページ ----------
   async function openProfile() {
     const p = session.profile;
+    const hasPw = p.has_password !== false; // OAuthだけで作ったアカウントは false
     const o = overlay(`
       <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
       <h2 class="ka-h">かるわかGAMES アカウント</h2>
@@ -348,13 +556,19 @@
       <h3 class="ka-h2">☁ クラウドのセーブデータ</h3>
       <ul class="ka-saves"><li>読み込み中…</li></ul>
       <p class="ka-note">セーブは、対応しているゲームを遊ぶと自動で保存されます。</p>
-      <h3 class="ka-h2">パスワードの変更</h3>
+      <div class="ka-provbox" hidden>
+        <h3 class="ka-h2">ほかのサービスでログイン</h3>
+        <ul class="ka-prov"></ul>
+        <p class="ka-err" data-e="prov" role="alert"></p>
+      </div>
+      <h3 class="ka-h2">${hasPw ? "パスワードの変更" : "パスワードを設定(あとからでもOK)"}</h3>
+      ${hasPw ? "" : '<p class="ka-note">いまは、サービスでのログインだけでアカウントに入れます。パスワードを設定すると、ユーザー名とパスワードでもログインできます。</p>'}
       <form class="ka-form" data-f="pw" autocomplete="on">
         <input class="ka-sr" type="text" name="username" autocomplete="username" value="${esc(p.username)}" tabindex="-1" aria-hidden="true" readonly>
-        <label class="ka-label">いまのパスワード<input class="ka-input" name="old" type="password" autocomplete="current-password" maxlength="72" required></label>
-        <label class="ka-label">新しいパスワード(8文字以上)<input class="ka-input" name="new" type="password" autocomplete="new-password" maxlength="72" required></label>
+        ${hasPw ? '<label class="ka-label">いまのパスワード<input class="ka-input" name="old" type="password" autocomplete="current-password" maxlength="72" required></label>' : ""}
+        <label class="ka-label">${hasPw ? "新しいパスワード" : "パスワード"}(8文字以上)<input class="ka-input" name="new" type="password" autocomplete="new-password" maxlength="72" required></label>
         <p class="ka-err" data-e="pw" role="alert"></p>
-        <div class="ka-row"><button type="submit" class="ka-btn">変更する</button></div>
+        <div class="ka-row"><button type="submit" class="ka-btn">${hasPw ? "変更する" : "設定する"}</button></div>
       </form>
       <h3 class="ka-h2">アカウント</h3>
       <div class="ka-row" style="justify-content:space-between"><button type="button" class="ka-btn" data-a="logout">ログアウト</button><button type="button" class="ka-btn danger" data-a="delete">アカウントを削除…</button></div>
@@ -403,11 +617,49 @@
       loadSaves();
     });
 
+    // 連携しているサービス
+    const provBox = q(".ka-provbox"), provUl = q(".ka-prov"), provErr = q('[data-e="prov"]');
+    let enabled = [];
+    const renderProv = () => {
+      const linked = session.profile.providers || [];
+      const all = Object.keys(PROVIDER_LABEL).filter((k) => enabled.includes(k) || linked.includes(k));
+      provBox.hidden = !all.length;
+      provUl.innerHTML = all.map((k) => linked.includes(k)
+        ? `<li data-p="${k}"><span>${PROVIDER_LABEL[k]} <small>✓ 連携中</small></span><button type="button" class="ka-btn sm danger" data-unlink>解除</button></li>`
+        : `<li data-p="${k}"><span>${PROVIDER_LABEL[k]}</span><button type="button" class="ka-btn sm" data-link>連携する</button></li>`).join("");
+    };
+    renderProv();
+    oauthProviders().then((list) => { enabled = list; if (o.isConnected) renderProv(); });
+    provUl.addEventListener("click", async (e) => {
+      const li = e.target.closest("li");
+      if (!li) return;
+      const k = li.dataset.p;
+      provErr.textContent = "";
+      if (e.target.closest("[data-link]")) { startOAuth(k); return; }
+      if (!e.target.closest("[data-unlink]")) return;
+      if (!confirm(`${PROVIDER_LABEL[k]}との連携を解除しますか？\n(解除すると、${PROVIDER_LABEL[k]}ではログインできなくなります)`)) return;
+      try {
+        const r = await call("ka_oauth_unlink", { p_provider: k });
+        if (!r || !r.ok) { provErr.textContent = OAUTH_REASONS[r && r.reason] || "解除できませんでした。"; return; }
+        setSession({ token: session.token, profile: r.profile });
+        toast(`${PROVIDER_LABEL[k]}との連携を解除しました`);
+        renderProv();
+      } catch (x) { provErr.textContent = NETERR; }
+    });
+
     // パスワード変更
     q('[data-f="pw"]').addEventListener("submit", async (e) => {
       e.preventDefault();
       const err = q('[data-e="pw"]'); err.textContent = ""; err.className = "ka-err";
       try {
+        if (!hasPw) {
+          const r = await call("ka_password_set", { p_new: e.target.new.value });
+          if (!r || !r.ok) { err.textContent = REASONS[r && r.reason] || OAUTH_REASONS[r && r.reason] || "設定できませんでした。"; return; }
+          setSession({ token: session.token, profile: r.profile });
+          toast("パスワードを設定しました。ユーザー名とパスワードでもログインできます", 5000);
+          o._close(); openProfile();
+          return;
+        }
         const r = await call("ka_password_change", { p_old: e.target.old.value, p_new: e.target.new.value });
         if (!r || !r.ok) { err.textContent = r && r.reason === "invalid" ? "いまのパスワードが違います。" : REASONS[r && r.reason] || "変更できませんでした。"; return; }
         err.className = "ka-ok"; err.textContent = "変更しました(ほかの端末はログアウトされます)。";
@@ -421,12 +673,14 @@
       setSession(null); o._close(); toast("ログアウトしました");
     });
     q('[data-a="delete"]').addEventListener("click", async () => {
-      const pw = prompt("アカウントを削除します。クラウドのセーブもすべて消え、元に戻せません。\n続けるには、パスワードを入力してください。");
+      const pw = prompt(hasPw
+        ? "アカウントを削除します。クラウドのセーブもすべて消え、元に戻せません。\n続けるには、パスワードを入力してください。"
+        : `アカウントを削除します。クラウドのセーブもすべて消え、元に戻せません。\n続けるには、確認のため、ユーザー名「${p.username}」を入力してください。`);
       if (pw === null) return;
       const err = q('[data-e="acct"]'); err.textContent = "";
       try {
         const r = await call("ka_delete_account", { p_password: pw });
-        if (!r || !r.ok) { err.textContent = r && r.reason === "invalid" ? "パスワードが違います。" : "削除できませんでした。"; return; }
+        if (!r || !r.ok) { err.textContent = r && r.reason === "invalid" ? (hasPw ? "パスワードが違います。" : "ユーザー名が違います。") : "削除できませんでした。"; return; }
         setSession(null); o._close(); toast("アカウントを削除しました");
       } catch (x) { err.textContent = NETERR; }
     });
@@ -640,7 +894,7 @@
   }
   configure();
   if (syncGame) { initialSnap = snapshot(); initSync(); }
-  const boot = () => { mountButtons(); ready.then(() => { if (syncGame) startSync(false); }); };
+  const boot = () => { mountButtons(); ready.then(() => { if (syncGame) startSync(false); handleOAuthReturn(); }); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 
   // ---------- Supabase Auth を使うゲーム向け: かるわかGAMESアカウントでログインして、そのゲームのSupabaseセッションを得る ----------

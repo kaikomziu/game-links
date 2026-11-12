@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>ログインを確認しています…</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b0820; color: #eef; font: 15px system-ui, "Yu Gothic UI", sans-serif; text-align: center; padding: 16px; }
+  a { color: #8fd0ff; }
+</style>
+</head>
+<body>
+<!--
+  かるわかGAMESアカウントの「OAuth(Google / Discord / GitHub)」の戻り先。
+  Supabase のログインが終わると、このページに「#access_token=…」がついて戻ってくる。
+  ここでは何も保存せず、元のページへ「#ka_oauth=…」と名前を変えて渡すだけ(行き先は下の許可リストにあるサイトだけ)。
+  理由: ゲームによっては supabase-js が「#access_token=」を勝手に拾って、別のSupabaseログインを作ってしまうため。
+  受け取った側の js/karuwaka-account.js が、かるわかGAMESのログインに変換する。
+-->
+<p id="msg">ログインを確認しています…</p>
+<script>
+(function () {
+  "use strict";
+  var PORTAL = "https://kaikomziu.github.io/game-links/";
+  // 戻ってよいサイト(かるわかGAMESアカウントを使うサイトの origin)
+  var ALLOWED = ["https://kaikomziu.github.io", "https://dotbattle-sg.onrender.com"];
+  var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname); // 手元での確認用(このページ自体が手元で開かれたときだけ)
+
+  function allowed(u) {
+    try {
+      var x = new URL(u);
+      if (ALLOWED.indexOf(x.origin) >= 0) return x;
+      if (isLocal && /^(localhost|127\.0\.0\.1)$/.test(x.hostname) && x.protocol === "http:") return x;
+    } catch (e) {}
+    return null;
+  }
+
+  var q = new URLSearchParams(location.search);
+  var h = new URLSearchParams(location.hash.replace(/^#/, ""));
+  var back = allowed(q.get("return")) || new URL(PORTAL);
+  back.hash = "";
+  var mode = q.get("mode") === "link" ? "link" : "login";
+
+  var token = h.get("access_token");
+  var error = h.get("error") || q.get("error");
+  var out;
+  if (token && !error) {
+    out = "#ka_oauth=" + encodeURIComponent(token) + "&ka_mode=" + mode;
+  } else {
+    // 途中でやめた・断られた・失敗した、など
+    var code = (h.get("error_code") || q.get("error_code") || error || "failed").slice(0, 60);
+    out = "#ka_oauth_error=" + encodeURIComponent(code);
+  }
+  // このページの履歴にトークンが残らないよう、置き換えて移動する
+  history.replaceState(null, "", location.pathname);
+  location.replace(back.href + out);
+  setTimeout(function () {
+    document.getElementById("msg").innerHTML = "自動で戻らないときは、<a href=\"" + PORTAL + "\">かるわかGAMESのトップ</a>へ戻ってください。";
+  }, 4000);
+})();
+</script>
+</body>
+</html>
