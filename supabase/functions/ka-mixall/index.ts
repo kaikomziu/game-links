@@ -6,7 +6,7 @@
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const MIXALL = "https://mixalls.vercel.app";
-const CLIENT_ID = "mxc_8bac023deb3af73fe9e1d8af0e29b97d"; // MixAll側に登録した「かるわかGAMES」アプリ(公開クライアント・PKCE)
+const CLIENT_ID = "mxc_894f768f0ba2c2f9202e7f1f31b6b0f6"; // MixAll側に登録した「かるわかGAMES」アプリ(公開クライアント・PKCE)
 const REDIRECT_URI = "https://kaikomziu.github.io/game-links/mixall-login.html";
 const PORTAL_ORIGIN = "https://kaikomziu.github.io";
 
