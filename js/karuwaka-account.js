@@ -151,7 +151,13 @@
   function startOAuth(provider) {
     const mode = session ? "link" : "login"; // ログイン中なら「いまのアカウントに連携」
     const ret = location.href.split("#")[0];
-    if (provider === "mixall") { location.href = `${MIXALL_REDIRECT}?mode=${mode}&return=${encodeURIComponent(ret)}`; return; }
+    if (provider === "mixall") {
+      // URLが長くならないよう、ポータル内の戻り先は「/game-links/…」の形だけ渡す(m=l は連携モード)
+      const origin = new URL(PORTAL_URL).origin;
+      const rel = ret.startsWith(origin + "/") ? ret.slice(origin.length) : ret;
+      location.href = `${MIXALL_REDIRECT}?${mode === "link" ? "m=l&" : ""}r=${encodeURIComponent(rel)}`;
+      return;
+    }
     const redirect = `${OAUTH_URL}?mode=${mode}&return=${encodeURIComponent(ret)}`;
     let url = `${URL_BASE}/auth/v1/authorize?provider=${encodeURIComponent(provider)}&redirect_to=${encodeURIComponent(redirect)}`;
     if (provider === "google") url += "&prompt=select_account"; // 複数のGoogleアカウントがあるとき、選べるように

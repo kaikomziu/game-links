@@ -84,9 +84,12 @@
   }
 
   // ---------- 1) 入口: MixAll の認可画面へ ----------
-  var ret = allowed(q.get("return")) || new URL(PORTAL);
-  var mode = q.get("mode") === "link" ? "link" : "login";
-  var verifier = rand(48), st = rand(24);
+  // 戻り先: r=/game-links/… (ポータル内の短い形) か、r=https://… / return=https://… (従来の形)
+  var rp = q.get("r") || q.get("return") || "";
+  if (rp.charAt(0) === "/" && rp.charAt(1) !== "/") rp = "https://kaikomziu.github.io" + rp;
+  var ret = allowed(rp) || new URL(PORTAL);
+  var mode = (q.get("m") === "l" || q.get("mode") === "link") ? "link" : "login";
+  var verifier = rand(48), st = rand(12); // state は短くてよい(この端末のsessionStorageと照合するだけ。MixAllへ渡す文字数も減る)
   fallbackLink();
   crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)).then(function (d) {
     try { sessionStorage.setItem(SKEY, JSON.stringify({ state: st, verifier: verifier, mode: mode, ret: ret.href, t: Date.now() })); } catch (e) { return giveUp("storage"); }
