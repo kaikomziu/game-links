@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>MixAllでログイン</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b0820; color: #eef; font: 15px system-ui, "Yu Gothic UI", sans-serif; text-align: center; padding: 16px; }
+  a { color: #8fd0ff; }
+</style>
+</head>
+<body>
+<!--
+  かるわかGAMESアカウントの「MixAllでログイン」の入口と戻り先(OAuth 認可コードフロー + PKCE)。
+  1) 入口: ?mode=login|link&return=元のページ で開かれたら、state と PKCE を作って MixAll の認可画面へ移動する。
+  2) 戻り先: MixAll から ?code=…&state=… で戻ってきたら、Edge Function ka-mixall に code を渡して「チケット」に交換し、
+     元のページへ「#ka_mixall=チケット」をつけて返す(行き先は下の許可リストにあるサイトだけ)。
+  アクセストークンはこのページには来ない(コードの交換はサーバー側)。MixAllに登録した戻り先は、このページのURLそのもの。
+-->
+<p id="msg">MixAllへ移動しています…</p>
+<script>
+(function () {
+  "use strict";
+  var PORTAL = "https://kaikomziu.github.io/game-links/";
+  var REDIRECT = PORTAL + "mixall-login.html";                 // MixAllに登録した戻り先(完全一致が必要)
+  var MIXALL = "https://mixalls.vercel.app";
+  var CLIENT_ID = "mxc_8bac023deb3af73fe9e1d8af0e29b97d";      // 公開クライアントID(秘密ではない)
+  var EXCHANGE = "https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/ka-mixall/exchange";
+  var ALLOWED = ["https://kaikomziu.github.io", "https://dotbattle-sg.onrender.com"]; // oauth.html と同じ
+  var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var SKEY = "ka_mixall_flow";
+  var msg = document.getElementById("msg");
+
+  function allowed(u) {
+    try {
+      var x = new URL(u);
+      if (ALLOWED.indexOf(x.origin) >= 0) return x;
+      if (isLocal && /^(localhost|127\.0\.0\.1)$/.test(x.hostname) && x.protocol === "http:") return x;
+    } catch (e) {}
+    return null;
+  }
+  function b64url(bytes) {
+    var s = ""; for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function rand(n) { var a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
+  function giveUp(code, back) {
+    var u = back || new URL(PORTAL);
+    u.hash = "";
+    location.replace(u.href + "#ka_oauth_error=" + encodeURIComponent(code));
+  }
+  function fallbackLink() {
+    setTimeout(function () { msg.innerHTML = "自動で進まないときは、<a href=\"" + PORTAL + "\">かるわかGAMESのトップ</a>へ戻ってください。"; }, 6000);
+  }
+
+  var q = new URLSearchParams(location.search);
+
+  // ---------- 2) MixAll から戻ってきた ----------
+  if (q.get("code") || q.get("error")) {
+    var flow = null;
+    try { flow = JSON.parse(sessionStorage.getItem(SKEY) || "null"); sessionStorage.removeItem(SKEY); } catch (e) {}
+    var code = q.get("code"), state = q.get("state"), err = q.get("error");
+    history.replaceState(null, "", location.pathname);
+    msg.textContent = "ログインを確認しています…";
+    fallbackLink();
+    var back = flow && allowed(flow.ret);
+    if (!flow || !back || Date.now() - flow.t > 15 * 60000 || !state || state !== flow.state) {
+      giveUp("state", back);
+    } else if (err || !code) {
+      giveUp(err === "access_denied" ? "access_denied" : (err || "failed").slice(0, 60), back);
+    } else {
+      fetch(EXCHANGE, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: code, code_verifier: flow.verifier }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (j) {
+          if (!j || !j.ticket) return giveUp((j && j.error) || "failed", back);
+          back.hash = "";
+          location.replace(back.href + "#ka_mixall=" + encodeURIComponent(j.ticket) + "&ka_mode=" + (flow.mode === "link" ? "link" : "login"));
+        })
+        .catch(function () { giveUp("network", back); });
+    }
+    return;
+  }
+
+  // ---------- 1) 入口: MixAll の認可画面へ ----------
+  var ret = allowed(q.get("return")) || new URL(PORTAL);
+  var mode = q.get("mode") === "link" ? "link" : "login";
+  var verifier = rand(48), st = rand(24);
+  fallbackLink();
+  crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)).then(function (d) {
+    try { sessionStorage.setItem(SKEY, JSON.stringify({ state: st, verifier: verifier, mode: mode, ret: ret.href, t: Date.now() })); } catch (e) { return giveUp("storage"); }
+    var u = new URL(MIXALL + "/Developer/authorize.html");
+    u.searchParams.set("response_type", "code");
+    u.searchParams.set("client_id", CLIENT_ID);
+    u.searchParams.set("redirect_uri", REDIRECT);
+    u.searchParams.set("state", st);
+    u.searchParams.set("code_challenge", b64url(new Uint8Array(d)));
+    u.searchParams.set("code_challenge_method", "S256");
+    location.replace(u.href);
+  }).catch(function () { giveUp("crypto"); });
+})();
+</script>
+</body>
+</html>

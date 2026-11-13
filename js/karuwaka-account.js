@@ -110,31 +110,48 @@
   //   ここで受け取って、RPC(ka_oauth_*)で「かるわかGAMESのセッション」に変換する。Supabaseのログイン自体はすぐ破棄する。
   //   どのサービスが使えるかは、Supabase側の設定(/auth/v1/settings)を見て決める。設定されていないサービスのボタンは出ない。
   const OAUTH_URL = PORTAL_URL + "oauth.html";
-  const PROVIDER_LABEL = { google: "Google", discord: "Discord", github: "GitHub" };
+  const PROVIDER_LABEL = { google: "Google", discord: "Discord", github: "GitHub", mixall: "MixAll" };
+  const MIXALL_API = "https://mixalls.vercel.app/api/dev";   // MixAll(友人のサイト)のOAuth。入口は mixall-login.html
+  const MIXALL_CLIENT = "mxc_8bac023deb3af73fe9e1d8af0e29b97d";
+  const MIXALL_REDIRECT = PORTAL_URL + "mixall-login.html";
   let oauthReturn = null; // 戻ってきたとき: { jwt, mode } または { error }
   {
     const h = location.hash || "";
-    if (h.indexOf("ka_oauth") >= 0) {
+    if (h.indexOf("ka_oauth") >= 0 || h.indexOf("ka_mixall") >= 0) {
       const p = new URLSearchParams(h.replace(/^#/, ""));
       if (p.get("ka_oauth")) oauthReturn = { jwt: p.get("ka_oauth"), mode: p.get("ka_mode") === "link" ? "link" : "login" };
+      else if (p.get("ka_mixall")) oauthReturn = { ticket: p.get("ka_mixall"), mode: p.get("ka_mode") === "link" ? "link" : "login" };
       else if (p.get("ka_oauth_error")) oauthReturn = { error: p.get("ka_oauth_error") };
       // ゲーム側のページ(ハッシュで画面を切り替えるものなど)に見せないよう、すぐ消す
       if (oauthReturn) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
     }
   }
   let providersPromise = null;
+  // MixAll側に「この戻り先が登録されている」ときだけ、MixAllのボタンを出す(MixAllが止まっているときも出さない)
+  function mixallAvailable() {
+    const ac = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = ac ? setTimeout(() => ac.abort(), 4000) : null;
+    return fetch(MIXALL_API, {
+      method: "POST", headers: { "Content-Type": "application/json" }, signal: ac ? ac.signal : undefined,
+      body: JSON.stringify({ action: "oauthInfo", client_id: MIXALL_CLIENT, redirect_uri: MIXALL_REDIRECT }),
+    }).then((r) => r.ok).catch(() => false).then((v) => { if (timer) clearTimeout(timer); return v; });
+  }
   function oauthProviders() {
     if (!providersPromise) {
-      providersPromise = fetch(`${URL_BASE}/auth/v1/settings`, { headers: { apikey: KEY } })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((d) => Object.keys(PROVIDER_LABEL).filter((p) => d && d.external && d.external[p]))
-        .catch(() => []);
+      providersPromise = Promise.all([
+        fetch(`${URL_BASE}/auth/v1/settings`, { headers: { apikey: KEY } })
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => Object.keys(PROVIDER_LABEL).filter((p) => p !== "mixall" && d && d.external && d.external[p]))
+          .catch(() => []),
+        mixallAvailable(),
+      ]).then(([list, mx]) => (mx ? list.concat("mixall") : list));
     }
     return providersPromise;
   }
   function startOAuth(provider) {
     const mode = session ? "link" : "login"; // ログイン中なら「いまのアカウントに連携」
     const ret = location.href.split("#")[0];
+    if (provider === "mixall") { location.href = `${MIXALL_REDIRECT}?mode=${mode}&return=${encodeURIComponent(ret)}`; return; }
     const redirect = `${OAUTH_URL}?mode=${mode}&return=${encodeURIComponent(ret)}`;
     let url = `${URL_BASE}/auth/v1/authorize?provider=${encodeURIComponent(provider)}&redirect_to=${encodeURIComponent(redirect)}`;
     if (provider === "google") url += "&prompt=select_account"; // 複数のGoogleアカウントがあるとき、選べるように
@@ -238,6 +255,7 @@
 .ka-ob-google{border-left-color:#4285f4}
 .ka-ob-discord{border-left-color:#5865f2}
 .ka-ob-github{border-left-color:#8b949e}
+.ka-ob-mixall{border-left-color:#22c3a6}
 .ka-or{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:11px;color:#99a}
 .ka-or::before,.ka-or::after{content:"";flex:1;height:1px;background:#3a2f80}
 .ka-prov{margin:0;padding:0;list-style:none}
@@ -409,13 +427,13 @@
     oauthReturn = null;
     if (!r) return;
     if (r.error) { toast(/denied|cancel/i.test(r.error) ? "ログインをやめました" : "サービスでのログインに失敗しました。もう一度お試しください", 5000); return; }
-    const jwt = r.jwt;
-    // サービス側のログイン(Supabaseのセッション)は、変換が終わったらすぐ破棄する
-    const done = () => { try { fetch(`${URL_BASE}/auth/v1/logout?scope=local`, { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + jwt }, keepalive: true }).catch(() => {}); } catch (e) {} };
+    const jwt = r.jwt, ticket = r.ticket; // ticket があるのは MixAll(Edge Function ka-mixall が発行した10分のチケット)
+    // サービス側のログイン(Supabaseのセッション)は、変換が終わったらすぐ破棄する(MixAllはチケットなので不要)
+    const done = ticket ? () => {} : () => { try { fetch(`${URL_BASE}/auth/v1/logout?scope=local`, { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + jwt }, keepalive: true }).catch(() => {}); } catch (e) {} };
     let keepOpen = false;
     try {
       if (r.mode === "link" && session) {
-        const x = await rpc("ka_oauth_link", { p_token: session.token }, { jwt });
+        const x = ticket ? await rpc("ka_mixall_link", { p_token: session.token, p_ticket: ticket }) : await rpc("ka_oauth_link", { p_token: session.token }, { jwt });
         if (x && x.ok) {
           setSession({ token: session.token, profile: x.profile });
           const label = PROVIDER_LABEL[x.provider] || "サービス";
@@ -424,7 +442,7 @@
         } else toast(OAUTH_REASONS[x && x.reason] || "連携できませんでした。", 6000);
         return;
       }
-      const x = await rpc("ka_oauth_login", {}, { jwt });
+      const x = ticket ? await rpc("ka_mixall_login", { p_ticket: ticket }) : await rpc("ka_oauth_login", {}, { jwt });
       if (!x || !x.ok) { toast(OAUTH_REASONS[x && x.reason] || OAUTH_REASONS.oauth, 6000); return; }
       if (x.linked) {
         setSession({ token: x.token, profile: x.profile });
@@ -433,7 +451,7 @@
         return;
       }
       keepOpen = true; // 未連携: 新しく作るか、持っているアカウントに結びつけるかを選んでもらう(閉じるまでjwtを使う)
-      openOAuthChoice(x, jwt, done);
+      openOAuthChoice(x, jwt, done, ticket);
     } catch (e) {
       toast("ログインの確認に失敗しました。もう一度お試しください。", 5000);
     } finally {
@@ -467,7 +485,7 @@
   }
 
   // 未連携のサービスでログインした人に、「新しく作る」か「持っているアカウントに結びつける」かを選んでもらう
-  function openOAuthChoice(info, jwt, done) {
+  function openOAuthChoice(info, jwt, done, ticket) {
     const label = PROVIDER_LABEL[info.provider] || "このサービス";
     const o = overlay(`
       <button class="ka-x" data-ka-close aria-label="閉じる">×</button>
@@ -518,7 +536,8 @@
       if (!USER_RE.test(fNew.username.value.trim())) { err.textContent = REASONS.username; fNew.username.focus(); return; }
       btn.disabled = true;
       try {
-        const r = await rpc("ka_oauth_register", { p_username: fNew.username.value, p_display: fNew.display.value, p_client: clientId() }, { jwt });
+        const a = { p_username: fNew.username.value, p_display: fNew.display.value, p_client: clientId() };
+        const r = ticket ? await rpc("ka_mixall_register", Object.assign({ p_ticket: ticket }, a)) : await rpc("ka_oauth_register", a, { jwt });
         if (r && r.ok) finish(r, `🎉 アカウントを作りました！ ユーザー名は「${r.profile.username}」です`);
         else err.textContent = reason(r);
       } catch (x) { err.textContent = NETERR; }
@@ -530,7 +549,8 @@
       err.textContent = "";
       btn.disabled = true;
       try {
-        const r = await rpc("ka_oauth_claim", { p_username: fClaim.username.value, p_password: fClaim.password.value }, { jwt });
+        const a = { p_username: fClaim.username.value, p_password: fClaim.password.value };
+        const r = ticket ? await rpc("ka_mixall_claim", Object.assign({ p_ticket: ticket }, a)) : await rpc("ka_oauth_claim", a, { jwt });
         if (r && r.ok) finish(r, `${label}を結びつけました(${r.profile.display_name})。次からは${label}でもログインできます`);
         else err.textContent = reason(r);
       } catch (x) { err.textContent = NETERR; }
