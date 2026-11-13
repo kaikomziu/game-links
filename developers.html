@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>かるわかGAMESでログイン - 開発者向け</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b0820; color: #eef; font: 15px/1.7 system-ui, "Yu Gothic UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 36px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #2f2a66; }
+  h3 { font-size: 15px; margin: 20px 0 6px; color: #bcd; }
+  p, li { color: #dde; }
+  a { color: #8fd0ff; }
+  code, pre { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  code { background: #1c1744; padding: 1px 6px; border-radius: 5px; word-break: break-all; }
+  pre { background: #0f0c2b; border: 1px solid #2f2a66; border-radius: 10px; padding: 12px 14px; overflow-x: auto; margin: 8px 0; }
+  pre code { background: none; padding: 0; word-break: normal; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  td, th { border: 1px solid #2f2a66; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #17133a; }
+  .box { background: #17133a; border: 1px solid #2f2a66; border-radius: 14px; padding: 16px 18px; margin: 12px 0; }
+  .app { background: #0f0c2b; border: 1px solid #2f2a66; border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+  .app b { font-size: 16px; }
+  .muted { color: #99a; font-size: 12.5px; }
+  .err { color: #fca5a5; }
+  .okmsg { color: #86efac; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 999px; margin-left: 6px; }
+  .badge.ok { background: #14532d; color: #86efac; }
+  .badge.warn { background: #4a3a05; color: #fde68a; }
+  .badge.off { background: #4c1d1d; color: #fca5a5; }
+  label { display: block; margin: 10px 0 2px; font-size: 13px; color: #bcd; }
+  input[type=text], textarea { width: 100%; font: inherit; color: #eef; background: #0f0c2b; border: 1px solid #3a3480; border-radius: 8px; padding: 8px 10px; }
+  textarea { min-height: 80px; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  button { font: inherit; font-weight: 600; padding: 8px 16px; border-radius: 9px; border: 0; cursor: pointer; background: #6d5dfc; color: #fff; }
+  button.sub { background: #2a2557; color: #dde; }
+  button.danger { background: #7f1d1d; color: #fee; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .secret { background: #052e16; border: 1px solid #166534; border-radius: 10px; padding: 10px 12px; margin: 10px 0; word-break: break-all; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <p class="muted"><a href="./">← かるわかGAMES</a></p>
+  <h1>「かるわかGAMESでログイン」を自分のサイトに付ける</h1>
+  <p class="muted">あなたが作ったサイトやゲームに、かるわかGAMESのアカウントでログインできるボタンを付けられます(OAuth 2.0 の認可コードフロー + PKCE)。無料です。</p>
+
+  <h2>管理</h2>
+  <div id="mgmt" class="box"><p>読み込み中…</p></div>
+
+  <h2>使い方</h2>
+  <p>まず上の「自分のアプリ」で、アプリを登録して <b>client_id</b> を受け取ります。そのあとの流れは次のとおりです。動くサンプルは <a href="oauth-demo.html">oauth-demo.html</a>(ソースをそのままコピーして使えます)。</p>
+
+  <h3>1. ログイン画面へ移動する</h3>
+  <p>ボタンを押したら、次のURLへ移動します(<code>code_verifier</code> は自分で作った43〜128文字のランダム文字列。<code>code_challenge</code> はそのSHA-256をbase64urlにしたもの)。</p>
+<pre><code>https://kaikomziu.github.io/game-links/authorize.html
+  ?response_type=code
+  &amp;client_id=あなたのclient_id
+  &amp;redirect_uri=登録した戻り先URL
+  &amp;state=ランダム文字列
+  &amp;code_challenge=…
+  &amp;code_challenge_method=S256</code></pre>
+
+  <h3>2. 戻ってきたら code を受け取る</h3>
+  <p>ユーザーが許可すると、戻り先に <code>?code=…&amp;state=…</code> がついて戻ります。<b>state が最初に作った値と同じか</b>必ず確かめてください(なりすまし対策)。キャンセルされたときは <code>?error=access_denied</code> が付きます。<code>code</code> は5分・1回だけ使えます。</p>
+
+  <h3>2→3. code を access_token に交換する</h3>
+<pre><code>POST https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/ka-oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&amp;code=…&amp;redirect_uri=…&amp;client_id=…&amp;code_verifier=…</code></pre>
+  <p>返り値(JSON): <code>{"access_token":"…","token_type":"Bearer","expires_in":3600,"scope":"profile"}</code>
+  <br>サーバーを持つアプリ(「秘密のキーを使う」で登録)は、<code>client_secret</code> も一緒に送ります(<code>client_secret_post</code> / Basic認証のどちらも可)。<b>client_secret は、ブラウザ側のコードには絶対に入れないでください。</b></p>
+
+  <h3>4. ユーザー情報を取る</h3>
+<pre><code>GET https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/ka-oauth/userinfo
+Authorization: Bearer アクセストークン</code></pre>
+<pre><code>{ "sub": "…", "preferred_username": "karubiwakame", "name": "かるわか", "avatar": "🎮" }</code></pre>
+  <table>
+    <tr><th>項目</th><th>意味</th></tr>
+    <tr><td><code>sub</code></td><td>アカウントの固有ID。<b>アプリ側のユーザーIDにはこれを使ってください</b>(表示名は変えられます)</td></tr>
+    <tr><td><code>preferred_username</code></td><td>ユーザー名(半角英数字)</td></tr>
+    <tr><td><code>name</code></td><td>表示名</td></tr>
+    <tr><td><code>avatar</code></td><td>アイコン(絵文字)</td></tr>
+  </table>
+
+  <h3>決まり・注意</h3>
+  <ul>
+    <li>取れる情報は上の4つだけです(パスワード・メール・ゲームのセーブ・管理者権限は取れません)。</li>
+    <li>アクセストークンは1時間で切れます。リフレッシュトークンはありません。切れたら、もう一度ログイン画面へ(許可済みなら、画面を出さずにすぐ戻ります)。</li>
+    <li>戻り先(redirect_uri)は、登録した文字列と<b>完全に同じ</b>でなければ動きません。<code>https://…</code> か、手元確認用の <code>http://localhost…</code> だけ使えます。</li>
+    <li>静的サイト(サーバーなし)は PKCE(<code>S256</code>)が必須です。</li>
+    <li>戻り先を変えると、そのアプリへの許可は全員やり直しになります。</li>
+    <li>同意画面には、アプリ名・作成者・戻り先のドメインが表示されます。名前に「かるわか」「公式」を含むアプリは作れません。不正なアプリは運営が停止します。</li>
+    <li>設定の案内: <a href="https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/ka-oauth/metadata" target="_blank" rel="noopener">metadata (JSON)</a></li>
+  </ul>
+</main>
+
+<script src="js/karuwaka-account.js" data-badge="off"></script>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("mgmt");
+  var editing = null; // 編集中のアプリ(null = 新規作成)
+
+  var REASONS = {
+    auth: "ログインの期限が切れました。もう一度ログインしてください。",
+    name: "アプリ名は2〜40文字にしてください。",
+    name_reserved: "「かるわか」「公式」「official」を含む名前は使えません。",
+    desc: "説明は200文字までです。",
+    homepage: "サイトのURLが正しくありません(https://… で書いてください)。",
+    redirect: "戻り先URLが正しくありません。https://… (または http://localhost…) を、1行に1つ、最大5つまで。#は使えません。",
+    limit: "登録できるアプリは1人5つまでです。",
+    notfound: "アプリが見つかりません。"
+  };
+  var NET = "通信できませんでした。もう一度ためしてください。";
+
+  function el(tag, props, kids) {
+    var e = document.createElement(tag);
+    for (var k in (props || {})) {
+      if (k === "text") e.textContent = props[k];
+      else if (k === "class") e.className = props[k];
+      else e.setAttribute(k, props[k]);
+    }
+    (kids || []).forEach(function (c) { if (c) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function btn(text, cls, fn) { var b = el("button", { type: "button", class: cls || "", text: text }); b.addEventListener("click", function () { fn(b); }); return b; }
+  function say(node, text, ok) { node.textContent = text; node.className = ok ? "okmsg" : "err"; }
+  function call(fn, args) { return KaAccount._call(fn, args); }
+
+  function render(secretNote) {
+    box.textContent = "";
+    if (!KaAccount.isLoggedIn()) {
+      box.appendChild(el("p", { text: "アプリの登録や、連携中のアプリの確認には、かるわかGAMESアカウントでのログインが必要です。" }));
+      box.appendChild(btn("ログイン", "", function () { KaAccount.login("login"); }));
+      return;
+    }
+    var u = KaAccount.user();
+    box.appendChild(el("p", { class: "muted", text: "ログイン中: " + u.avatar + " " + u.display_name + " (@" + u.username + ")" }));
+    var apps = el("div", {}, [el("p", { class: "muted", text: "読み込み中…" })]);
+    var grants = el("div", {}, [el("p", { class: "muted", text: "読み込み中…" })]);
+    box.appendChild(el("h3", { text: "自分のアプリ" }));
+    if (secretNote) box.appendChild(secretNote);
+    box.appendChild(apps);
+    box.appendChild(formNode(apps));
+    box.appendChild(el("h3", { text: "連携中のアプリ(あなたが許可したもの)" }));
+    box.appendChild(grants);
+    loadApps(apps); loadGrants(grants);
+  }
+
+  function loadApps(node) {
+    call("ka_oauth_app_list", {}).then(function (r) {
+      node.textContent = "";
+      if (!r || !r.ok) return node.appendChild(el("p", { class: "err", text: REASONS[r && r.reason] || NET }));
+      if (!r.apps.length) node.appendChild(el("p", { class: "muted", text: "まだ登録したアプリはありません。" }));
+      r.apps.forEach(function (a) { node.appendChild(appNode(a)); });
+    }).catch(function () { node.textContent = NET; });
+  }
+
+  function appNode(a) {
+    var title = el("b", { text: a.name });
+    title.appendChild(el("span", { class: "badge " + (a.disabled ? "off" : a.verified ? "ok" : "warn"), text: a.disabled ? "停止中" : a.verified ? "確認済み" : "未確認" }));
+    var msg = el("p", {});
+    var kids = [title,
+      el("div", { class: "muted", text: "client_id: " + a.client_id }),
+      el("div", { class: "muted", text: (a.confidential ? "秘密のキーを使う(サーバー用)" : "PKCEのみ(静的サイト用)") + " / 使っている人: " + a.users + "人" }),
+      el("div", { class: "muted", text: "戻り先: " + a.redirect_uris.join(" , ") })];
+    var row = el("div", { class: "row" });
+    row.appendChild(btn("編集", "sub", function () { editing = a; render(); window.scrollTo(0, document.body.scrollHeight / 3); }));
+    if (a.confidential) row.appendChild(btn("秘密のキーを再発行", "sub", function (b) {
+      if (!confirm("秘密のキー(client_secret)を作り直します。古いキーは使えなくなります。よろしいですか?")) return;
+      b.disabled = true;
+      call("ka_oauth_app_secret_reset", { p_client_id: a.client_id }).then(function (r) {
+        if (r && r.ok) { editing = null; render(secretBox(a.client_id, r.client_secret)); } else { b.disabled = false; say(msg, REASONS[r && r.reason] || NET); }
+      }).catch(function () { b.disabled = false; say(msg, NET); });
+    }));
+    row.appendChild(btn("削除", "danger", function (b) {
+      if (!confirm("「" + a.name + "」を削除します。このアプリでログインしている人は、次からログインできなくなります。よろしいですか?")) return;
+      b.disabled = true;
+      call("ka_oauth_app_delete", { p_client_id: a.client_id }).then(function (r) {
+        if (r && r.ok) { editing = null; render(); } else { b.disabled = false; say(msg, REASONS[r && r.reason] || NET); }
+      }).catch(function () { b.disabled = false; say(msg, NET); });
+    }));
+    kids.push(row, msg);
+    return el("div", { class: "app" }, kids);
+  }
+
+  function secretBox(clientId, secret) {
+    return el("div", { class: "secret" }, [
+      el("b", { text: "秘密のキー(client_secret)は、この1回しか表示されません。今すぐ安全な場所に控えてください。" }), el("br"),
+      el("code", { text: secret }), el("br"),
+      el("span", { class: "muted", text: "client_id: " + clientId + "  /  ブラウザ側のコードには入れないでください" })
+    ]);
+  }
+
+  function formNode(appsNode) {
+    var a = editing;
+    var f = el("div", { class: "app" });
+    f.appendChild(el("b", { text: a ? "アプリを編集: " + a.name : "アプリを登録する" }));
+    var name = el("input", { type: "text", maxlength: "40" }); name.value = a ? a.name : "";
+    var desc = el("input", { type: "text", maxlength: "200" }); desc.value = a ? a.description : "";
+    var home = el("input", { type: "text", maxlength: "200", placeholder: "https://…" }); home.value = a ? a.homepage : "";
+    var uris = el("textarea", { placeholder: "https://example.com/callback" }); uris.value = a ? a.redirect_uris.join("\n") : "";
+    var conf = el("input", { type: "checkbox" });
+    f.appendChild(el("label", { text: "アプリ名(同意画面に表示されます)" })); f.appendChild(name);
+    f.appendChild(el("label", { text: "説明(任意)" })); f.appendChild(desc);
+    f.appendChild(el("label", { text: "サイトのURL(任意)" })); f.appendChild(home);
+    f.appendChild(el("label", { text: "戻り先URL(1行に1つ、最大5つ。https://… か http://localhost…)" })); f.appendChild(uris);
+    if (!a) {
+      var l = el("label", {}, [conf, " 秘密のキー(client_secret)を使う(自分のサーバーでコードを交換する場合だけ。静的サイトはチェックしない)"]);
+      l.style.cursor = "pointer"; f.appendChild(l);
+    }
+    var msg = el("p", {});
+    var row = el("div", { class: "row" });
+    var go = btn(a ? "保存" : "登録する", "", function (b) {
+      var redirects = uris.value.split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+      b.disabled = true; msg.textContent = "";
+      var p = a
+        ? call("ka_oauth_app_update", { p_client_id: a.client_id, p_name: name.value, p_desc: desc.value, p_homepage: home.value, p_redirects: redirects })
+        : call("ka_oauth_app_create", { p_name: name.value, p_desc: desc.value, p_homepage: home.value, p_redirects: redirects, p_confidential: conf.checked });
+      p.then(function (r) {
+        if (r && r.ok) {
+          editing = null;
+          var note = null;
+          if (!a) {
+            note = el("div", { class: "secret" }, [el("b", { text: "登録できました。client_id: " }), el("code", { text: r.client_id })]);
+            if (r.client_secret) note = secretBox(r.client_id, r.client_secret);
+          }
+          render(note);
+        } else { b.disabled = false; say(msg, REASONS[r && r.reason] || NET); }
+      }).catch(function () { b.disabled = false; say(msg, NET); });
+    });
+    row.appendChild(go);
+    if (a) row.appendChild(btn("やめる", "sub", function () { editing = null; render(); }));
+    f.appendChild(row); f.appendChild(msg);
+    return f;
+  }
+
+  function loadGrants(node) {
+    call("ka_oauth_grants_list", {}).then(function (r) {
+      node.textContent = "";
+      if (!r || !r.ok) return node.appendChild(el("p", { class: "err", text: REASONS[r && r.reason] || NET }));
+      if (!r.grants.length) node.appendChild(el("p", { class: "muted", text: "連携中のアプリはありません。" }));
+      r.grants.forEach(function (g) {
+        var title = el("b", { text: g.name });
+        title.appendChild(el("span", { class: "badge " + (g.verified ? "ok" : "warn"), text: g.verified ? "確認済み" : "未確認" }));
+        var msg = el("p", {});
+        var d = new Date(g.granted_at);
+        node.appendChild(el("div", { class: "app" }, [title,
+          el("div", { class: "muted", text: "作成者: " + g.owner_name + (g.homepage ? " / " + g.homepage : "") + " / 許可した日: " + (isNaN(d) ? "" : d.toLocaleDateString("ja-JP")) }),
+          el("div", { class: "row" }, [btn("連携を取り消す", "danger", function (b) {
+            if (!confirm("「" + g.name + "」への許可を取り消します。このアプリではログインした状態でなくなります。")) return;
+            b.disabled = true;
+            call("ka_oauth_grant_revoke", { p_client_id: g.client_id }).then(function (r2) {
+              if (r2 && r2.ok) loadGrants(node); else { b.disabled = false; say(msg, REASONS[r2 && r2.reason] || NET); }
+            }).catch(function () { b.disabled = false; say(msg, NET); });
+          })]), msg]));
+      });
+    }).catch(function () { node.textContent = NET; });
+  }
+
+  KaAccount.ready.then(function () {
+    var last = KaAccount.isLoggedIn() ? KaAccount.user().username : "";
+    render();
+    KaAccount.onChange(function (u) { var k = u ? u.username : ""; if (k !== last) { last = k; editing = null; render(); } });
+  });
+})();
+</script>
+</body>
+</html>

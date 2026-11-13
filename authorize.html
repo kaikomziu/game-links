@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>かるわかGAMESでログイン</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b0820; color: #eef; font: 15px/1.6 system-ui, "Yu Gothic UI", sans-serif; padding: 16px; }
+  .card { width: 100%; max-width: 420px; background: #17133a; border: 1px solid #2f2a66; border-radius: 16px; padding: 24px 22px; box-shadow: 0 10px 40px #0008; }
+  h1 { font-size: 17px; margin: 0 0 4px; color: #bcd; font-weight: 600; }
+  .brand { font-size: 13px; color: #8fd0ff; margin-bottom: 14px; }
+  .app { background: #0f0c2b; border: 1px solid #2f2a66; border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+  .app b { font-size: 18px; word-break: break-all; }
+  .app .desc { color: #cde; font-size: 13px; margin-top: 4px; word-break: break-word; }
+  .app .meta { color: #99a; font-size: 12px; margin-top: 6px; word-break: break-all; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
+  .badge.ok { background: #14532d; color: #86efac; }
+  .badge.warn { background: #4a3a05; color: #fde68a; }
+  ul { margin: 8px 0 12px; padding-left: 20px; color: #dde; }
+  li.no { color: #99a; list-style: none; margin-left: -20px; }
+  .who { font-size: 13px; color: #bcd; margin: 10px 0; }
+  .who a { color: #8fd0ff; cursor: pointer; text-decoration: underline; }
+  .row { display: flex; gap: 10px; margin-top: 14px; }
+  button { flex: 1; font: inherit; font-weight: 600; padding: 11px 12px; border-radius: 10px; border: 0; cursor: pointer; }
+  button.main { background: #6d5dfc; color: #fff; }
+  button.main:hover { background: #7d6dff; }
+  button.sub { background: #2a2557; color: #dde; }
+  button.sub:hover { background: #38327a; }
+  button:disabled { opacity: .5; cursor: default; }
+  .note { font-size: 12px; color: #99a; margin-top: 12px; }
+  .err { color: #fca5a5; }
+  .warnbox { background: #3a2a05; border: 1px solid #7a5a10; color: #fde68a; font-size: 12.5px; border-radius: 10px; padding: 8px 10px; margin: 10px 0; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<!--
+  かるわかGAMESを「OAuth提供側」にするための認可画面(認可コードフロー + PKCE)。
+  使い方は developers.html を見る。ここでは、①アプリと戻り先が登録どおりか確認 → ②ログイン(なければ) →
+  ③初めてなら「許可しますか?」を聞く → ④認可コードをつけて戻り先へ返す、をやる。
+  戻り先が登録と完全一致しないときは、どこにも戻さずここでエラーを見せる(オープンリダイレクト対策)。
+-->
+<main class="card" id="card"><p>確認しています…</p></main>
+
+<script src="js/karuwaka-account.js" data-badge="off"></script>
+<script>
+(function () {
+  "use strict";
+  // クリックジャッキング対策(GitHub Pagesでは応答ヘッダーで禁止できないので、枠の中なら動かさない)
+  if (window.top !== window.self) {
+    document.getElementById("card").innerHTML = "<p>この画面は、ほかのページの中では表示できません。</p>";
+    try { window.top.location = window.self.location; } catch (e) {}
+    return;
+  }
+  var URL_BASE = "https://kifnzvktwbomxthzvvgy.supabase.co";
+  var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZm56dmt0d2JvbXh0aHp2dmd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzgxMzgsImV4cCI6MjA5MzQxNDEzOH0.M7nXP-u--6J_6rRpgz1cJj21_7KX6MtfTmZy77Xf_IE";
+  var card = document.getElementById("card");
+  var q = new URLSearchParams(location.search);
+  var clientId = q.get("client_id") || "";
+  var redirectUri = q.get("redirect_uri") || "";
+  var state = q.get("state");
+  var challenge = q.get("code_challenge") || "";
+  var method = q.get("code_challenge_method") || (challenge ? "plain" : "");
+  var info = null, busy = false;
+
+  function el(tag, props, kids) {
+    var e = document.createElement(tag);
+    for (var k in (props || {})) {
+      if (k === "text") e.textContent = props[k];
+      else if (k === "class") e.className = props[k];
+      else e.setAttribute(k, props[k]);
+    }
+    (kids || []).forEach(function (c) { e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function show(nodes) { card.textContent = ""; nodes.forEach(function (n) { card.appendChild(n); }); }
+
+  function rpc(fn, args) {
+    return fetch(URL_BASE + "/rest/v1/rpc/" + fn, {
+      method: "POST",
+      headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(args)
+    }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); });
+  }
+
+  // 戻り先へ(登録と一致した redirect_uri にだけ使う)
+  function back(params) {
+    var u = new URL(redirectUri);
+    for (var k in params) u.searchParams.set(k, params[k]);
+    if (state != null) u.searchParams.set("state", state);
+    show([el("p", { text: "アプリに戻っています…" })]);
+    location.replace(u.href);
+  }
+  function deny(code, desc) { back({ error: code, error_description: desc }); }
+
+  function fatal(msg) {
+    show([el("h1", { text: "ログインできません" }), el("p", { class: "err", text: msg }),
+      el("p", { class: "note", text: "アプリ側の設定に問題があるようです。このページを閉じて、アプリの作者に知らせてください。" })]);
+  }
+
+  function host() { try { return new URL(redirectUri).host; } catch (e) { return redirectUri; } }
+
+  function appCard() {
+    var title = el("b", { text: info.name });
+    title.appendChild(el("span", info.verified ? { class: "badge ok", text: "確認済み" } : { class: "badge warn", text: "未確認" }));
+    var kids = [title];
+    if (info.description) kids.push(el("div", { class: "desc", text: info.description }));
+    kids.push(el("div", { class: "meta", text: "作成者: " + info.owner_name + " (@" + info.owner_username + ")" }));
+    kids.push(el("div", { class: "meta", text: "ログイン後の戻り先: " + host() }));
+    return el("div", { class: "app" }, kids);
+  }
+
+  function head() {
+    return [el("div", { class: "brand", text: "かるわかGAMES" }), el("h1", { text: "次のアプリが、あなたのかるわかGAMESアカウントでのログインを求めています" })];
+  }
+
+  function renderLogin() {
+    var login = el("button", { class: "main", type: "button", text: "かるわかGAMESでログイン" });
+    var cancel = el("button", { class: "sub", type: "button", text: "キャンセル" });
+    login.addEventListener("click", function () { KaAccount.login("login"); });
+    cancel.addEventListener("click", function () { deny("access_denied", "user canceled"); });
+    show(head().concat([appCard(), el("div", { class: "row" }, [cancel, login]),
+      el("p", { class: "note", text: "アカウントを持っていなくても、ログイン画面から作れます(Google・Discord・GitHubでも作れます)。" })]));
+  }
+
+  function renderConsent(user) {
+    var allow = el("button", { class: "main", type: "button", text: "許可する" });
+    var cancel = el("button", { class: "sub", type: "button", text: "キャンセル" });
+    var other = el("a", { text: "別のアカウントで続ける" });
+    allow.addEventListener("click", function () { authorize(true, allow); });
+    cancel.addEventListener("click", function () { deny("access_denied", "user canceled"); });
+    other.addEventListener("click", function () { KaAccount.logout(); });
+    var nodes = head().concat([appCard()]);
+    if (!info.verified) nodes.push(el("div", { class: "warnbox", text: "このアプリは、運営による確認を受けていません。心当たりのないアプリは「キャンセル」してください。" }));
+    nodes.push(el("div", { class: "who" }, ["ログイン中: " + user.avatar + " " + user.display_name + " (@" + user.username + ")  ", other]));
+    nodes.push(el("p", { text: "許可すると、このアプリに次の情報が渡ります:" }));
+    nodes.push(el("ul", {}, [
+      el("li", { text: "ユーザー名・表示名・アイコン" }),
+      el("li", { class: "no", text: "※ パスワードや、ゲームのセーブデータは渡りません" })
+    ]));
+    nodes.push(el("div", { class: "row" }, [cancel, allow]));
+    nodes.push(el("p", { class: "note", text: "あとから、developers.html の「連携中のアプリ」でいつでも取り消せます。" }));
+    show(nodes);
+  }
+
+  function authorize(consent, btn) {
+    if (busy) return;
+    busy = true;
+    if (btn) btn.disabled = true;
+    var token = KaAccount.token();
+    rpc("ka_oauth_authorize", {
+      p_token: token, p_client_id: clientId, p_redirect_uri: redirectUri,
+      p_challenge: challenge || null, p_consent: !!consent
+    }).then(function (r) {
+      busy = false;
+      if (r && r.ok) return back({ code: r.code });
+      if (r && r.reason === "consent") return renderConsent(KaAccount.user());
+      if (r && r.reason === "auth") return render();
+      if (r && r.reason === "challenge") return deny("invalid_request", "code_challenge (S256) is required");
+      fatal("認可できませんでした(" + ((r && r.reason) || "unknown") + ")");
+    }).catch(function () {
+      busy = false;
+      if (btn) btn.disabled = false;
+      show([el("h1", { text: "通信できませんでした" }), el("p", { class: "err", text: "ネットワークを確認して、もう一度ためしてください。" }),
+        (function () { var b = el("button", { class: "main", type: "button", text: "再読み込み" }); b.addEventListener("click", function () { location.reload(); }); return b; })()]);
+    });
+  }
+
+  function render() {
+    if (!info) return;
+    if (!KaAccount.isLoggedIn()) return renderLogin();
+    authorize(false); // 許可済みならそのまま戻る。初めてなら同意画面を出す
+  }
+
+  function start() {
+    if (!clientId || !redirectUri) return fatal("アプリの情報(client_id / redirect_uri)が足りません。");
+    rpc("ka_oauth_app_info", { p_client_id: clientId, p_redirect_uri: redirectUri }).then(function (r) {
+      if (!r || !r.ok) {
+        return fatal(r && r.reason === "redirect" ? "戻り先のURLが、アプリに登録されたものと一致しません。" : "このアプリは登録されていないか、停止されています。");
+      }
+      info = r;
+      if ((q.get("response_type") || "code") !== "code") return deny("unsupported_response_type", "only response_type=code is supported");
+      if (challenge && method !== "S256") return deny("invalid_request", "code_challenge_method must be S256");
+      if (!challenge && !info.confidential) return deny("invalid_request", "code_challenge (PKCE, S256) is required");
+      KaAccount.ready.then(function () {
+        var last = null;
+        KaAccount.onChange(function (u) {
+          var key = u ? u.username : "";
+          if (key === last) return;
+          last = key;
+          render();
+        });
+        last = KaAccount.isLoggedIn() ? KaAccount.user().username : "";
+        render();
+      });
+    }).catch(function () { fatal("通信できませんでした。ネットワークを確認して、再読み込みしてください。"); });
+  }
+  start();
+})();
+</script>
+</body>
+</html>
