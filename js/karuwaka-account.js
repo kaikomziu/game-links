@@ -112,7 +112,7 @@
   const OAUTH_URL = PORTAL_URL + "oauth.html";
   const PROVIDER_LABEL = { google: "Google", discord: "Discord", github: "GitHub", mixall: "MixAll" };
   const MIXALL_API = "https://mixalls.vercel.app/api/dev";   // MixAll(友人のサイト)のOAuth。入口は mixall-login.html
-  const MIXALL_CLIENT = "mxc_894f768f0ba2c2f9202e7f1f31b6b0f6";
+  const MIXALL_CLIENT = "mxc_8184495951de4b83144caa121de5cdee";
   const MIXALL_REDIRECT = PORTAL_URL + "mixall-login.html";
   let oauthReturn = null; // 戻ってきたとき: { jwt, mode } または { error }
   {
