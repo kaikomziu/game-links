@@ -610,7 +610,7 @@ const Articles = (() => {
     if (!c) return null;
     const { data, error } = await c.rpc("gl_featured_game_get");
     if (error || !data || data.ok === false) return null;
-    return data.game_id || null;
+    return Array.isArray(data.game_ids) ? data.game_ids : (data.game_id ? [data.game_id] : []);
   }
 
   // かるわかGAMESアカウントが「管理者」なら、パスワードなしで管理者としてログインする。
