@@ -1,0 +1,211 @@
+/* クリスマスの派手な演出(xmasfx.js)。christmas.css の後に読み込む。控えめ表示(html.xm-calm)では動きを止める/隠す */
+
+/* ===== イルミネーション: 画面の上の電飾(色とりどりの電球が交互にチカチカ) ===== */
+.xm-lights { position: fixed; top: 0; left: 0; right: 0; height: 18px; z-index: 31; pointer-events: none; }
+.xm-lights::before { content: ""; position: absolute; left: 0; right: 0; top: 3px; height: 2px; background: #0f3a26; opacity: 0.9; }
+.xm-bulbs { position: absolute; inset: 0; background-repeat: repeat-x; background-size: 48px 18px; }
+.xm-bulbs.r { background-image: radial-gradient(circle at 6px 9px, #ff4d5a 0 3px, rgba(255, 77, 90, 0.4) 4px, transparent 9px); background-position: 0 0; }
+.xm-bulbs.y { background-image: radial-gradient(circle at 6px 9px, #ffd166 0 3px, rgba(255, 209, 102, 0.4) 4px, transparent 9px); background-position: 12px 0; }
+.xm-bulbs.g { background-image: radial-gradient(circle at 6px 9px, #5ee08a 0 3px, rgba(94, 224, 138, 0.4) 4px, transparent 9px); background-position: 24px 0; }
+.xm-bulbs.c { background-image: radial-gradient(circle at 6px 9px, #8be9ff 0 3px, rgba(139, 233, 255, 0.4) 4px, transparent 9px); background-position: 36px 0; }
+.xm-bulbs.a { animation: xmBlinkA 1.6s step-end infinite; }
+.xm-bulbs.b { animation: xmBlinkB 1.6s step-end infinite; }
+@keyframes xmBlinkA { 0% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes xmBlinkB { 0% { opacity: 0.25; } 50% { opacity: 1; } }
+
+/* ゲームカードにも色とりどりの光(数枚はキラキラ瞬く) */
+html.christmas #gameGrid .game-card:nth-child(4n+1) { box-shadow: 0 0 10px rgba(230, 57, 70, 0.3); }
+html.christmas #gameGrid .game-card:nth-child(4n+2) { box-shadow: 0 0 10px rgba(94, 224, 138, 0.26); }
+html.christmas #gameGrid .game-card:nth-child(4n+3) { box-shadow: 0 0 10px rgba(255, 209, 102, 0.28); }
+html.christmas #gameGrid .game-card:nth-child(4n) { box-shadow: 0 0 10px rgba(139, 233, 255, 0.24); }
+html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3) { animation: xmTwinkle 2.6s ease-in-out infinite alternate; }
+@keyframes xmTwinkle {
+  from { box-shadow: 0 0 6px rgba(255, 209, 102, 0.2); }
+  to { box-shadow: 0 0 20px rgba(255, 209, 102, 0.85); }
+}
+
+/* ===== 夜空: オーロラと流れ星 ===== */
+.xm-aurora { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; mix-blend-mode: screen; opacity: 0.55; }
+.xm-aurora i { position: absolute; left: -20%; width: 140%; height: 60%; top: -12%; }
+.xm-aurora .g1 {
+  background:
+    radial-gradient(ellipse 50% 50% at 30% 50%, rgba(94, 224, 138, 0.4), transparent 70%),
+    radial-gradient(ellipse 40% 45% at 72% 40%, rgba(139, 233, 255, 0.34), transparent 70%);
+  animation: xmAur1 18s ease-in-out infinite alternate;
+}
+.xm-aurora .g2 {
+  background:
+    radial-gradient(ellipse 45% 50% at 60% 50%, rgba(255, 154, 213, 0.28), transparent 70%),
+    radial-gradient(ellipse 40% 45% at 20% 40%, rgba(170, 120, 255, 0.3), transparent 70%);
+  animation: xmAur2 24s ease-in-out infinite alternate;
+}
+@keyframes xmAur1 { from { transform: translateX(-6%) skewX(-6deg); } to { transform: translateX(8%) skewX(6deg); } }
+@keyframes xmAur2 { from { transform: translateX(7%) skewX(5deg); } to { transform: translateX(-7%) skewX(-5deg); } }
+.xm-meteor {
+  position: fixed;
+  z-index: 6;
+  width: 130px;
+  height: 2px;
+  border-radius: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #fff, transparent);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  rotate: -32deg;
+  opacity: 0;
+  animation: xmMet 1.1s ease-in forwards;
+}
+@keyframes xmMet {
+  0% { translate: 0 0; opacity: 0; }
+  15% { opacity: 1; }
+  100% { translate: -42vw 26vh; opacity: 0; }
+}
+
+/* ===== 吹雪 ===== */
+.xm-snow.xm-storm { z-index: 6; }
+.xm-snow.xm-storm span {
+  top: -30px;
+  opacity: 0.9;
+  animation: xmStorm linear infinite;
+}
+@keyframes xmStorm {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(var(--w, -20vw), calc(100vh + 60px)) rotate(360deg); }
+}
+
+/* ===== 花火 ===== */
+.xm-fw { position: fixed; z-index: 7; width: 0; height: 0; pointer-events: none; }
+.xm-fw i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  background: var(--c, #fff);
+  box-shadow: 0 0 8px var(--c, #fff);
+  animation: xmFw 1.2s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+}
+@keyframes xmFw {
+  0% { transform: translate(0, 0) scale(1.2); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+
+/* ===== サンタ大行進 ===== */
+.xm-parade { position: fixed; top: var(--y, 25vh); left: 0; z-index: 100; pointer-events: none; animation: xmParade var(--dur, 16s) linear forwards; }
+.xm-parade .row {
+  display: flex;
+  gap: 6px;
+  font-size: 3.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 14px rgba(255, 209, 102, 0.9));
+  animation: xmBob2 0.8s ease-in-out infinite alternate;
+}
+.xm-parade .row i { font-style: normal; }
+.xm-parade .row .sleigh { font-size: 4rem; }
+.xm-parade:not(.rtl) .row { transform: scaleX(-1); }
+.xm-parade.rtl { animation-name: xmParadeBack; }
+@keyframes xmParade { from { transform: translateX(-540px); } to { transform: translateX(calc(100vw + 60px)); } }
+@keyframes xmParadeBack { from { transform: translateX(calc(100vw + 60px)); } to { transform: translateX(-540px); } }
+@keyframes xmBob2 { from { translate: 0 0; } to { translate: 0 -12px; } }
+.xm-drop {
+  position: fixed;
+  z-index: 120;
+  padding: 2px;
+  font-size: 1.8rem;
+  line-height: 1;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transform: translate(-50%, 0);
+  filter: drop-shadow(0 0 6px rgba(255, 209, 102, 0.8));
+  animation: xmDrop 5s linear forwards;
+}
+.xm-drop.gold { filter: drop-shadow(0 0 12px #ffd166); font-size: 2.1rem; }
+@keyframes xmDrop { from { translate: 0 0; rotate: 0deg; } to { translate: 0 var(--fall, 400px); rotate: var(--tilt, 20deg); } }
+
+/* ===== 開幕・当日の大演出 ===== */
+.xm-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(230, 57, 70, 0.4), rgba(4, 12, 22, 0.93) 70%);
+  backdrop-filter: blur(3px);
+  animation: xmIntroIn 0.5s ease-out;
+}
+.xm-intro.out { animation: xmIntroOut 0.45s ease-in forwards; }
+@keyframes xmIntroIn { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+@keyframes xmIntroOut { to { opacity: 0; transform: scale(0.97); } }
+.xm-intro-inner { max-width: 92vw; padding: 24px; text-align: center; color: #eef6ff; }
+.xm-intro-star { font-size: 1.6rem; letter-spacing: 0.3em; animation: xmBob 0.9s ease-in-out infinite; }
+.xm-intro-title {
+  margin: 10px 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(1.8rem, 7vw, 4rem);
+  letter-spacing: 0.08em;
+  color: #ffd166;
+  text-shadow: 0 0 12px #e63946, 0 0 30px #e63946, 0 0 60px #e63946;
+  animation: xmTitle 1.2s ease-in-out infinite alternate;
+}
+@keyframes xmTitle { from { transform: scale(1); } to { transform: scale(1.05); } }
+.xm-intro-sub { margin-bottom: 18px; font-size: clamp(0.9rem, 2.6vw, 1.2rem); }
+.xm-intro-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.xm-intro-btns button {
+  padding: 9px 20px;
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  color: #ffd166;
+  background: #0b1d2f;
+  border: 2px solid #2f6f8f;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.xm-intro-btns button.pri { color: #fff; background: #e63946; border-color: #ffd0d4; }
+.xm-intro-btns button:hover { border-color: #ffd166; }
+
+/* ===== マイツリー ===== */
+.xm-tree-box {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 80;
+  width: 84px;
+  height: 110px;
+  padding: 2px;
+  background: rgba(6, 17, 30, 0.55);
+  border: 2px solid #2f6f8f;
+  border-radius: 12px;
+  cursor: pointer;
+  filter: drop-shadow(0 0 10px rgba(94, 224, 138, 0.45));
+}
+.xm-tree-box:hover { border-color: #ffd166; }
+.xm-tree-box svg { display: block; width: 100%; height: 100%; }
+.xm-bulb { animation: xmBulb 1.4s ease-in-out infinite alternate; }
+.xm-bulb.b1 { animation-delay: -0.5s; }
+.xm-bulb.b2 { animation-delay: -1s; }
+@keyframes xmBulb { from { opacity: 0.45; } to { opacity: 1; } }
+.xm-tree-dialog { width: min(420px, 100%); }
+.xm-tree-big svg { display: block; width: min(260px, 70vw); height: auto; margin: 0 auto; }
+.xm-tree-lv { color: var(--star); font-family: var(--font-pixel); }
+.xm-tree-stat { text-align: center; margin-top: 8px; font-size: 0.9rem; }
+.xm-tree-stat b { color: var(--star); }
+.xm-tree-opt { display: block; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; }
+@media (max-width: 700px) {
+  .xm-tree-box { width: 58px; height: 76px; left: 4px; bottom: 4px; }
+  .xm-lights { height: 14px; }
+  .xm-parade .row { font-size: 2.2rem; }
+  .xm-parade .row .sleigh { font-size: 2.8rem; }
+}
+
+/* ===== 控えめ表示 / 動きを減らす設定 ===== */
+html.xm-calm .xm-bulbs { animation: none; }
+html.xm-calm .xm-aurora,
+html.xm-calm .xm-meteor { display: none; }
+html.xm-calm .xm-bulb { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .xm-intro-star, .xm-intro-title { animation: none; }
+}

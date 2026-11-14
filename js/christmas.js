@@ -140,6 +140,15 @@ const Xmas = (() => {
   };
   const GET = ["🎁 プレゼントゲット！", "🎁 リボンつきのプレゼントをもらった！", "🎁 サンタさんからのプレゼント！", "🎁 いい子にしてたからプレゼント！"];
 
+  // ---- 控えめ表示(動きが苦手な人・重い端末向け)。動きを減らす設定の端末では最初から控えめ ----
+  function isCalm() {
+    if (reduceMotion) return true;
+    try { return localStorage.getItem("gl_xmas_calm") === "1"; } catch (e) { return false; }
+  }
+  function setCalm(on) {
+    try { localStorage.setItem("gl_xmas_calm", on ? "1" : "0"); } catch (e) {}
+  }
+
   // ---- 雪 ----
   let snowBox = null;
   function startSnow() {
@@ -148,7 +157,7 @@ const Xmas = (() => {
     snowBox.className = "xm-snow";
     snowBox.setAttribute("aria-hidden", "true");
     const small = window.innerWidth < 700;
-    const n = small ? 18 : 34;
+    const n = isCalm() ? 14 : small ? 30 : 64;
     for (let i = 0; i < n; i++) {
       const f = document.createElement("span");
       f.textContent = Math.random() < 0.8 ? "❄" : "❅";
@@ -202,6 +211,7 @@ const Xmas = (() => {
   function giveGifts(n, x, y, label) {
     const before = XmasStore.get();
     const total = XmasStore.add(n);
+    if (typeof XmasFx !== "undefined") XmasFx.sfx("gift");
     if (x !== undefined) popAt(x, y, `+${n} 🎁`);
     if (Math.floor(total / 5) > Math.floor(before / 5)) {
       giftRain();
@@ -255,6 +265,9 @@ const Xmas = (() => {
       `<span class="xm-gift" id="xmGift">🎁 ${XmasStore.get()}</span>` +
       `<button type="button" id="xmAdventBtn">アドベント</button>` +
       `<button type="button" id="xmShopBtn">ショップ</button>` +
+      `<button type="button" id="xmTreeBtn">🎄マイツリー</button>` +
+      `<button type="button" id="xmSoundBtn" aria-pressed="false">🔇 音</button>` +
+      `<button type="button" id="xmCalmBtn" title="動きを控えめにする/派手に戻す">${isCalm() ? "✨ 派手に" : "🌙 控えめ"}</button>` +
       `<button type="button" id="xmDismiss">通常表示に戻す</button>`;
     host.insertBefore(el, host.firstChild);
     document.getElementById("xmAdventBtn").addEventListener("click", () => {
@@ -262,6 +275,17 @@ const Xmas = (() => {
     });
     document.getElementById("xmShopBtn").addEventListener("click", () => {
       if (typeof XmasShop !== "undefined") XmasShop.open();
+    });
+    document.getElementById("xmTreeBtn").addEventListener("click", () => {
+      if (typeof XmasFx !== "undefined") XmasFx.openTree();
+    });
+    document.getElementById("xmSoundBtn").addEventListener("click", () => {
+      if (typeof XmasFx !== "undefined") XmasFx.toggleSound();
+    });
+    document.getElementById("xmCalmBtn").addEventListener("click", () => {
+      if (reduceMotion) { toast("この端末は「動きを減らす」設定のため、いつも控えめ表示です"); return; }
+      setCalm(!isCalm());
+      location.reload();
     });
     document.getElementById("xmDismiss").addEventListener("click", () => {
       try { sessionStorage.setItem("gl_no_christmas", "1"); } catch (e) {}
@@ -272,6 +296,7 @@ const Xmas = (() => {
   function init() {
     if (!active()) return;
     document.documentElement.classList.add("christmas");
+    if (isCalm()) document.documentElement.classList.add("xm-calm");
     document.title = "🎄 " + document.title;
     const insert = document.getElementById("heroInsert");
     if (insert) insert.textContent = "🎄 MERRY CHRISTMAS";
@@ -288,6 +313,6 @@ const Xmas = (() => {
 
   return {
     isActive: active, phase, now, seasonYear, adventUnlockedDay,
-    startSnow, stopSnow, giftRain, spawnSanta, giveGifts, reduceMotion,
+    startSnow, stopSnow, giftRain, spawnSanta, giveGifts, reduceMotion, isCalm, toast, popAt,
   };
 })();

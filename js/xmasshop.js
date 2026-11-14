@@ -245,6 +245,7 @@ const XmasShop = (() => {
             XmasStore.own(item.id);
             syncPerk(item);
             refreshLogo();
+            if (typeof XmasFx !== "undefined") XmasFx.sfx("buy");
             toast(`${item.emoji} 「${item.name}」を手に入れた！`);
           }
         } else if (act === "toggle") {
@@ -316,6 +317,7 @@ const XmasShop = (() => {
     if (day < 1 || day > 24 || day > Xmas.adventUnlockedDay()) return;
     if (XmasStore.opened(year).includes(day)) return;
     XmasStore.markOpened(year, day);
+    if (typeof XmasFx !== "undefined") XmasFx.sfx("door");
     const gain = ADVENT_GIFTS(day);
     Xmas.giveGifts(gain, undefined, undefined, `🎁 ${day}日の窓を開けた！ +${gain}`);
     adventNote = `${day}日: ${ADVENT_MSGS[day - 1]} (+${gain}🎁)`;

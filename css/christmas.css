@@ -128,8 +128,8 @@ html.xm-orn .game-card::before {
   to { transform: translateY(calc(100vh + 60px)); }
 }
 @keyframes xmSway {
-  from { margin-left: -16px; }
-  to { margin-left: 16px; }
+  from { translate: -16px 0; }
+  to { translate: 16px 0; }
 }
 
 /* ===== 横切るサンタ ===== */
