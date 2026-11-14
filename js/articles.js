@@ -605,6 +605,14 @@ const Articles = (() => {
     return data;
   }
 
+  async function getFeaturedGame() {
+    const c = sb();
+    if (!c) return null;
+    const { data, error } = await c.rpc("gl_featured_game_get");
+    if (error || !data || data.ok === false) return null;
+    return data.game_id || null;
+  }
+
   // かるわかGAMESアカウントが「管理者」なら、パスワードなしで管理者としてログインする。
   // かるわかGAMESアカウントからログアウトしたら、そのログイン(via:"ka")も外す。変化があれば true
   async function kaAdminSync() {
@@ -713,7 +721,7 @@ const Articles = (() => {
     renderMarkdown, openLogin, renderView: renderArticlesView, hideView: hideArticlesView,
     state: () => ({ admin: !!admin, name: admin && admin.name, count: list.length }),
     // イベントタブなど、他の機能がログイン状態と共通部品を使うための口
-    api: { getAdmin: () => admin, callRpc, openModal, closeModal, esc, toast, openAdminManager, logout, getPublicGames },
+    api: { getAdmin: () => admin, callRpc, openModal, closeModal, esc, toast, openAdminManager, logout, getPublicGames, getFeaturedGame },
   };
 })();
 

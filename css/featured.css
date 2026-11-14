@@ -1,0 +1,31 @@
+/* 注目のゲーム */
+.featured-game {
+  position: relative;
+  overflow: hidden;
+  margin: 12px 0 16px;
+  padding: 18px 20px 20px;
+  color: #fff;
+  background: radial-gradient(circle at 85% 20%, rgba(255, 62, 165, .28), transparent 34%), linear-gradient(135deg, #20103e, #0b2340 58%, #10182f);
+  border: 3px solid var(--neon-pink);
+  border-radius: 18px;
+  box-shadow: 0 0 28px rgba(255, 62, 165, .28), inset 0 0 30px rgba(24, 213, 255, .1);
+}
+.featured-kicker { color: var(--neon-yellow); font-family: var(--font-pixel); font-size: .78rem; letter-spacing: .08em; }
+.featured-body { display: grid; grid-template-columns: 150px minmax(0, 1fr); align-items: center; gap: 18px; margin-top: 8px; }
+.featured-emoji { display: grid; min-height: 140px; place-items: center; background: rgba(7, 14, 34, .54); border: 2px solid rgba(255, 255, 255, .22); border-radius: 16px; font-size: 6rem; }
+.featured-copy { min-width: 0; }
+.featured-label { margin: 0 0 2px; color: #b7d8ed; font-size: .82rem; }
+.featured-copy h2 { margin: 0; color: #fff; font-size: clamp(1.5rem, 3vw, 2.4rem); text-shadow: 0 0 15px rgba(255, 62, 165, .5); }
+.featured-desc { display: -webkit-box; max-width: 900px; margin: 8px 0; overflow: hidden; color: #d9eaf7; font-size: .9rem; line-height: 1.65; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.featured-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; color: #a9c4d8; font-size: .76rem; }
+.featured-play { display: inline-block; margin-top: 12px; padding: 9px 16px; color: #fff; background: var(--neon-pink); border: 2px solid #ff9bd0; border-radius: 999px; box-shadow: 0 0 14px rgba(255, 62, 165, .35); font-weight: 700; text-decoration: none; }
+.featured-play:hover { background: #ff78bd; }
+.featured-dialog { width: min(620px, 100%); }
+@media (max-width: 560px) {
+  .featured-game { padding: 14px; }
+  .featured-body { grid-template-columns: 76px minmax(0, 1fr); gap: 12px; }
+  .featured-emoji { min-height: 76px; font-size: 3rem; }
+  .featured-desc { font-size: .78rem; -webkit-line-clamp: 4; }
+  .featured-copy h2 { font-size: 1.25rem; }
+  .featured-play { padding: 8px 12px; font-size: .8rem; }
+}

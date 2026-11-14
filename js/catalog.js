@@ -29,6 +29,7 @@
       const rows = await api().getPublicGames();
       if (typeof window.refreshGameCatalog === "function") window.refreshGameCatalog(rows.map(toGame));
       loaded = true;
+      document.dispatchEvent(new CustomEvent("gl-catalog-ready"));
     } catch (e) {
       // 管理者追加欄は使えなくても、静的なゲーム一覧は通常どおり使える。
     }
@@ -45,7 +46,7 @@
       return;
     }
     bar.hidden = false;
-    bar.innerHTML = `<span class="ad-who">🔓 ログイン中: <b>${esc(ad.name)}</b></span><button type="button" class="ad-btn primary" data-catalog="new">➕ ${view === "soft" ? "ソフト・MOD" : "ゲーム"}を追加</button>`;
+    bar.innerHTML = `<span class="ad-who">🔓 ログイン中: <b>${esc(ad.name)}</b></span><button type="button" class="ad-btn primary" data-catalog="new">➕ ${view === "soft" ? "ソフト・MOD" : "ゲーム"}を追加</button><button type="button" class="ad-btn" data-catalog="featured">⭐ 注目のゲームを設定</button>`;
   }
 
   function openEditor() {
@@ -125,7 +126,10 @@
 
   function init() {
     const bar = document.getElementById("catalogAdmin");
-    if (bar) bar.addEventListener("click", (event) => { if (event.target.closest('[data-catalog="new"]')) openEditor(); });
+    if (bar) bar.addEventListener("click", (event) => {
+      if (event.target.closest('[data-catalog="new"]')) openEditor();
+      if (event.target.closest('[data-catalog="featured"]')) document.dispatchEvent(new CustomEvent("gl-featured-edit"));
+    });
     document.addEventListener("gl-admin-change", () => { renderBar(); loaded = false; load(); });
     document.addEventListener("click", () => setTimeout(renderBar, 0));
     load();
