@@ -114,6 +114,8 @@
   const MIXALL_API = "https://mixalls.vercel.app/api/dev";   // MixAll(友人のサイト)のOAuth。入口は mixall-login.html
   const MIXALL_CLIENT = "mxc_8184495951de4b83144caa121de5cdee";
   const MIXALL_REDIRECT = PORTAL_URL + "mixall-login.html";
+  const MIXALL_BASE = "https://mixalls.vercel.app";
+  const MIXALL_VERIFY = `${URL_BASE}/functions/v1/ka-mixall/verify`; // MixAllの証明書を、サーバー側で確かめてチケットに換える
   let oauthReturn = null; // 戻ってきたとき: { jwt, mode } または { error }
   {
     const h = location.hash || "";
@@ -127,14 +129,68 @@
     }
   }
   let providersPromise = null;
-  // MixAll側に「この戻り先が登録されている」ときだけ、MixAllのボタンを出す(MixAllが止まっているときも出さない)
+  // MixAllの「MixAllでログイン」(権限の一覧 loginLinksCatalog)が動いているときだけ、ボタンを出す(MixAllが止まっているときは出さない)
   function mixallAvailable() {
     const ac = typeof AbortController === "function" ? new AbortController() : null;
     const timer = ac ? setTimeout(() => ac.abort(), 4000) : null;
     return fetch(MIXALL_API, {
       method: "POST", headers: { "Content-Type": "application/json" }, signal: ac ? ac.signal : undefined,
-      body: JSON.stringify({ action: "oauthInfo", client_id: MIXALL_CLIENT, redirect_uri: MIXALL_REDIRECT }),
+      body: JSON.stringify({ action: "loginLinksCatalog" }),
     }).then((r) => r.ok).catch(() => false).then((v) => { if (timer) clearTimeout(timer); return v; });
+  }
+
+  // ---- MixAllでログイン(ポップアップ方式) ----
+  // MixAll公式SDK(mixall-login.js)と同じやり取りを、ここに直接書いている(第三者のスクリプトを、全ゲーム共通のこのサイトの中で動かさないため)。
+  // MixAllの了承画面(/login-links)をポップアップで開き、postMessageで要求(名前だけ)を渡し、返ってきた certificate を受け取る。
+  // certificate は、そのサイト(origin)でしか使えない。信用はせず、必ずサーバー(ka-mixall /verify)がMixAllに問い合わせて確かめる。
+  function mixallPopup() {
+    return new Promise((resolve, reject) => {
+      const nonce = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(16).padStart(2, "0")).join("");
+      const w = window.open(MIXALL_BASE + "/login-links", "mixall-login", "width=520,height=720"); // ボタンのクリックの中で呼ぶこと
+      if (!w) return reject({ blocked: true });
+      let done = false, sent = false, watch = 0, timer = 0;
+      const finish = (fn, v) => { if (done) return; done = true; clearInterval(watch); clearTimeout(timer); window.removeEventListener("message", onMsg); fn(v); };
+      timer = setTimeout(() => { finish(reject, { timeout: true }); try { w.close(); } catch (e) {} }, 15 * 60000);
+      watch = setInterval(() => { if (w.closed) setTimeout(() => finish(reject, { cancelled: true }), 400); }, 500);
+      function onMsg(e) {
+        if (e.origin !== MIXALL_BASE || e.source !== w) return;
+        const d = e.data || {};
+        if (d.mixallLogin !== 1) return;
+        if (d.type === "ready" && !sent) { sent = true; w.postMessage({ mixallLogin: 1, type: "request", nonce, authority: ["name"] }, MIXALL_BASE); }
+        else if (d.type === "result" && d.nonce === nonce) {
+          if (!d.ok || !d.certificate) return finish(reject, { denied: d.error === "denied" });
+          finish(resolve, d.certificate);
+        }
+      }
+      window.addEventListener("message", onMsg);
+    });
+  }
+  // 全画面で移動する方式(予備。ポップアップが使えないときや、ポップアップ方式の確認が通らなかったとき、ポータル以外のサイトで使う)
+  function mixallRedirect(mode) {
+    const ret = location.href.split("#")[0];
+    // URLが長くならないよう、ポータル内の戻り先は「/game-links/…」の形だけ渡す(m=l は連携モード)
+    const origin = new URL(PORTAL_URL).origin;
+    const rel = ret.startsWith(origin + "/") ? ret.slice(origin.length) : ret;
+    location.href = `${MIXALL_REDIRECT}?${mode === "link" ? "m=l&" : ""}r=${encodeURIComponent(rel)}`;
+  }
+  async function mixallPopupLogin(mode) {
+    let certificate;
+    try { certificate = await mixallPopup(); }
+    catch (e) {
+      if (e && e.blocked) return mixallRedirect(mode); // ポップアップがブロックされた
+      toast(e && (e.denied || e.cancelled) ? "ログインをやめました" : "MixAllでのログインに失敗しました。もう一度お試しください", 5000);
+      return;
+    }
+    let v = null;
+    try {
+      const res = await fetch(MIXALL_VERIFY, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ certificate, origin: location.origin }) });
+      v = await res.json().catch(() => null);
+    } catch (e) { /* つながらない */ }
+    if (!v || !v.ticket) { toast("確認できなかったので、別の方法でもう一度ためします", 4000); setTimeout(() => mixallRedirect(mode), 900); return; }
+    // ログイン画面(ボタンを押した画面)を閉じて、続きの画面(アカウントを作る/結びつける)を出す
+    document.querySelectorAll(".ka-overlay").forEach((o) => { if (o._close) o._close(); else o.remove(); });
+    oauthReturn = { ticket: v.ticket, mode };
+    await handleOAuthReturn();
   }
   function oauthProviders() {
     if (!providersPromise) {
@@ -152,10 +208,9 @@
     const mode = session ? "link" : "login"; // ログイン中なら「いまのアカウントに連携」
     const ret = location.href.split("#")[0];
     if (provider === "mixall") {
-      // URLが長くならないよう、ポータル内の戻り先は「/game-links/…」の形だけ渡す(m=l は連携モード)
-      const origin = new URL(PORTAL_URL).origin;
-      const rel = ret.startsWith(origin + "/") ? ret.slice(origin.length) : ret;
-      location.href = `${MIXALL_REDIRECT}?${mode === "link" ? "m=l&" : ""}r=${encodeURIComponent(rel)}`;
+      // ポータル(と同じoriginの全ゲーム)ではポップアップ方式。それ以外のサイトは、ポータルを通る全画面方式
+      if (location.origin === new URL(PORTAL_URL).origin || location.hostname === "localhost") mixallPopupLogin(mode);
+      else mixallRedirect(mode);
       return;
     }
     const redirect = `${OAUTH_URL}?mode=${mode}&return=${encodeURIComponent(ret)}`;
