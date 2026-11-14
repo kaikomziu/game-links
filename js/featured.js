@@ -73,11 +73,24 @@
       selectedEl.innerHTML = selectedIds.length
         ? selectedIds.map((id, index) => {
           const game = games.find((item) => item.id === id);
-          return `<div class="featured-selected-item" draggable="true" data-id="${esc(id)}"><span class="featured-drag-handle" aria-hidden="true">☷</span><span>${esc(game?.emoji || "🎮")} ${esc(game?.title || id)}</span><small>${index + 1}</small></div>`;
+          return `<div class="featured-selected-item" draggable="true" data-id="${esc(id)}"><span class="featured-drag-handle" aria-hidden="true">☷</span><span>${esc(game?.emoji || "🎮")} ${esc(game?.title || id)}</span><small>${index + 1}</small><button type="button" class="featured-move" data-dir="-1" aria-label="1つ上へ"${index === 0 ? " disabled" : ""}>▲</button><button type="button" class="featured-move" data-dir="1" aria-label="1つ下へ"${index === selectedIds.length - 1 ? " disabled" : ""}>▼</button></div>`;
         }).join("")
         : '<span class="featured-selected-empty">選択されていません</span>';
       selectedEl.querySelectorAll(".featured-selected-item").forEach((item) => {
-        item.addEventListener("dragstart", () => { item.classList.add("is-dragging"); });
+        item.addEventListener("dragstart", (event) => {
+          item.classList.add("is-dragging");
+          // Firefox は dataTransfer に何か入れないとドラッグが始まらない
+          try { event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", item.dataset.id); } catch (e) {}
+        });
+        // スマホなどドラッグできない端末のために、▲▼ボタンでも順番を変えられる
+        item.querySelectorAll(".featured-move").forEach((btn) => btn.addEventListener("click", () => {
+          const from = selectedIds.indexOf(item.dataset.id);
+          const to = from + Number(btn.dataset.dir);
+          if (from < 0 || to < 0 || to >= selectedIds.length) return;
+          const [moved] = selectedIds.splice(from, 1);
+          selectedIds.splice(to, 0, moved);
+          refreshSelected();
+        }));
         item.addEventListener("dragend", () => { item.classList.remove("is-dragging"); });
         item.addEventListener("dragover", (event) => event.preventDefault());
         item.addEventListener("drop", (event) => {
