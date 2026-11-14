@@ -1,0 +1,264 @@
+/* クリスマスイベント(毎年 12/1〜1/31 または ?christmas)。arcade.css の後に読み込み、html.christmas の時だけ効く */
+html.christmas,
+html.xm-palette {
+  --bg: #06111e;
+  --bg-elevated: #0e2236;
+  --text: #eef6ff;
+  --text-muted: #a9c3dc;
+  --border: #2c5373;
+  --accent: #e63946;
+  --accent-soft: #3a1a22;
+  --star: #ffd166;
+  --ink: #2f6f8f;
+  --cab-edge: #2f6f8f;
+  --screen: #040c15;
+  --neon-pink: #e63946;
+  --neon-cyan: #8be9ff;
+  --neon-yellow: #ffd166;
+  --neon-green: #5ee08a;
+  --marquee: linear-gradient(90deg, #e63946, #ffd166, #5ee08a, #e63946);
+  --shadow: 0 6px 22px rgba(230, 57, 70, 0.18);
+}
+html.christmas body,
+html.xm-palette body {
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 18px 18px,
+    radial-gradient(900px 480px at 50% -8%, rgba(230, 57, 70, 0.22), transparent 62%),
+    radial-gradient(800px 460px at 100% 28%, rgba(94, 224, 138, 0.14), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+html.christmas .site-header,
+html.xm-palette .site-header {
+  background: linear-gradient(180deg, #14364f, #08182a);
+  box-shadow: 0 4px 26px rgba(230, 57, 70, 0.35);
+}
+html.christmas .icon-btn,
+html.xm-palette .icon-btn { background: #102a40; }
+html.christmas .logo-sub,
+html.xm-palette .logo-sub { color: var(--neon-green); }
+
+/* ===== ロゴの飾り(サンタ帽・ツリー・王冠。xmasshop.js が .logo の中に入れる) ===== */
+.logo { position: relative; }
+.xm-logo-deco { position: absolute; inset: 0; pointer-events: none; }
+.xm-logo-deco i { position: absolute; font-style: normal; line-height: 1; filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.6)); }
+.xm-logo-deco .hat { left: -6px; top: -2px; font-size: 1.5rem; transform: rotate(-20deg); }
+.xm-logo-deco .tree { right: -10px; bottom: -4px; font-size: 1.4rem; }
+.xm-logo-deco .crown { right: 22px; top: -6px; font-size: 1.2rem; transform: rotate(8deg); }
+
+/* ===== 買えるアイテム: カードの角のオーナメント ===== */
+html.xm-orn .game-card::before {
+  content: "⭐";
+  position: absolute;
+  right: 6px;
+  top: 2px;
+  font-size: 0.8rem;
+  opacity: 0.75;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255, 209, 102, 0.9));
+}
+
+/* ===== バナー ===== */
+.christmas-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, #14364f, #2a1620);
+  border: 3px solid #2f6f8f;
+  border-left: 8px solid #e63946;
+  border-radius: 12px;
+  box-shadow: 0 0 22px rgba(230, 57, 70, 0.28);
+  color: #eef6ff;
+  font-size: 0.86rem;
+}
+.xm-title {
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: #ffd166;
+  text-shadow: 0 0 8px #e63946, 0 0 18px #e63946;
+}
+.xm-msg { flex: 1 1 220px; }
+.xm-gift {
+  font-family: var(--font-pixel);
+  color: #5ee08a;
+  text-shadow: 0 0 6px rgba(94, 224, 138, 0.7);
+  white-space: nowrap;
+}
+.christmas-banner button {
+  border: 2px solid #2f6f8f;
+  background: #0b1d2f;
+  color: #ffd166;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.christmas-banner button:hover { border-color: #e63946; }
+/* 細く(ハロウィンのバナーと同じ寸法) */
+.christmas-banner { margin: 0 0 6px; padding: 3px 10px; gap: 2px 12px; font-size: 0.76rem; border-width: 2px; border-left-width: 6px; border-radius: 10px; line-height: 1.3; }
+.xm-title { font-size: 0.85rem; }
+.christmas-banner button { padding: 3px 10px; font-size: 0.72rem; }
+@media (max-width: 700px) {
+  .christmas-banner .xm-msg { display: none; }
+  .xm-title { font-size: 0.8rem; }
+}
+
+/* ===== 降る雪 ===== */
+.xm-snow {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+.xm-snow span {
+  position: absolute;
+  top: -30px;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(200, 230, 255, 0.8);
+  animation: xmFall linear infinite, xmSway ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes xmFall {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(100vh + 60px)); }
+}
+@keyframes xmSway {
+  from { margin-left: -16px; }
+  to { margin-left: 16px; }
+}
+
+/* ===== 横切るサンタ ===== */
+.xm-santa {
+  position: fixed;
+  top: var(--y, 40vh);
+  z-index: 120;
+  padding: 4px;
+  font-size: 2.4rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  filter: drop-shadow(0 0 10px rgba(230, 57, 70, 0.85));
+  animation: xmFly var(--dur, 9s) linear forwards, xmBob 1.2s ease-in-out infinite;
+}
+.xm-santa.gold { filter: drop-shadow(0 0 12px rgba(255, 209, 102, 1)); }
+.xm-santa.rtl { animation-name: xmFlyBack, xmBob; }
+@keyframes xmFly {
+  from { left: -70px; }
+  to { left: calc(100vw + 20px); }
+}
+@keyframes xmFlyBack {
+  from { left: calc(100vw + 20px); }
+  to { left: -70px; }
+}
+@keyframes xmBob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-14px) rotate(6deg); }
+}
+.xm-pop {
+  position: fixed;
+  z-index: 121;
+  pointer-events: none;
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  color: #5ee08a;
+  text-shadow: 0 0 8px #5ee08a;
+  animation: xmPop 1s ease-out forwards;
+}
+@keyframes xmPop {
+  to { transform: translateY(-50px); opacity: 0; }
+}
+
+/* ===== ショップで買えるもの ===== */
+.xm-buddy {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  font-size: 1.6rem;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(139, 233, 255, 0.7));
+}
+.xm-deer {
+  position: fixed;
+  top: var(--y, 30vh);
+  z-index: 90;
+  font-size: 1.5rem;
+  pointer-events: none;
+  animation: xmFly var(--dur, 6s) linear forwards, xmBob 0.6s ease-in-out infinite;
+}
+.xm-deer.rtl { animation-name: xmFlyBack, xmBob; }
+.xm-year {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 8px;
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: 0.68rem;
+  color: #2a1a00;
+  background: #ffd166;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.cs-list .xm-sep {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 8px 0 2px;
+  font-family: var(--font-pixel);
+  color: var(--star);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===== アドベントカレンダー ===== */
+.xm-doors {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+.xm-door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  aspect-ratio: 1 / 1;
+  padding: 2px;
+  font-family: var(--font-pixel);
+  color: var(--text);
+  background: #0b1d2f;
+  border: 2px solid var(--cab-edge);
+  border-radius: 8px;
+  cursor: default;
+}
+.xm-door b { font-weight: 400; font-size: 1rem; }
+.xm-door span { font-size: 1rem; line-height: 1; }
+.xm-door.ready {
+  cursor: pointer;
+  color: #2a1a00;
+  background: linear-gradient(180deg, #ffd166, #f4a261);
+  border-color: #ffe9a8;
+  box-shadow: 0 0 12px rgba(255, 209, 102, 0.6);
+  animation: xmGlow 1.6s ease-in-out infinite alternate;
+}
+.xm-door.done { background: #123524; border-color: #5ee08a; }
+.xm-door.locked { opacity: 0.45; }
+@keyframes xmGlow {
+  from { box-shadow: 0 0 6px rgba(255, 209, 102, 0.4); }
+  to { box-shadow: 0 0 16px rgba(255, 209, 102, 0.9); }
+}
+.xm-advent-note { min-height: 3em; }
+@media (max-width: 460px) {
+  .xm-doors { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xm-santa { animation: none; left: var(--x, 40vw); }
+  .xm-door.ready { animation: none; }
+  .xm-buddy { left: auto; right: 16px; top: auto; bottom: 16px; }
+}
