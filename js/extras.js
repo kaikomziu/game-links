@@ -58,7 +58,7 @@ const GameExtras = (() => {
     // メンテナンス中のゲームは選ばない
     // メンテナンス中のゲームとソフト/MODは「今日の1本」に出さない
     const playable = GAMES.filter((g) => !g.maintenance && !isSoftware(g));
-    const cards = [...document.querySelectorAll("#gameGrid .game-card .card-title")].map((h) => h.textContent);
+    const cards = [...document.querySelectorAll("#gameGrid .game-card .card-title, #allShelves .game-card .sh-title")].map((h) => h.textContent);
     if (cards.length && cards.length < GAMES.length) {
       const set = new Set(cards);
       const filtered = playable.filter((g) => set.has(g.title));
@@ -254,9 +254,10 @@ const GameExtras = (() => {
   // ---------- カードのハイライト演出(隠しワード共通) ----------
   function highlightGameCard(title, msg) {
     showToast(msg);
-    const card = [...document.querySelectorAll("#gameGrid .game-card")].find(
-      (c) => c.querySelector(".card-title") && c.querySelector(".card-title").textContent === title
-    );
+    const card = [...document.querySelectorAll("#gameGrid .game-card, #allShelves .game-card")].find((c) => {
+      const t = c.querySelector(".card-title, .sh-title");
+      return t && t.textContent === title;
+    });
     if (card) {
       card.scrollIntoView({ behavior: "smooth", block: "center" });
       card.classList.add("egg-pulse");

@@ -1271,13 +1271,16 @@ favoriteOnlyCheck.addEventListener("change", () => {
 
 // ===== 描画 =====
 const grid = document.getElementById("gameGrid");
+const allShelves = document.getElementById("allShelves");
 const softGrid = document.getElementById("softGrid");
 const emptyMsg = document.getElementById("emptyMsg");
 const externalRoot = document.getElementById("externalInfo");
 
 // ===== 表示する区画(タブ): games = ゲーム / soft = ソフト・MOD =====
-const VIEWS = ["games", "soft", "events", "articles", "external"];
-let currentView = VIEWS.includes(getCookie("view")) ? getCookie("view") : "games";
+// all = すべて(ジャンルごとの棚。ゲーム・ソフト・MODが混ざる) / games = ゲーム / soft = ソフト・MOD。
+// 「すべて」を最初の画面にするため、覚えておく値の名前を "view2" に変えた(以前の "view" は使わない)
+const VIEWS = ["all", "games", "soft", "events", "articles", "external"];
+let currentView = VIEWS.includes(getCookie("view2")) ? getCookie("view2") : "all";
 const viewTabs = document.getElementById("viewTabs");
 function syncViewTabs() {
   viewTabs.querySelectorAll(".view-tab").forEach((t) => {
@@ -1287,8 +1290,8 @@ function syncViewTabs() {
   });
 }
 function setView(v) {
-  currentView = VIEWS.includes(v) ? v : "games";
-  setCookie("view", currentView, 365);
+  currentView = VIEWS.includes(v) ? v : "all";
+  setCookie("view2", currentView, 365);
   syncViewTabs();
   render();
   window.scrollTo(0, 0);
@@ -1397,21 +1400,32 @@ function render() {
   // 区画ごとに分ける。タブには絞り込み後の件数を出す
   const gamesList = list.filter(g => !isSoftware(g));
   const softList = list.filter(isSoftware);
-  const viewList = currentView === "soft" ? softList : gamesList;
-  const otherList = currentView === "soft" ? gamesList : softList;
+  const viewList = currentView === "soft" ? softList : currentView === "all" ? list : gamesList;
+  const otherList = currentView === "soft" ? gamesList : currentView === "all" ? [] : softList;
   window.__viewList = viewList; // 詳細ウィンドウの「前へ/次へ」で使う
+  document.getElementById("tabAllCount").textContent = list.length;
   document.getElementById("tabGamesCount").textContent = gamesList.length;
   document.getElementById("tabSoftCount").textContent = softList.length;
   document.body.dataset.view = currentView; // 記事タブではジャンル・並び順などを隠す(CSS)
+  allShelves.hidden = currentView !== "all";
   grid.hidden = currentView !== "games";
   softGrid.hidden = currentView !== "soft";
   externalRoot.hidden = currentView !== "external";
   document.getElementById("viewNote").hidden = currentView !== "soft";
 
+  // 見えている区画だけ作る(見えない区画まで作ると、ページが重くなる)
   grid.innerHTML = "";
   softGrid.innerHTML = "";
-  gamesList.forEach(g => grid.appendChild(buildTile(g)));
-  softList.forEach(g => softGrid.appendChild(buildTile(g)));
+  allShelves.textContent = "";
+  if (currentView === "all") {
+    // 検索・絞り込み中は、棚の「あと◯本」を待たずに全部出す
+    const filtering = !!query || selectedTags.size > 0 || favoriteOnly || selectedAuthor !== "all";
+    window.__viewList = Shelves.render(list, allShelves, filtering);
+  } else if (currentView === "games") {
+    gamesList.forEach(g => grid.appendChild(buildTile(g)));
+  } else if (currentView === "soft") {
+    softList.forEach(g => softGrid.appendChild(buildTile(g)));
+  }
 
   if (currentView === "articles") {
     emptyMsg.hidden = true;

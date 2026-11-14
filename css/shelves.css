@@ -1,0 +1,167 @@
+/* 「すべて」タブ(js/shelves.js): ジャンルごとの棚。ゲーム・ソフト・MODが同じ棚に混ざり、種類は色の札で分かる */
+.all-shelves { display: block; }
+.all-shelves[hidden] { display: none; }
+
+.shelf { margin: 0 0 26px; }
+.shelf-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0 0 10px;
+  padding: 0 0 6px;
+  border-bottom: 2px solid var(--border);
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+.shelf-floor {
+  padding: 1px 9px;
+  font-size: 0.82rem;
+  color: #1d1240;
+  background: var(--neon-yellow);
+  border-radius: 6px;
+}
+.shelf-title small { font-family: system-ui, "Yu Gothic UI", sans-serif; font-size: 0.78rem; letter-spacing: 0; color: var(--text-muted); }
+
+.shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 12px;
+}
+
+/* ---- カード ---- */
+.game-card.shelf-card {
+  --g: var(--cab-edge);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 132px;
+  padding: 12px 14px 12px 14px;
+  background: var(--bg-elevated);
+  border: 2px solid color-mix(in srgb, var(--g) 40%, var(--border));
+  border-left: 6px solid var(--g);
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(24, 12, 58, 0.1);
+  cursor: pointer;
+  animation: none;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.game-card.shelf-card:hover { transform: translateY(-2px); border-color: var(--g); box-shadow: 0 8px 18px rgba(24, 12, 58, 0.2); }
+.game-card.shelf-card:focus-visible { outline: 3px solid var(--neon-yellow); outline-offset: 1px; }
+.shelf-card[data-genre="パズル"] { --g: #4aa8ff; }
+.shelf-card[data-genre="アクション"] { --g: #ff6b4a; }
+.shelf-card[data-genre="対戦"] { --g: #ff3ea5; }
+.shelf-card[data-genre="クリッカー・放置"] { --g: #ffd23f; }
+.shelf-card[data-genre="ホラー・ノベル"] { --g: #9b6bff; }
+.shelf-card[data-genre="RNG・運試し"] { --g: #39d98a; }
+.shelf-card[data-genre="音楽・リズム"] { --g: #18d5ff; }
+.shelf-card[data-genre="オンライン協力"] { --g: #ff9f1c; }
+.shelf-card[data-genre="シミュレーション"] { --g: #7bd16b; }
+.shelf-card[data-genre="ツール"] { --g: #8fa0b8; }
+.shelf-card[data-genre="その他"] { --g: #c79a9a; }
+.shelf-card[data-genre="イベント限定"] { --g: var(--neon-pink); }
+.shelf-card[data-genre="ソフト"] { --g: #ffe14d; }
+.shelf-card[data-genre="MOD"] { --g: #ff9f1c; }
+
+.sh-head { display: flex; align-items: center; gap: 10px; }
+.sh-emoji {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 11px;
+  box-shadow: inset 0 0 10px rgba(24, 213, 255, 0.25);
+}
+.sh-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.shelf-card .fav-btn { flex: 0 0 auto; align-self: flex-start; }
+.sh-desc {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  min-height: 2.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.sh-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 6px; margin-top: auto; }
+.sh-kind, .sh-flag {
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.5;
+  white-space: nowrap;
+  border-radius: 6px;
+}
+.sh-kind.k-game { color: var(--text); background: color-mix(in srgb, var(--neon-pink) 22%, var(--bg-elevated)); }
+.sh-kind.k-soft { color: #1d1240; background: var(--neon-yellow); }
+.sh-kind.k-mod { color: #06281c; background: #6fe3b0; }
+.sh-flag.new { color: #1d1240; background: var(--neon-yellow); }
+.sh-flag.beta { color: #fff; background: #3b82f6; }
+.sh-flag.maint { color: #1d1240; background: #ffd23f; }
+.sh-go {
+  margin-left: auto;
+  padding: 5px 15px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  background: linear-gradient(var(--neon-pink), color-mix(in srgb, var(--neon-pink) 70%, #000));
+  border: 2px solid var(--cab-edge);
+  border-radius: 999px;
+}
+.sh-go.soft { color: #2a1a00; background: linear-gradient(#ffe14d, #e0a800); }
+.sh-go.dl { color: #2a1a00; background: linear-gradient(#ffb347, #e07a00); }
+.sh-go:hover { filter: brightness(1.12); }
+.sh-go.maintenance-btn { cursor: not-allowed; opacity: 0.7; background: var(--screen); color: var(--text-muted); }
+
+.shelf-more {
+  display: block;
+  margin: 10px auto 0;
+  padding: 7px 22px;
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  color: var(--neon-cyan);
+  background: var(--screen);
+  border: 2px solid var(--cab-edge);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.shelf-more:hover { border-color: var(--neon-pink); color: #fff; }
+
+@media (max-width: 560px) {
+  .shelf-title { font-size: 1.02rem; }
+  .game-card.shelf-card { min-height: 0; padding: 10px 12px; }
+  .sh-emoji { flex-basis: 40px; width: 40px; height: 40px; font-size: 1.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-card.shelf-card { transition: none; }
+  .game-card.shelf-card:hover { transform: none; }
+}

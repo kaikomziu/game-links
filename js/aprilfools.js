@@ -189,6 +189,12 @@ const AprilFools = (() => {
     startConfettiLoop();
     startTitleFlicker();
 
+    // 「すべて」タブ(ジャンルごとの棚)は4/1の演出の対象外なので、この日だけ(覚えずに)ゲームのタブで表示する
+    if (typeof currentView !== "undefined" && currentView === "all" && typeof syncViewTabs === "function") {
+      currentView = "games";
+      syncViewTabs();
+      render();
+    }
     const grid = document.getElementById("gameGrid");
     if (grid) {
       applyToGrid();

@@ -39,7 +39,7 @@
     if (!bar || !api()) return;
     const ad = api().getAdmin();
     const view = document.body.dataset.view;
-    if (!ad || (view !== "games" && view !== "soft")) {
+    if (!ad || (view !== "all" && view !== "games" && view !== "soft")) {
       bar.hidden = true;
       bar.innerHTML = "";
       return;
