@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>かるわかGAMES API</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b0820; color: #eef; font: 15px/1.7 system-ui, "Yu Gothic UI", sans-serif; }
+  main { max-width: 800px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 36px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #2f2a66; }
+  h3 { font-size: 15px; margin: 20px 0 6px; color: #bcd; }
+  p, li { color: #dde; }
+  a { color: #8fd0ff; }
+  code, pre { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  code { background: #1c1744; padding: 1px 6px; border-radius: 5px; word-break: break-all; }
+  pre { background: #0f0c2b; border: 1px solid #2f2a66; border-radius: 10px; padding: 12px 14px; overflow-x: auto; margin: 8px 0; }
+  pre code { background: none; padding: 0; word-break: normal; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  td, th { border: 1px solid #2f2a66; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #17133a; }
+  .box { background: #17133a; border: 1px solid #2f2a66; border-radius: 14px; padding: 16px 18px; margin: 12px 0; }
+  .app { background: #0f0c2b; border: 1px solid #2f2a66; border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+  .muted { color: #99a; font-size: 12.5px; }
+  .err { color: #fca5a5; }
+  .okmsg { color: #86efac; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 999px; margin-left: 6px; }
+  .badge.off { background: #4c1d1d; color: #fca5a5; }
+  .badge.ok { background: #14532d; color: #86efac; }
+  label { display: block; margin: 10px 0 2px; font-size: 13px; color: #bcd; }
+  input[type=text] { width: 100%; font: inherit; color: #eef; background: #0f0c2b; border: 1px solid #3a3480; border-radius: 8px; padding: 8px 10px; }
+  button { font: inherit; font-weight: 600; padding: 8px 16px; border-radius: 9px; border: 0; cursor: pointer; background: #6d5dfc; color: #fff; }
+  button.sub { background: #2a2557; color: #dde; }
+  button.danger { background: #7f1d1d; color: #fee; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .secret { background: #052e16; border: 1px solid #166534; border-radius: 10px; padding: 10px 12px; margin: 10px 0; word-break: break-all; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <p class="muted"><a href="./">← かるわかGAMES</a> ・ <a href="developers.html">「かるわかGAMESでログイン」の説明</a></p>
+  <h1>かるわかGAMES API</h1>
+  <p class="muted">かるわかGAMESの作品データ(ゲーム・ソフト・MOD)・評価・プレイ数・注目作品・イベント・記事を、プログラムから読めるAPIです(読み取り専用・無料)。使うには、かるわかGAMESアカウントで作る「APIキー」が必要です。</p>
+
+  <h2>APIキー</h2>
+  <div id="keys" class="box"><p>読み込み中…</p></div>
+
+  <h2>使い方</h2>
+  <p>ベースURL: <code>https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/kg-api</code></p>
+  <p>どのリクエストにも、APIキーを <code>X-API-Key</code> ヘッダーで付けます(<code>Authorization: Bearer キー</code> でも可)。</p>
+<pre><code>curl -H "X-API-Key: kgk_あなたのキー" \
+  "https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/kg-api/v1/games?kind=game&amp;genre=パズル&amp;sort=score&amp;limit=5"</code></pre>
+<pre><code>// JavaScript (Node.js / Deno など、サーバー側で使う)
+const res = await fetch("https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/kg-api/v1/games?q=ドット&amp;limit=10", {
+  headers: { "X-API-Key": process.env.KG_API_KEY },
+});
+const { data, meta } = await res.json();</code></pre>
+  <p><b>キーは、ブラウザで動くコード(公開ページのJavaScript)には書かないでください。</b>誰でも読めてしまい、使われすぎると止まります。自分のサーバーや、ボットなどで使ってください。</p>
+
+  <h3>エンドポイント(すべて GET)</h3>
+  <table>
+    <tr><th>パス</th><th>内容</th></tr>
+    <tr><td><code>/v1/games</code></td><td>作品の一覧。絞り込み: <code>kind</code>(game / software / mod)、<code>genre</code>(ジャンル名)、<code>q</code>(文字で検索)、<code>new=1</code>(新着だけ)。並び順 <code>sort</code>: name(既定)/ new / plays / likes / score。<code>limit</code>(1〜100、既定50)・<code>offset</code></td></tr>
+    <tr><td><code>/v1/games/{id}</code></td><td>作品1つ</td></tr>
+    <tr><td><code>/v1/genres</code></td><td>ジャンルと作品数</td></tr>
+    <tr><td><code>/v1/featured</code></td><td>注目の作品(表示順どおり)</td></tr>
+    <tr><td><code>/v1/stats</code></td><td>全体の数字(作品数・訪問数・プレイ数・評価数)</td></tr>
+    <tr><td><code>/v1/events</code></td><td>公開中のイベント</td></tr>
+    <tr><td><code>/v1/articles</code>, <code>/v1/articles/{id}</code></td><td>公開中の記事(一覧は本文なし、1本は本文つき)</td></tr>
+    <tr><td><code>/v1/ping</code></td><td>キーの確認と、残りの回数</td></tr>
+  </table>
+
+  <h3>作品のデータ</h3>
+<pre><code>{
+  "id": "dreamd", "title": "DReAmD", "emoji": "🍄",
+  "kind": "game",              // game / software / mod
+  "platform": null,            // ソフト・MODのときは Web / Windows など
+  "genres": ["ホラー・ノベル"],
+  "description": "…", "url": "https://…", "author": "Claude AI",
+  "added": "2026-11-10", "is_new": true, "beta": true, "maintenance": false,
+  "stats": { "likes": 3, "dislikes": 0, "score": 3, "plays": 120 }
+}</code></pre>
+  <p class="muted">一覧の返り値は <code>{ "data": [...], "meta": { "total", "limit", "offset", "data_updated_at" } }</code> です。作品データは、新しい作品を足してから最大で6時間ほどで反映されます。評価・プレイ数は約1分ごとに更新されます。</p>
+
+  <h3>決まり</h3>
+  <ul>
+    <li>回数の上限は、<b>1キーあたり 1分60回・1日5000回</b>です。超えると <code>429</code> が返り、<code>Retry-After</code> ヘッダーに待つ秒数が入ります。残りの回数は、返事の <code>X-RateLimit-Remaining-Minute / -Day</code> でも分かります。</li>
+    <li>キーは1人3つまで。使わなくなったキーは、上の「取り消す」で止められます。</li>
+    <li>エラーは <code>{ "error": { "code", "message" } }</code> の形です。<code>401</code> はキーがない・正しくない・取り消された、<code>404</code> は見つからない、<code>400</code> は絞り込みの指定が正しくない、です。</li>
+    <li>取れるのは公開されているデータだけです(アカウントや個人の情報は取れません)。アカウントでのログインは「<a href="developers.html">かるわかGAMESでログイン</a>」を使ってください。</li>
+    <li>使い方に問題があると、運営がキーを止めることがあります。</li>
+  </ul>
+</main>
+
+<script src="js/karuwaka-account.js" data-badge="off"></script>
+<script>
+(function () {
+  "use strict";
+  var box = document.getElementById("keys");
+  var REASONS = {
+    auth: "ログインの期限が切れました。もう一度ログインしてください。",
+    name: "キーの名前を1〜40文字で入れてください。",
+    limit: "キーは3つまで作れます。使わないキーを取り消してから作ってください。",
+    notfound: "キーが見つかりません。"
+  };
+  var NET = "通信できませんでした。もう一度ためしてください。";
+  function el(tag, props, kids) {
+    var e = document.createElement(tag);
+    for (var k in (props || {})) {
+      if (k === "text") e.textContent = props[k];
+      else if (k === "class") e.className = props[k];
+      else e.setAttribute(k, props[k]);
+    }
+    (kids || []).forEach(function (c) { if (c) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function btn(text, cls, fn) { var b = el("button", { type: "button", class: cls || "", text: text }); b.addEventListener("click", function () { fn(b); }); return b; }
+  function say(node, text, ok) { node.textContent = text; node.className = ok ? "okmsg" : "err"; }
+  function call(fn, args) { return KaAccount._call(fn, args); }
+  function fmt(iso) { var d = new Date(iso); return isNaN(d) ? "-" : d.toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }); }
+
+  function render(newKey) {
+    box.textContent = "";
+    if (!KaAccount.isLoggedIn()) {
+      box.appendChild(el("p", { text: "APIキーを作るには、かるわかGAMESアカウントでのログインが必要です。" }));
+      box.appendChild(btn("ログイン", "", function () { KaAccount.login("login"); }));
+      return;
+    }
+    var u = KaAccount.user();
+    box.appendChild(el("p", { class: "muted", text: "ログイン中: " + u.avatar + " " + u.display_name + " (@" + u.username + ")" }));
+    if (newKey) {
+      var code = el("code", { text: newKey });
+      var copy = btn("コピー", "sub", function (b) { try { navigator.clipboard.writeText(newKey).then(function () { b.textContent = "コピーしました"; }); } catch (e) { b.textContent = "選んでコピーしてください"; } });
+      box.appendChild(el("div", { class: "secret" }, [el("b", { text: "APIキーは、この1回しか表示されません。今すぐ安全な場所に控えてください。" }), el("br"), code, el("br"), copy]));
+    }
+    var list = el("div", {}, [el("p", { class: "muted", text: "読み込み中…" })]);
+    box.appendChild(list);
+    var name = el("input", { type: "text", maxlength: "40", placeholder: "キーの名前(例: 自分のDiscordボット)" });
+    var msg = el("p", {});
+    box.appendChild(el("label", { text: "新しいキーを作る" }));
+    box.appendChild(name);
+    box.appendChild(el("div", { class: "row" }, [btn("キーを作る", "", function (b) {
+      b.disabled = true; msg.textContent = "";
+      call("kg_key_create", { p_name: name.value }).then(function (r) {
+        if (r && r.ok) render(r.key); else { b.disabled = false; say(msg, REASONS[r && r.reason] || NET); }
+      }).catch(function () { b.disabled = false; say(msg, NET); });
+    })]));
+    box.appendChild(msg);
+    call("kg_key_list", {}).then(function (r) {
+      list.textContent = "";
+      if (!r || !r.ok) return list.appendChild(el("p", { class: "err", text: REASONS[r && r.reason] || NET }));
+      if (!r.keys.length) list.appendChild(el("p", { class: "muted", text: "まだキーはありません。" }));
+      r.keys.forEach(function (k) {
+        var title = el("b", { text: k.name });
+        title.appendChild(el("span", { class: "badge " + (k.revoked ? "off" : "ok"), text: k.revoked ? "取り消し済み" : "有効" }));
+        var m = el("p", {});
+        var row = el("div", { class: "row" });
+        if (!k.revoked) row.appendChild(btn("取り消す", "danger", function (b) {
+          if (!confirm("このキー(" + k.prefix + "…)を取り消します。使っているプログラムは動かなくなります。よろしいですか?")) return;
+          b.disabled = true;
+          call("kg_key_revoke", { p_id: k.id }).then(function (r2) { if (r2 && r2.ok) render(); else { b.disabled = false; say(m, REASONS[r2 && r2.reason] || NET); } }).catch(function () { b.disabled = false; say(m, NET); });
+        }));
+        list.appendChild(el("div", { class: "app" }, [title,
+          el("div", { class: "muted", text: k.prefix + "…  /  作成: " + fmt(k.created_at) + "  /  最後に使った日時: " + (k.last_used_at ? fmt(k.last_used_at) : "まだ使っていません") }),
+          el("div", { class: "muted", text: "今日の使用回数: " + k.today + " / 5000  ・ 合計: " + k.total_requests + "回" }),
+          row, m]));
+      });
+    }).catch(function () { list.textContent = NET; });
+  }
+
+  KaAccount.ready.then(function () {
+    var last = KaAccount.isLoggedIn() ? KaAccount.user().username : "";
+    render();
+    KaAccount.onChange(function (u) { var k = u ? u.username : ""; if (k !== last) { last = k; render(); } });
+  });
+})();
+</script>
+</body>
+</html>

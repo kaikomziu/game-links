@@ -1,0 +1,43 @@
+name: Build API game data
+
+# かるわかGAMES API が読む作品データ(data/api-games.json)を、js/main.js と data/catalog.json から作り直す。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "js/main.js"
+      - "data/catalog.json"
+      - "tools/build-api-data.js"
+  schedule:
+    - cron: "47 */6 * * *" # data/catalog.json の自動同期(ボットのコミットはpushの合図にならない)のあとにも追いつくため
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-api-data
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: 作品データを作る
+        run: node tools/build-api-data.js
+
+      - name: 差分があればコミットしてpush
+        run: |
+          if git diff --quiet -- data/api-games.json && [ -z "$(git ls-files --others --exclude-standard data/api-games.json)" ]; then
+            echo "APIの作品データに変更はありません"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/api-games.json
+          git commit -m "APIの作品データを更新"
+          git pull --rebase
+          git push
