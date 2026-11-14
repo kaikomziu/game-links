@@ -18,15 +18,21 @@ html.christmas #gameGrid .game-card:nth-child(4n+1) { box-shadow: 0 0 10px rgba(
 html.christmas #gameGrid .game-card:nth-child(4n+2) { box-shadow: 0 0 10px rgba(94, 224, 138, 0.26); }
 html.christmas #gameGrid .game-card:nth-child(4n+3) { box-shadow: 0 0 10px rgba(255, 209, 102, 0.28); }
 html.christmas #gameGrid .game-card:nth-child(4n) { box-shadow: 0 0 10px rgba(139, 233, 255, 0.24); }
-html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3) { animation: xmTwinkle 2.6s ease-in-out infinite alternate; }
-@keyframes xmTwinkle {
-  from { box-shadow: 0 0 6px rgba(255, 209, 102, 0.2); }
-  to { box-shadow: 0 0 20px rgba(255, 209, 102, 0.85); }
+html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 20px 2px rgba(255, 209, 102, 0.85);
+  opacity: 0;
+  animation: xmTwinkle 2.6s ease-in-out infinite alternate;
 }
+@keyframes xmTwinkle { from { opacity: 0; } to { opacity: 1; } }
 
 /* ===== 夜空: オーロラと流れ星 ===== */
-.xm-aurora { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; mix-blend-mode: screen; opacity: 0.55; }
-.xm-aurora i { position: absolute; left: -20%; width: 140%; height: 60%; top: -12%; }
+.xm-aurora { position: fixed; left: 0; right: 0; top: 0; height: 55vh; z-index: 3; pointer-events: none; overflow: hidden; opacity: 0.6; contain: strict; }
+.xm-aurora i { position: absolute; left: -20%; width: 140%; height: 100%; top: -18%; will-change: transform; }
 .xm-aurora .g1 {
   background:
     radial-gradient(ellipse 50% 50% at 30% 50%, rgba(94, 224, 138, 0.4), transparent 70%),
@@ -58,18 +64,6 @@ html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3) { animation: 
   0% { translate: 0 0; opacity: 0; }
   15% { opacity: 1; }
   100% { translate: -42vw 26vh; opacity: 0; }
-}
-
-/* ===== 吹雪 ===== */
-.xm-snow.xm-storm { z-index: 6; }
-.xm-snow.xm-storm span {
-  top: -30px;
-  opacity: 0.9;
-  animation: xmStorm linear infinite;
-}
-@keyframes xmStorm {
-  from { transform: translate(0, 0) rotate(0deg); }
-  to { transform: translate(var(--w, -20vw), calc(100vh + 60px)) rotate(360deg); }
 }
 
 /* ===== 花火 ===== */
@@ -133,8 +127,7 @@ html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3) { animation: 
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 50% 40%, rgba(230, 57, 70, 0.4), rgba(4, 12, 22, 0.93) 70%);
-  backdrop-filter: blur(3px);
+  background: radial-gradient(circle at 50% 40%, rgba(230, 57, 70, 0.4), rgba(4, 12, 22, 0.95) 70%);
   animation: xmIntroIn 0.5s ease-out;
 }
 .xm-intro.out { animation: xmIntroOut 0.45s ease-in forwards; }
@@ -184,9 +177,9 @@ html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3) { animation: 
 }
 .xm-tree-box:hover { border-color: #ffd166; }
 .xm-tree-box svg { display: block; width: 100%; height: 100%; }
-.xm-bulb { animation: xmBulb 1.4s ease-in-out infinite alternate; }
-.xm-bulb.b1 { animation-delay: -0.5s; }
-.xm-bulb.b2 { animation-delay: -1s; }
+.xm-bgrp { animation: xmBulb 1.4s ease-in-out infinite alternate; }
+.xm-bgrp.b1 { animation-delay: -0.5s; }
+.xm-bgrp.b2 { animation-delay: -1s; }
 @keyframes xmBulb { from { opacity: 0.45; } to { opacity: 1; } }
 .xm-tree-dialog { width: min(420px, 100%); }
 .xm-tree-big svg { display: block; width: min(260px, 70vw); height: auto; margin: 0 auto; }
@@ -201,11 +194,21 @@ html.christmas:not(.xm-calm) #gameGrid .game-card:nth-child(11n+3) { animation: 
   .xm-parade .row .sleigh { font-size: 2.8rem; }
 }
 
+/* ===== 見ていない間(別のタブ)は動きを止める ===== */
+html.xm-away .xm-snow i,
+html.xm-away .xm-aurora i,
+html.xm-away .xm-bulbs,
+html.xm-away .xm-bgrp,
+html.xm-away .xm-parade,
+html.xm-away .xm-parade .row,
+html.xm-away .xm-santa,
+html.xm-away .xm-deer { animation-play-state: paused; }
+
 /* ===== 控えめ表示 / 動きを減らす設定 ===== */
 html.xm-calm .xm-bulbs { animation: none; }
 html.xm-calm .xm-aurora,
 html.xm-calm .xm-meteor { display: none; }
-html.xm-calm .xm-bulb { animation: none; }
+html.xm-calm .xm-bgrp { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .xm-intro-star, .xm-intro-title { animation: none; }
 }

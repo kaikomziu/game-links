@@ -88,22 +88,33 @@ const XmasFx = (() => {
   }
   function blizzard() {
     if (document.hidden || calm()) return;
-    const box = el("xm-snow xm-storm");
-    box.setAttribute("aria-hidden", "true");
-    const n = window.innerWidth < 700 ? 45 : 90;
-    for (let i = 0; i < n; i++) {
-      const f = document.createElement("span");
-      f.textContent = Math.random() < 0.7 ? "❄" : "❅";
-      f.style.left = rnd(-10, 105) + "vw";
-      f.style.fontSize = rnd(10, 26).toFixed(0) + "px";
-      f.style.setProperty("--w", rnd(-40, -10).toFixed(0) + "vw");
-      f.style.animationDuration = rnd(2.2, 4.6).toFixed(1) + "s";
-      f.style.animationDelay = rnd(0, 6).toFixed(1) + "s";
-      box.appendChild(f);
-    }
-    document.body.appendChild(box);
-    Xmas.toast("❄ 吹雪だ！ しばらく雪がすごいよ");
-    setTimeout(() => box.remove(), 12500);
+    if (Xmas.blizzard(12000)) Xmas.toast("❄ 吹雪だ！ しばらく雪がすごいよ");
+  }
+
+  // =====================================================================
+  // 重い端末の自動対策: 開いて10秒後に4秒間コマ数を測り、20fps未満なら自動で控えめにする(本人が「派手に」を選んでいたら下げない)
+  // =====================================================================
+  function checkFps(fps) {
+    if (fps < 20 && !calm() && store.get("gl_xmas_calm") !== "0") { Xmas.autoCalm(); return true; }
+    return false;
+  }
+  function watchFps() {
+    if (store.get("gl_xmas_calm") === "0") return;
+    setTimeout(() => {
+      if (document.hidden || calm()) return;
+      let frames = 0, away = false;
+      const t0 = performance.now();
+      const onVis = () => { away = true; };
+      document.addEventListener("visibilitychange", onVis);
+      const tick = () => {
+        frames++;
+        const ms = performance.now() - t0;
+        if (ms < 4000) { requestAnimationFrame(tick); return; }
+        document.removeEventListener("visibilitychange", onVis);
+        if (!away) checkFps(frames / (ms / 1000)); // 別のタブに行った間は測り直さない(止まって見えるだけなので)
+      };
+      requestAnimationFrame(tick);
+    }, 10000);
   }
 
   // =====================================================================
@@ -208,7 +219,7 @@ const XmasFx = (() => {
   }
   function maybeIntro() {
     if (calm()) return false;
-    const forced = new URLSearchParams(location.search).has("christmas");
+    const forced = Xmas.forced();
     const key = dateKey(forced ? Xmas.now() : new Date());
     const seenKey = forced ? "gl_xmas_intro_s" : "gl_xmas_intro";
     let seen = null;
@@ -283,10 +294,13 @@ const XmasFx = (() => {
     [[100, 26, 152, 100, 48, 100], [100, 62, 170, 160, 30, 160], [100, 102, 190, 228, 10, 228]].forEach((p) => {
       parts.push(`<polygon points="${p[0]},${p[1]} ${p[2]},${p[3]} ${p[4]},${p[5]}" fill="url(#${id})" stroke="#0b3d24" stroke-width="2" stroke-linejoin="round"/>`);
     });
+    // 灯った電球は3グループにまとめて、グループごとに瞬かせる(1つずつアニメにしない)
+    const lit = [[], [], []];
     SLOTS.forEach((s, i) => {
-      if (t.opened.includes(i + 1)) parts.push(`<circle cx="${s[0]}" cy="${s[1]}" r="6" fill="${BULB[i % BULB.length]}" class="xm-bulb b${i % 3}"/>`);
+      if (t.opened.includes(i + 1)) lit[i % 3].push(`<circle cx="${s[0]}" cy="${s[1]}" r="6" fill="${BULB[i % BULB.length]}"/>`);
       else parts.push(`<circle cx="${s[0]}" cy="${s[1]}" r="2.5" fill="#0b3d24"/>`);
     });
+    lit.forEach((g, k) => { if (g.length) parts.push(`<g class="xm-bgrp b${k}">${g.join("")}</g>`); });
     parts.push(`<text x="100" y="32" text-anchor="middle" font-size="28">${has("master") ? "👑" : has("orn-2026") ? "⭐" : "✨"}</text>`);
     if (has("palette")) { parts.push(`<text x="64" y="140" font-size="18">🔔</text>`, `<text x="120" y="190" font-size="18">🔔</text>`); }
     if (has("snow")) { parts.push(`<text x="14" y="60" font-size="16">❄️</text>`, `<text x="168" y="80" font-size="16">❄️</text>`); }
@@ -301,10 +315,15 @@ const XmasFx = (() => {
     }
     return `<svg viewBox="0 0 200 260" role="img" aria-label="マイツリー(レベル${t.level})">${parts.join("")}</svg>`;
   }
+  let cornerKey = "";
   function renderCorner() {
     let box = document.getElementById("xmTreeBox");
     const off = store.get(K_TREE_OFF) === "1";
-    if (off || !Xmas.isActive()) { if (box) box.remove(); return; }
+    if (off || !Xmas.isActive()) { if (box) box.remove(); cornerKey = ""; return; }
+    const t = treeInfo();
+    const key = [t.opened.join(","), t.owned.join(","), Math.floor(t.gifts / 5)].join("|"); // プレゼントは5個ごとにしか絵が変わらない
+    if (box && key === cornerKey) return;
+    cornerKey = key;
     if (!box) {
       box = el("xm-tree-box", "button");
       box.id = "xmTreeBox";
@@ -356,6 +375,10 @@ const XmasFx = (() => {
     m.querySelector("#xmTreeCorner").checked = store.get(K_TREE_OFF) !== "1";
   }
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeTree(); });
+  // 別のタブを見ている間は、CSSの動きも止める(CPU・GPUと電池を使わない)
+  document.addEventListener("visibilitychange", () => {
+    document.documentElement.classList.toggle("xm-away", document.hidden);
+  });
 
   // =====================================================================
   function init() {
@@ -377,8 +400,10 @@ const XmasFx = (() => {
     scheduleFireworks();
     const introShown = maybeIntro();
     scheduleParade(introShown ? 14000 : 22000);
+    watchFps();
   }
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 
-  return { sfx, toggleSound, parade, firework, fireworkShow, blizzard, meteor, openTree, closeTree, maybeIntro, isSoundOn: () => soundOn };
+  return { sfx, toggleSound, checkFps, parade, firework, fireworkShow, blizzard, meteor, openTree, closeTree, maybeIntro, isSoundOn: () => soundOn };
 })();

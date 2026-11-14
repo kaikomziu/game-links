@@ -86,15 +86,17 @@ const Xmas = (() => {
   const toast = (msg) => { if (typeof GameExtras !== "undefined") GameExtras.showToast(msg); };
 
   // ---- 日付まわり ----
-  function params() { try { return new URLSearchParams(location.search); } catch (e) { return new URLSearchParams(""); } }
-  function forcedByUrl() { return params().has("christmas"); }
+  // ?christmas の値(なければ null)。URLは変わらないので最初に1回だけ読む
+  const FORCED = (() => {
+    try { const p = new URLSearchParams(location.search); return p.has("christmas") ? (p.get("christmas") || "") : null; } catch (e) { return null; }
+  })();
+  function forcedByUrl() { return FORCED !== null; }
   function inWindow(d) { const m = d.getMonth(); return m === 11 || m === 0; } // 12月と1月
   // 「いま」: ?christmas=12-10 のように日付を指定すると、その日として動く(確認用)。期間外の ?christmas は 12/24 扱い
   function now() {
     const real = new Date();
     if (!forcedByUrl()) return real;
-    const v = params().get("christmas") || "";
-    const m = v.match(/^(\d{1,2})[-/](\d{1,2})$/);
+    const m = FORCED.match(/^(\d{1,2})[-/](\d{1,2})$/);
     if (m) {
       const d = new Date(real.getFullYear(), parseInt(m[1], 10) - 1, parseInt(m[2], 10));
       if (!isNaN(d)) return d;
@@ -141,37 +143,47 @@ const Xmas = (() => {
   const GET = ["🎁 プレゼントゲット！", "🎁 リボンつきのプレゼントをもらった！", "🎁 サンタさんからのプレゼント！", "🎁 いい子にしてたからプレゼント！"];
 
   // ---- 控えめ表示(動きが苦手な人・重い端末向け)。動きを減らす設定の端末では最初から控えめ ----
+  // gl_xmas_calm: "1"=本人が控えめを選んだ / "0"=本人が派手を選んだ(自動では下げない) / なし=自動判定にまかせる
   function isCalm() {
     if (reduceMotion) return true;
-    try { return localStorage.getItem("gl_xmas_calm") === "1"; } catch (e) { return false; }
+    try {
+      const v = localStorage.getItem("gl_xmas_calm");
+      if (v === "1") return true;
+      if (v === "0") return false;
+      return sessionStorage.getItem("gl_xmas_auto_calm") === "1";
+    } catch (e) { return false; }
+  }
+  // 端末が重くて動きがカクカクしているときに、自動で控えめにする(xmasfx.js の測定から呼ばれる。そのセッションの間だけ)
+  function autoCalm() {
+    try { sessionStorage.setItem("gl_xmas_auto_calm", "1"); } catch (e) {}
+    document.documentElement.classList.add("xm-calm");
+    const b = document.getElementById("xmCalmBtn");
+    if (b) b.textContent = "✨ 派手に";
+    toast("動きが重そうなので、控えめ表示にしました。バナーの「✨ 派手に」で戻せます");
   }
   function setCalm(on) {
     try { localStorage.setItem("gl_xmas_calm", on ? "1" : "0"); } catch (e) {}
   }
 
-  // ---- 雪 ----
+  // ---- 雪: 2層(細かくて遅い・大きくて速い)のタイルを動かすだけ。中身と動きは christmas.css ----
   let snowBox = null;
   function startSnow() {
     if (snowBox || reduceMotion) return;
     snowBox = document.createElement("div");
     snowBox.className = "xm-snow";
     snowBox.setAttribute("aria-hidden", "true");
-    const small = window.innerWidth < 700;
-    const n = isCalm() ? 14 : small ? 30 : 64;
-    for (let i = 0; i < n; i++) {
-      const f = document.createElement("span");
-      f.textContent = Math.random() < 0.8 ? "❄" : "❅";
-      f.style.left = (Math.random() * 100).toFixed(1) + "vw";
-      f.style.fontSize = (9 + Math.random() * 14).toFixed(0) + "px";
-      f.style.opacity = (0.35 + Math.random() * 0.5).toFixed(2);
-      f.style.animationDuration = (9 + Math.random() * 12).toFixed(1) + "s, " + (3 + Math.random() * 3).toFixed(1) + "s";
-      f.style.animationDelay = (-Math.random() * 20).toFixed(1) + "s, " + (-Math.random() * 4).toFixed(1) + "s";
-      snowBox.appendChild(f);
-    }
+    ["s2", "s3"].forEach((c) => { const i = document.createElement("i"); i.className = c; snowBox.appendChild(i); });
     document.body.appendChild(snowBox);
   }
   function stopSnow() {
     if (snowBox) { snowBox.remove(); snowBox = null; }
+  }
+  // 吹雪: 雪の層を速く斜めに動かす(新しく要素は増やさない)
+  function blizzard(ms) {
+    if (!snowBox || isCalm()) return false;
+    snowBox.classList.add("blizz");
+    setTimeout(() => { if (snowBox) snowBox.classList.remove("blizz"); }, ms || 12000);
+    return true;
   }
 
   // ---- プレゼントの雨 ----
@@ -309,10 +321,12 @@ const Xmas = (() => {
     scheduleSantas();
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  // 読み込みが DOMContentLoaded のあとになっても動くようにする(イベント期間だけ動的に読み込むため)
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 
   return {
     isActive: active, phase, now, seasonYear, adventUnlockedDay,
-    startSnow, stopSnow, giftRain, spawnSanta, giveGifts, reduceMotion, isCalm, toast, popAt,
+    startSnow, stopSnow, blizzard, autoCalm, forced: forcedByUrl, giftRain, spawnSanta, giveGifts, reduceMotion, isCalm, toast, popAt,
   };
 })();
