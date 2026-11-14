@@ -23,6 +23,13 @@
 .featured-play { display: inline-block; margin-top: 12px; padding: 9px 16px; color: #fff; background: var(--neon-pink); border: 2px solid #ff9bd0; border-radius: 999px; box-shadow: 0 0 14px rgba(255, 62, 165, .35); font-weight: 700; text-decoration: none; }
 .featured-play:hover { background: #ff78bd; }
 .featured-dialog { width: min(620px, 100%); }
+.featured-selected-wrap { margin: 10px 0 12px; }
+.featured-selected { display: grid; gap: 6px; min-height: 42px; margin-top: 6px; padding: 6px; background: rgba(255, 255, 255, .05); border: 1px dashed rgba(255, 255, 255, .25); border-radius: 9px; }
+.featured-selected-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: var(--text-main); background: rgba(24, 213, 255, .12); border: 1px solid rgba(24, 213, 255, .35); border-radius: 7px; cursor: grab; user-select: none; }
+.featured-selected-item.is-dragging { opacity: .35; }
+.featured-selected-item small { margin-left: auto; color: #9ed6e5; }
+.featured-drag-handle { color: var(--neon-yellow); font-size: 1.1rem; }
+.featured-selected-empty { padding: 8px; color: #a9c4d8; font-size: .85rem; }
 .featured-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; max-height: 360px; overflow: auto; margin: 8px 0 12px; padding: 4px; }
 .featured-option { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 8px; color: var(--text-main); background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12); border-radius: 8px; cursor: pointer; }
 .featured-option span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
