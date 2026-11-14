@@ -1020,7 +1020,8 @@ const CHANGELOG = [
       "「メンテナンス中」表示を追加。不具合のあるゲームはカードが暗くなり、一覧からプレイできず、今日の1本にも出ない(GAMES に maintenance を付けると有効)",
       "不具合が見つかった5本(ドットバトル・読み仮名順テキスト並べ替え・SUIKA DELUXE・STONKS・異常収容施設)をメンテナンス中に変更。修正でき次第、順に復旧する"
     ]
-  },
+  }
+,
   {
     version: "1.143.0",
     date: "2026-10-28",
@@ -1547,6 +1548,13 @@ const CHANGELOG = [
     date: "2026-11-14",
     notes: [
       "「話題メーカー」の作者を manus AI に変更した"
+    ]
+  },
+  {
+    version: "1.217.0",
+    date: "2026-11-15",
+    notes: [
+      "GamePita の URL を https://gamepita.pages.dev/ に変更した(Cloudflare Pages へ引っ越し。前の URL は自動で新しい URL へ移動する)"
     ]
   }
 ];
