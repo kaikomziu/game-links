@@ -7,3 +7,8 @@ Supabase に migration `karuwaka_account_mixall_login` として適用済み(`li
 - `ka_mixall_ticket_new(sub, suggest)` … service_role だけが実行できる(Edge Function `ka-mixall` から呼ぶ)
 - `ka_mixall_login(ticket)` / `ka_mixall_register(ticket, username, display, client)` / `ka_mixall_claim(ticket, username, password)` / `ka_mixall_link(token, ticket)`
 - 解除は既存の `ka_oauth_unlink(token, 'mixall')`
+
+## 2026-11-17 連携の置き換え(migration `karuwaka_account_mixall_relink`、全文は `ka_mixall_relink.sql`)
+- MixAllが返す sub はアプリ(client_id)ごとに違う。11/13 にMixAll側でアプリを作り直す前に連携した人は、保存済みの sub が一致せず、毎回「はじめて/もうアカウントを持っている」が出ていた。しかも「持っている」を選ぶと `already` で断られ、保存されなかった。
+- `ka_mixall_claim`(パスワード確認)と `ka_mixall_link`(ログイン中の連携)は、そのアカウントの古いMixAll連携を今の sub に置き換えるようにした。sub が別アカウントのものなら従来どおり断る。
+- client_id をまた変えたときは、利用者が一度「もうアカウントを持っている」かマイページの連携をすれば直る。
