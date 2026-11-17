@@ -1556,5 +1556,12 @@ const CHANGELOG = [
     notes: [
       "GamePita の URL を https://gamepita.pages.dev/ に変更した(Cloudflare Pages へ引っ越し。前の URL は自動で新しい URL へ移動する)"
     ]
+  },
+  {
+    version: "1.218.0",
+    date: "2026-11-17",
+    notes: [
+      "ログイン(Google・Discord・GitHub・MixAll)のあと、github.io 以外のサイト(LiteMessages・Netlifyなどに置いたゲーム)から来た人が、元のサイトに戻れずポータルに飛ばされていた問題を直した(戻してよいサイトの一覧に追加)"
+    ]
   }
 ];

@@ -28,7 +28,7 @@
   var MIXALL = "https://mixalls.vercel.app";
   var CLIENT_ID = "mxc_8184495951de4b83144caa121de5cdee";      // 公開クライアントID(秘密ではない)
   var EXCHANGE = "https://kifnzvktwbomxthzvvgy.supabase.co/functions/v1/ka-mixall/exchange";
-  var ALLOWED = ["https://kaikomziu.github.io", "https://dotbattle-sg.onrender.com"]; // oauth.html と同じ
+  var ALLOWED = ["https://kaikomziu.github.io", "https://dotbattle-sg.onrender.com"].concat(["https://lite-messages.edgeone.cool", "https://mixall-plus.edgeone.dev", "https://dreamd-game.netlify.app", "https://divine-timer-egg.netlify.app", "https://gravity-drift-arcade.netlify.app", "https://gamepita.pages.dev"]); // oauth.html と同じ
   var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   var SKEY = "ka_mixall_flow";
   var msg = document.getElementById("msg");

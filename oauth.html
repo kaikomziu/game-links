@@ -25,7 +25,7 @@
   "use strict";
   var PORTAL = "https://kaikomziu.github.io/game-links/";
   // 戻ってよいサイト(かるわかGAMESアカウントを使うサイトの origin)
-  var ALLOWED = ["https://kaikomziu.github.io", "https://dotbattle-sg.onrender.com"];
+  var ALLOWED = ["https://kaikomziu.github.io", "https://dotbattle-sg.onrender.com"].concat(["https://lite-messages.edgeone.cool", "https://mixall-plus.edgeone.dev", "https://dreamd-game.netlify.app", "https://divine-timer-egg.netlify.app", "https://gravity-drift-arcade.netlify.app", "https://gamepita.pages.dev"]); // かるわかGAMESのゲームを置いているサイト(ここに無いサイトには戻せず、ポータルに戻る。新しいサイトにSDKを入れたらここに足す)
   var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname); // 手元での確認用(このページ自体が手元で開かれたときだけ)
 
   function allowed(u) {
