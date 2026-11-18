@@ -1571,5 +1571,12 @@ const CHANGELOG = [
       "MUSIC LiDAR の新しいアドレス music-lidar.com を、ログイン後に戻せるサイトに追加した",
       "MUSIC LiDAR の引っ越し用ページ(mlidar-move.html)を追加した。前のアドレスで遊んでいた人の記録・ログインを新しいアドレスへ移す"
     ]
+    },
+  {
+    version: "1.219.1",
+    date: "2026-11-18",
+    notes: [
+      "MUSIC LiDAR へのリンクを新しいアドレス https://music-lidar.com/ に変更した"
+    ]
   }
 ];
