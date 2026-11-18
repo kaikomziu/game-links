@@ -1563,5 +1563,13 @@ const CHANGELOG = [
     notes: [
       "ログイン(Google・Discord・GitHub・MixAll)のあと、github.io 以外のサイト(LiteMessages・Netlifyなどに置いたゲーム)から来た人が、元のサイトに戻れずポータルに飛ばされていた問題を直した(戻してよいサイトの一覧に追加)"
     ]
+  },
+  {
+    version: "1.219.0",
+    date: "2026-11-18",
+    notes: [
+      "MUSIC LiDAR の新しいアドレス music-lidar.com を、ログイン後に戻せるサイトに追加した",
+      "MUSIC LiDAR の引っ越し用ページ(mlidar-move.html)を追加した。前のアドレスで遊んでいた人の記録・ログインを新しいアドレスへ移す"
+    ]
   }
 ];

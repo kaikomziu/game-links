@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MUSIC LiDAR 引っ越し中…</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#02030a;color:#e6f0ff;font-family:system-ui,sans-serif}</style>
+</head>
+<body>
+<p>MUSIC LiDAR のデータを新しいアドレスへ移しています…</p>
+<script>
+// MUSIC LiDAR は kaikomziu.github.io/music-lidar から music-lidar.com に引っ越した。
+// ブラウザの保存領域はアドレスごとに別なので、旧アドレス(kaikomziu.github.io)側に残っている
+// MUSIC LiDAR のデータ(mlidar:*)とかるわかGAMESのログイン(ka_session)を読み、URLの # に入れて music-lidar.com に返す。
+// # の中身はサーバーに送られない。返す先は music-lidar.com だけ(ほかのサイトには絶対に渡さない)。
+(function () {
+  var DEST = 'https://music-lidar.com/';
+  var ret = DEST;
+  try {
+    var u = new URL(new URLSearchParams(location.search).get('ret') || DEST);
+    if (u.origin === 'https://music-lidar.com' || u.origin === 'https://www.music-lidar.com') ret = u.origin + u.pathname + u.search;
+  } catch (e) { /* 変なURLは無視してトップへ */ }
+  var out = '0';
+  try {
+    var data = {}, n = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k.indexOf('mlidar:') === 0 || k === 'ka_session') { data[k] = localStorage.getItem(k); n++; }
+    }
+    if (n) out = btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  } catch (e) { out = '0'; }
+  location.replace(ret + '#mlmove=' + out);
+})();
+</script>
+</body>
+</html>
