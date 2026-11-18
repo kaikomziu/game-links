@@ -1,0 +1,7 @@
+/* 掲示板タブ: 別サービスを埋め込む */
+body[data-view="board"] .tag-filter,
+body[data-view="board"] .toolbar-right,
+body[data-view="board"] .catalog-admin { display: none; }
+.board-view[hidden] { display: none; }
+.board-view { margin: 8px 0 20px; }
+#boardFrame { width: 100%; height: 78vh; min-height: 480px; border: 2px solid var(--cab-edge); border-radius: 8px; background: #f3f4f8; }

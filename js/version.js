@@ -1578,5 +1578,12 @@ const CHANGELOG = [
     notes: [
       "MUSIC LiDAR へのリンクを新しいアドレス https://music-lidar.com/ に変更した"
     ]
+  },
+  {
+    version: "1.220.0",
+    date: "2026-11-18",
+    notes: [
+      "「💬 掲示板」タブを追加。スレッドを立てて、その中で話せる(一番上に【公式】雑談スレを固定)"
+    ]
   }
 ];

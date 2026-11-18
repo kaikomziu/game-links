@@ -1279,7 +1279,7 @@ const externalRoot = document.getElementById("externalInfo");
 // ===== 表示する区画(タブ): games = ゲーム / soft = ソフト・MOD =====
 // all = すべて(ジャンルごとの棚。ゲーム・ソフト・MODが混ざる) / games = ゲーム / soft = ソフト・MOD。
 // 「すべて」を最初の画面にするため、覚えておく値の名前を "view2" に変えた(以前の "view" は使わない)
-const VIEWS = ["all", "games", "soft", "events", "articles", "external"];
+const VIEWS = ["all", "games", "soft", "events", "articles", "board", "external"];
 let currentView = VIEWS.includes(getCookie("view2")) ? getCookie("view2") : "all";
 const viewTabs = document.getElementById("viewTabs");
 function syncViewTabs() {
@@ -1411,6 +1411,13 @@ function render() {
   grid.hidden = currentView !== "games";
   softGrid.hidden = currentView !== "soft";
   externalRoot.hidden = currentView !== "external";
+  const boardRoot = document.getElementById("boardView");
+  boardRoot.hidden = currentView !== "board";
+  if (currentView === "board") {
+    // 掲示板は別サービス(Cloudflare Workers + D1)を埋め込む。初めて開いたときだけ読み込む
+    const f = document.getElementById("boardFrame");
+    if (!f.src) f.src = f.dataset.src;
+  }
   document.getElementById("viewNote").hidden = currentView !== "soft";
 
   // 見えている区画だけ作る(見えない区画まで作ると、ページが重くなる)
@@ -1440,7 +1447,7 @@ function render() {
     hideEventsView();
   }
 
-  if (currentView === "articles" || currentView === "events" || currentView === "external") {
+  if (currentView === "articles" || currentView === "events" || currentView === "external" || currentView === "board") {
     // 記事・イベントタブの空表示はそれぞれ側で出す
   } else if (viewList.length === 0) {
     const otherName = currentView === "soft" ? "ゲーム" : "ソフト・MOD";
