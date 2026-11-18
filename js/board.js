@@ -9,7 +9,7 @@
     const ka = window.KaAccount;
     const u = ka && ka.user();
     frame.contentWindow.postMessage(
-      { type: "ka-token", token: u ? ka.token() : null, user: u ? u.username : null },
+      { type: "ka-token", token: u ? ka.token() : null, user: u ? u.username : null, admin: !!(u && u.is_admin) },
       ORIGIN
     );
   }
