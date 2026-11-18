@@ -1592,5 +1592,12 @@ const CHANGELOG = [
     notes: [
       "掲示板に、ログイン中のかるわかGAMESアカウント名で自動的に書き込めるようにした(書き込みに ✓ が付く)"
     ]
+  },
+  {
+    version: "1.221.1",
+    date: "2026-11-18",
+    notes: [
+      "掲示板のアドレスを新しいもの(karuwaka-bbs.karuwaka.workers.dev)に変更した"
+    ]
   }
 ];

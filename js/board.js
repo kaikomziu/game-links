@@ -1,6 +1,6 @@
 // 掲示板タブ: 埋め込んだ掲示板に、ログイン中のかるわかGAMESアカウントを渡す
 (function () {
-  const ORIGIN = "https://karuwaka-bbs.4yomaban.workers.dev";
+  const ORIGIN = "https://karuwaka-bbs.karuwaka.workers.dev";
   const frame = document.getElementById("boardFrame");
   if (!frame) return;
   // ログイン中なら、トークンとユーザー名を掲示板へ送る(送り先は掲示板のオリジンだけ)
