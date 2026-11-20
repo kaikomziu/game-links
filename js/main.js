@@ -6,6 +6,18 @@
 // 不具合のあるゲームは maintenance: "理由メモ" を付けると「メンテナンス中」表示になり、一覧からプレイできなくなる(直ったら削除する)。
 const GAMES = [
   {
+    id: "gazou-doko",
+    added: "2026-11-20",
+    kind: "app",
+    platform: "Web",
+    action: "サイトを見る →",
+    title: "画像どこかな検索",
+    emoji: "🔎",
+    tags: ["ツール"],
+    desc: "画像を選ぶだけで、その画像の出どころ(ソース)を探せるサービス。ドラッグ&ドロップ・クリックで選ぶ・Ctrl+Vで貼り付け・画像のURLの4通りで画像を入れると、SauceNAO・trace.moe・AnimeTrace・IQDB・Fluffle・Google レンズ(SerpApi・SearchApi・Serper・Scrapingdog)・Google Cloud Vision・TinEye など、いくつもの検索エンジンでまとめて調べる。pixivに対応していて、見つかったpixivの作品はタイトルと作者つきで「pixivで見つかった作品」にまとまり、pixivの作品ページのURLからそのまま検索することもできる。いちばん当たっていそうな結果を「いちばん有力」として大きく表示し、結果はエンジンごとのタブや、pixiv・X・Danbooru・アニメ・ケモノ系などのサイトでしぼりこめる。アニメのスクショなら作品名・話数・時間、キャラクターの絵ならキャラ名もわかる。TinEyeではいちばん古い掲載ページがわかるので、元の投稿を探しやすい。成人向けの結果は「隠す/ぼかす/表示する」から選べる(18歳以上のみ)。検索の履歴は端末に残る。選んだ画像は検索のために各サービスへ送られ、サーバーには最大30分だけ置いて消す。",
+    url: "https://kaikomziu.github.io/gazou-doko/"
+  },
+  {
     id: "gamepita",
     added: "2026-11-12",
     kind: "app",
