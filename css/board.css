@@ -5,3 +5,8 @@ body[data-view="board"] .catalog-admin { display: none; }
 .board-view[hidden] { display: none; }
 .board-view { margin: 8px 0 20px; }
 #boardFrame { width: 100%; height: 78vh; min-height: 480px; border: 2px solid var(--cab-edge); border-radius: 8px; background: #f3f4f8; }
+
+/* フッターの寄付リンク */
+.donate { margin: 0 0 12px; }
+.donate a { display: inline-block; padding: 7px 20px; border: 1px solid var(--accent, #ffd400); border-radius: 20px; color: var(--accent, #ffd400); font-weight: 700; font-size: 0.9rem; text-decoration: none; }
+.donate a:hover, .donate a:focus-visible { background: var(--accent, #ffd400); color: #1a1030; }
