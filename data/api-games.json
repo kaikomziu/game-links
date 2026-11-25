@@ -1,7 +1,24 @@
 {
- "generated_at": "2026-11-22T05:30:44.375Z",
- "count": 117,
+ "generated_at": "2026-11-25T11:04:07.884Z",
+ "count": 118,
  "games": [
+  {
+   "id": "uranai-plus",
+   "title": "UraNai+(うらないプラス)",
+   "emoji": "🔮",
+   "kind": "software",
+   "platform": "Web",
+   "genres": [
+    "その他"
+   ],
+   "description": "ポップでかわいい占いサイト。ひとりで遊べる「タイプ診断」(10問で6タイプ)・「今日の運勢」(名前と誕生日で毎日かわる)・「タロット占い」(大アルカナ22枚、1枚引き/3枚引き)・「おみくじ」(1日1回)と、URLを送って相手と遊べる「恋愛相性占い」「友情相性占い」「わたしのこと知ってる?クイズ」がある。ふたりで遊ぶ占いは、自分がこたえてできたURLを相手に送ると、相手もこたえてふたりの結果が出て、結果のURLを送り返せる。BGMつきで、右上のプレイヤーで一時停止・音量の変更ができる。",
+   "url": "https://kaikomziu.github.io/uranai-plus/",
+   "author": "Claude AI",
+   "added": "2026-11-25",
+   "beta": true,
+   "maintenance": false,
+   "action": "サイトを見る →"
+  },
   {
    "id": "gazou-doko",
    "title": "画像どこかな検索",
